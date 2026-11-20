@@ -1,8 +1,8 @@
-! Time evolution of the qubit chain for one rotation angle p, shared by
+! Time evolution of the qubit chain for one rotation angle h, shared by
 ! kicked_top_combined (make combined) and kicked_top_spin_chain (make spin_chain):
 ! t_r forward steps U, then (with butterfly_effect) a rotation of qubit i_flip
 ! about a = flip_axis by flip_angle (pi = flip sigma^a), then t_r backward
-! steps (coupling 2 pi - k/(2j), kick -p).
+! steps (coupling 2 pi - eps, kick -h).
 ! Writes the files of combined_io_mod in dir.
 module chain_run_mod
   use kinds_mod, only: wp
@@ -21,9 +21,9 @@ contains
 
   ! Forward evolution for t_r steps, then (after the optional flip) backward evolution for t_r steps.
   ! obs(:, t_r) and the Husimi snapshot at t_r are taken before the flip.
-  subroutine run_chain(cfg, p, theta0, phi0, e_zz, hus_theta, hus_phi, dir, prog)
+  subroutine run_chain(cfg, h, theta0, phi0, e_zz, hus_theta, hus_phi, dir, prog)
     type(rconfig_t), intent(in) :: cfg
-    real(wp), intent(in) :: p
+    real(wp), intent(in) :: h
     real(wp), intent(in) :: theta0, phi0      ! direction of the initial polarisation
     real(wp), intent(in) :: e_zz(0:)          ! diagonal of H_zz
     real(wp), intent(in) :: hus_theta(:), hus_phi(:)
@@ -42,9 +42,9 @@ contains
     sym_dev = 0.0_wp
 
     do t = 0, 2*cfg%t_r
-      if (t >= 1 .and. t <= cfg%t_r) call forward_step(psi, cfg%n_q, p, cfg%k, e_zz)
+      if (t >= 1 .and. t <= cfg%t_r) call forward_step(psi, cfg%n_q, h, cfg%eps, e_zz)
       if (t == cfg%t_r + 1 .and. cfg%butterfly_effect) call rotate_qubit(psi, cfg%i_flip, cfg%flip_axis, cfg%flip_angle)
-      if (t > cfg%t_r) call backward_step(psi, cfg%n_q, p, cfg%k, e_zz)
+      if (t > cfg%t_r) call backward_step(psi, cfg%n_q, h, cfg%eps, e_zz)
 
       sig = site_spins(psi, cfg%n_q)
       obs(1, t) = fidelity(psi0, psi)
@@ -61,17 +61,17 @@ contains
     end do
 
     call make_dir(dir)
-    call write_chain(cfg, p, dir, obs)
-    call write_husimi(cfg, p, dir, steps, hus_theta, hus_phi, q)
-    call write_summary(cfg, p, dir, &
-      [character(len=24) :: 'F(t_r)', 'F(2t_r)', 'max|norm-1|', 'max|S^2-j(j+1)|', &
+    call write_chain(cfg, h, dir, obs)
+    call write_husimi(cfg, h, dir, steps, hus_theta, hus_phi, q)
+    call write_summary(cfg, h, dir, &
+      [character(len=24) :: 'F(t_r)', 'F(2t_r)', 'max|norm-1|', 'max|J^2-j(j+1)|', &
        'max(1-symmetric_weight)', 'husimi_norm(0)', 'husimi_norm(t_r/2)', 'husimi_norm(t_r)', &
        'husimi_norm(3t_r/2)', 'husimi_norm(2t_r)'], &
       [obs(1, cfg%t_r), obs(1, 2*cfg%t_r), maxval(abs(obs(2, :) - 1.0_wp)), &
        maxval(abs(obs(9, :) - j*(j + 1.0_wp))), sym_dev, &
        (husimi_norm(q(:, l), j), l = 1, size(steps))])
 
-    write(*, '(a,f0.4,a,f0.4,a,es10.3,a)') prog//': p = ', p, ', k = ', cfg%k, &
+    write(*, '(a,f0.4,a,f0.4,a,es10.3,a)') prog//': h = ', h, ', eps = ', cfg%eps, &
       ', F(2t_r) - 1 = ', obs(1, 2*cfg%t_r) - 1.0_wp, ' -> '//dir
   end subroutine run_chain
 

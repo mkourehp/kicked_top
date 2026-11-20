@@ -1,8 +1,8 @@
-! Driver of the qubit chain alone (make spin_chain): for every rotation angle p
+! Driver of the qubit chain alone (make spin_chain): for every rotation angle h
 ! in the config, n_q spins 1/2 with all-to-all zz couplings V_il = 1/4 are
 ! evolved t_r steps forward, then (with butterfly_effect) qubit i_flip is rotated
 ! about a = flip_axis by flip_angle (exp(-i flip_angle/2 sigma^a), pi = flip
-! sigma^a), then t_r steps backward (coupling 2 pi - k/(2j), kick -p).
+! sigma^a), then t_r steps backward (coupling 2 pi - eps, kick -h).
 ! Same namelist and chain output as kicked_top_combined, without the classical part.
 ! Usage: kicked_top_spin_chain [namelist file]   (default config_spin_chain.nml)
 program kicked_top_spin_chain
@@ -26,7 +26,12 @@ program kicked_top_spin_chain
   if (command_argument_count() >= 1) call get_command_argument(1, cfg_path)
 
   call read_combined_config(trim(cfg_path), cfg)
-  call ferromagnetic_direction(cfg%s0, cfg%n_q, cfg%pol, theta0, phi0)
+  if (cfg%has_angles) then
+    theta0 = cfg%theta0
+    phi0 = cfg%phi0
+  else
+    call ferromagnetic_direction(cfg%s0, cfg%n_q, cfg%pol, theta0, phi0)
+  end if
   call make_dir(trim(cfg%out_dir))
   call write_regimes(cfg)
 
@@ -35,8 +40,8 @@ program kicked_top_spin_chain
 
   e_zz = zz_energies(cfg%n_q, uniform_coupling(cfg%n_q))
 
-  do i = 1, size(cfg%p)
-    call run_chain(cfg, cfg%p(i), theta0, phi0, e_zz, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', &
+  do i = 1, size(cfg%h)
+    call run_chain(cfg, cfg%h(i), theta0, phi0, e_zz, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', &
       'kicked_top_spin_chain')
   end do
 

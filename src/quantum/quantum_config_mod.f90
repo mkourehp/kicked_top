@@ -13,8 +13,8 @@ module quantum_config_mod
 
   type :: qconfig_t
     ! &system
-    real(wp) :: p                  ! kick: rotation angle about y
-    real(wp) :: k                  ! torsion strength per period
+    real(wp) :: h                  ! kick: rotation angle about x
+    real(wp) :: eps                ! coupling: coefficient of J_z**2 (eps = k/(2j))
     real(wp) :: j                  ! spin quantum number (integer or half-integer)
     integer :: dim                 ! dimension 2j+1 of the Hilbert space
     ! &simulation
@@ -42,22 +42,22 @@ contains
     character(len=*), intent(in) :: path
     type(qconfig_t), intent(out) :: cfg
 
-    real(wp) :: p, k, j, theta0, phi0, s_max
+    real(wp) :: h, eps, j, theta0, phi0, s_max
     integer :: n_kicks, n_theta, n_phi, n_husimi, n_bins, kicks(max_snapshots)
     logical :: enabled
     character(len=str_len) :: out_dir
     integer :: u, ios, two_j, i
     integer, allocatable :: snap(:)
 
-    namelist /system/ p, k, j
+    namelist /system/ h, eps, j
     namelist /simulation/ n_kicks
     namelist /initial/ theta0, phi0
     namelist /husimi/ enabled, n_theta, n_phi, n_husimi, kicks
     namelist /spectrum/ enabled, n_bins, s_max
     namelist /output/ out_dir
 
-    p = pi/2.0_wp
-    k = 3.0_wp
+    h = pi/2.0_wp
+    eps = 0.03_wp
     j = 50.0_wp
     n_kicks = 100
     theta0 = 2.25_wp
@@ -101,8 +101,8 @@ contains
     if (two_j < 1 .or. abs(2.0_wp*j - real(two_j, wp)) > 1.0e-9_wp) &
       error stop 'quantum_config_mod: j must be a positive integer or half-integer'
 
-    cfg%p = p
-    cfg%k = k
+    cfg%h = h
+    cfg%eps = eps
     cfg%j = 0.5_wp*real(two_j, wp)
     cfg%dim = two_j + 1
     cfg%n_kicks = n_kicks

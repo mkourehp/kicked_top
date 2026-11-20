@@ -1,5 +1,5 @@
 ! Observables of the qubit chain, computed from the state vector (basis as in
-! chain_state_mod): fidelity, single-qubit spins and the total spin S = sum_i sigma_i/2.
+! chain_state_mod): fidelity, single-qubit spins and the total spin J = sum_i sigma_i/2.
 module chain_observables_mod
   use kinds_mod, only: wp
   implicit none
@@ -43,9 +43,9 @@ contains
     end do
   end function site_spins
 
-  ! Total spin: [<S_x>, <S_y>, <S_z>, <S_x**2>, <S_y**2>, <S_z**2>, <S**2>],
-  ! with <S_a**2> = ||S_a psi||**2. S_a psi is built in a work vector of the
-  ! size of psi; S**2 = j(j+1) with j = n_q/2 in the symmetric subspace.
+  ! Total spin: [<J_x>, <J_y>, <J_z>, <J_x**2>, <J_y**2>, <J_z**2>, <J**2>],
+  ! with <J_a**2> = ||J_a psi||**2. J_a psi is built in a work vector of the
+  ! size of psi; J**2 = j(j+1) with j = n_q/2 in the symmetric subspace.
   function total_spin(psi, n_q) result(st)
     complex(wp), intent(in) :: psi(0:)
     integer, intent(in) :: n_q
@@ -58,7 +58,7 @@ contains
     st(1:3) = 0.5_wp*sum(sig, dim=2)
 
     allocate(w(0:size(psi) - 1))
-    ! S_x psi
+    ! J_x psi
     !$omp parallel do private(i) schedule(static)
     do b = 0, size(psi) - 1
       w(b) = (0.0_wp, 0.0_wp)
@@ -68,7 +68,7 @@ contains
     end do
     !$omp end parallel do
     st(4) = sum(abs(w)**2)
-    ! S_y psi: sigma^y |down> = i |up>, sigma^y |up> = -i |down>
+    ! J_y psi: sigma^y |down> = i |up>, sigma^y |up> = -i |down>
     !$omp parallel do private(i, mask) schedule(static)
     do b = 0, size(psi) - 1
       w(b) = (0.0_wp, 0.0_wp)
@@ -83,7 +83,7 @@ contains
     end do
     !$omp end parallel do
     st(5) = sum(abs(w)**2)
-    ! S_z psi: diagonal, S_z = u - n_q/2
+    ! J_z psi: diagonal, J_z = u - n_q/2
     st(6) = 0.0_wp
     do b = 0, size(psi) - 1
       st(6) = st(6) + (popcnt(b) - 0.5_wp*n_q)**2*abs(psi(b))**2

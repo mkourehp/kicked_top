@@ -19,11 +19,11 @@
 \maketitle
 
 \begin{abstract}
-The same kicked top is studied in three regimes, regular, mixed and chaotic, selected by the kick angle $p$ at
+The same kicked top is studied in three regimes, regular, mixed and chaotic, selected by the kick angle $h$ at
 fixed torsion strength $k$. Classically, the regimes are read off from Poincar\'e sections and explained with a
-small-$p$ reduction of the map to the standard map. Quantum mechanically, the top of spin $j=n_q/2$ is realised by
+small-$h$ reduction of the map to the standard map. Quantum mechanically, the top of spin $j=n_q/2$ is realised by
 $n_q$ qubits: the torsion $J_z^2$ is a static all-to-all Ising coupling $\sum_{i,l}V_{il}\sigma^z_i\sigma^z_l$ with
-$V_{il}=1/4$, acting during the whole period, and the kick is a pulse that rotates every qubit about $y$. Running the
+$V_{il}=1/4$, acting during the whole period, and the kick is a pulse that rotates every qubit about $x$. Running the
 chain backwards gives an exact time reversal. The regimes are compared through the Husimi distribution, the fidelity
 and the entanglement of a single qubit.
 \end{abstract}
@@ -37,13 +37,13 @@ and the entanglement of a single qubit.
 A spin $\bm J=(J_x,J_y,J_z)$ of length quantum number $j$ (so $\bm J^2=j(j+1)$, $\hbar=1$) undergoes a continuous
 torsion about the $z$ axis and is kicked once per unit time by a rotation about the $y$ axis:
 \begin{equation}\label{eq:H}
-  H(t) = \frac{k}{2j}\,J_z^2 + p\,J_y\sum_{n=-\infty}^{\infty}\delta(t-n).
+  H(t) = \epsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n).
 \end{equation}
-Here $k$ is the torsion strength per period, $p$ the kick angle and $\delta$ the Dirac delta. Integrating the
+Here $\epsilon$ is the coupling, $k = 2j\epsilon$ the classical torsion strength per period, $h$ the kick angle and $\delta$ the Dirac delta. Integrating the
 Schr\"odinger equation over one period, starting just before a kick, the kick acts instantaneously and the free
 torsion then acts for unit time. One period is therefore the Floquet operator
 \begin{equation}\label{eq:U}
-  U = e^{-i\frac{k}{2j}J_z^2}\,e^{-ipJ_y},\qquad \psi(t) = U^t\psi(0),\quad t=0,1,2,\dots
+  U = e^{-i\epsilon J_z^2}\,e^{-ihJ_x},\qquad \psi(t) = U^t\psi(0),\quad t=0,1,2,\dots
 \end{equation}
 where $t$ now counts periods.
 
@@ -54,9 +54,9 @@ The classical top is the same Hamiltonian for a classical vector $\bm J$. All re
 \end{equation}
 a point on the unit sphere with polar angle $\theta$ and azimuth $\phi$. The pair $(\phi,Z)$ is canonical, so phase
 space is the rectangle $-\pi<\phi\le\pi$, $-1\le Z\le 1$ with area $4\pi$, and areas in it are conserved. Over one
-period the kick first rotates $\bm s$ about $y$ by $p$:
+period the kick first rotates $\bm s$ about $x$ by $h$:
 \begin{equation}\label{eq:rot}
-  X' = X\cos p + Z\sin p,\qquad Y' = Y,\qquad Z' = -X\sin p + Z\cos p .
+  X' = X,\qquad Y' = Y\cos h - Z\sin h,\qquad Z' = Y\sin h + Z\cos h .
 \end{equation}
 The free torsion then rotates it about $z$ by the angle $kZ'$, which leaves $Z$ unchanged:
 \begin{equation}\label{eq:kick}
@@ -65,9 +65,9 @@ The free torsion then rotates it about $z$ by the angle $kZ'$, which leaves $Z$ 
 where $\phi'$ is the azimuth of $(X',Y')$. The classical map is \cref{eq:rot,eq:kick}. Its quantum counterpart is
 \cref{eq:U}, and $1/j$ plays the role of Planck's constant.
 
-Throughout, $k=20$ and only $p$ is varied:
+Throughout, $k=20$ ($\epsilon = k/n_q = 2$ for the chain of $n_q = 10$ qubits) and only $h$ is varied:
 \begin{equation}
-  p = 0.02\ \text{(regular)},\qquad p = 0.1\ \text{(mixed)},\qquad p = 1\ \text{(chaotic)}.
+  h = 0.02\ \text{(regular)},\qquad h = 0.1\ \text{(mixed)},\qquad h = 1\ \text{(chaotic)}.
 \end{equation}
 The initial state is always the north pole $Z=1$ (all spin up).
 
@@ -86,26 +86,26 @@ orbit starts at the pole.
   \label{fig:sections}
 \end{figure}
 
-\subsection{Small \texorpdfstring{$p$}{p}: the standard map}\label{sec:standard}
+\subsection{Small \texorpdfstring{$h$}{h}: the standard map}\label{sec:standard}
 
-For $p\ll1$, \cref{eq:rot} gives to first order in $p$, with $X=\sqrt{1-Z^2}\cos\phi$,
+For $h\ll1$, \cref{eq:rot} gives to first order in $h$, with $Y=\sqrt{1-Z^2}\sin\phi$,
 \begin{equation}
-  Z' = Z - p\sqrt{1-Z^2}\cos\phi .
+  Z' = Z + h\sqrt{1-Z^2}\sin\phi .
 \end{equation}
-The azimuth also changes by an amount of order $p$, but that is negligible next to the kick angle $kZ'$, which is of
+The azimuth also changes by an amount of order $h$, but that is negligible next to the kick angle $kZ'$, which is of
 order $k\gg1$. Writing $I=kZ$, the map \cref{eq:rot,eq:kick} becomes
 \begin{equation}\label{eq:standard}
-  I_{t+1} = I_t - K\cos\phi_t,\qquad \phi_{t+1} = \phi_t + I_{t+1},\qquad K = kp\sqrt{1-Z^2}.
+  I_{t+1} = I_t + K\sin\phi_t,\qquad \phi_{t+1} = \phi_t + I_{t+1},\qquad K = kh\sqrt{1-Z^2}.
 \end{equation}
-$Z$ changes by at most $p$ per kick, so $K$ is constant over many kicks and \cref{eq:standard} is, locally in $Z$,
-Chirikov's standard map with stochasticity parameter $K$. ($\phi\to\phi+\pi/2$ brings it to the textbook form.) The
-strongest kick, $K=kp$, is at the equator, and $K\to0$ at the poles.
+$Z$ changes by at most $h$ per kick, so $K$ is constant over many kicks and \cref{eq:standard} is, locally in $Z$,
+Chirikov's standard map with stochasticity parameter $K$. The
+strongest kick, $K=kh$, is at the equator, and $K\to0$ at the poles.
 
 \paragraph{Resonances.}
-Fixed points of \cref{eq:standard} need $I_{t+1}=I_t$ up to $2\pi$, i.e.\ $\cos\phi=0$, and $\phi_{t+1}=\phi_t$ up to
+Fixed points of \cref{eq:standard} need $I_{t+1}=I_t$ up to $2\pi$, i.e.\ $\sin\phi=0$, and $\phi_{t+1}=\phi_t$ up to
 $2\pi$, i.e.\ $I=2\pi m$ with integer $m$. They lie at
 \begin{equation}\label{eq:res}
-  Z_m = \frac{2\pi m}{k},\qquad \phi = \pm\frac{\pi}{2},
+  Z_m = \frac{2\pi m}{k},\qquad \phi = 0,\ \pi,
 \end{equation}
 a row of resonances spaced by $2\pi/k\approx0.31$. These are the chains of islands in the left panel of
 \cref{fig:sections}. A small displacement $(\delta I,\delta\phi)$ from a fixed point evolves as
@@ -142,21 +142,21 @@ true threshold, known numerically for the standard map, to
 
 \subsection{The three regimes}
 
-Inserting $K = kp\sqrt{1-Z^2}$ into this criterion gives the regimes directly. For the measurements below, the
+Inserting $K = kh\sqrt{1-Z^2}$ into this criterion gives the regimes directly. For the measurements below, the
 Lyapunov exponent $\Lambda$ (the growth rate of the distance $d_t\sim e^{\Lambda t}$ between neighbouring orbits) was
 computed for a $30\times30$ grid of initial points. A point counts as chaotic if $\Lambda>0.05$.
 
 \begin{description}
-\item[Regular, $p=0.02$:] $kp=0.4<K_c$ everywhere. KAM curves separate all resonances, and the motion is regular on the
+\item[Regular, $h=0.02$:] $kh=0.4<K_c$ everywhere. KAM curves separate all resonances, and the motion is regular on the
   whole sphere: $0\%$ of the grid points are chaotic. The orbit from the pole stays at $Z>0.999$.
-\item[Mixed, $p=0.1$:] $kp=2$. Chaos needs $K>K_c$, i.e.\ $|Z|<Z_c$ with
+\item[Mixed, $h=0.1$:] $kh=2$. Chaos needs $K>K_c$, i.e.\ $|Z|<Z_c$ with
   \begin{equation}\label{eq:Zc}
-    Z_c = \sqrt{1-\left(\frac{K_c}{kp}\right)^2} \approx 0.87 .
+    Z_c = \sqrt{1-\left(\frac{K_c}{kh}\right)^2} \approx 0.87 .
   \end{equation}
   A chaotic band around the equator is bounded by regular caps around the poles (dashed lines in
-  \cref{fig:sections}). Inside the band, the islands at $\phi=-\pi/2$ survive because $K<4$. $69\%$ of the grid
+  \cref{fig:sections}). Inside the band, the islands at $\phi=\pi$ survive because $K<4$. $69\%$ of the grid
   points are chaotic. The orbit from the pole is regular and stays at $Z>0.97$.
-\item[Chaotic, $p=1$:] $kp=20\gg K_c$. No KAM curves remain, and except in thin strips at the poles $K>4$, so the
+\item[Chaotic, $h=1$:] $kh=20\gg K_c$. No KAM curves remain, and except in thin strips at the poles $K>4$, so the
   period-one islands are unstable as well. $100\%$ of the grid points are chaotic, and the orbit from the pole fills the
   sphere.
 \end{description}
@@ -168,9 +168,9 @@ $\ln\sqrt{1-Z^2}=\tfrac12[\ln(1+Z)+\ln(1-Z)]$ and the symmetry $Z\to-Z$,
 \end{equation}
 gives
 \begin{equation}
-  \Lambda \approx \ln\frac{kp}{2} + \ln2 - 1 = \ln(kp) - 1 \approx 2.0
+  \Lambda \approx \ln\frac{kh}{2} + \ln2 - 1 = \ln(kh) - 1 \approx 2.0
 \end{equation}
-against the measured mean $1.89$. At $p=1$ the small-$p$ reduction is no longer justified, so this is only an
+against the measured mean $1.89$. At $h=1$ the small-$h$ reduction is no longer justified, so this is only an
 estimate.
 
 %=====================================================================
@@ -223,7 +223,7 @@ chain is therefore the quantum top of \cref{sec:quantum} with $j=5$ ($n_q=10$) o
 
 The chain has the Hamiltonian of \cref{eq:H}, with $J_z^2$ replaced by an Ising coupling between all pairs of qubits,
 \begin{equation}\label{eq:Hq}
-  H(t) = \frac{k}{2j}\,H_{zz} + p\,J_y\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
+  H(t) = \epsilon\,H_{zz} + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
   H_{zz} = \sum_{i,l=1}^{n_q} V_{il}\,\sigma^z_i\sigma^z_l ,
 \end{equation}
 where $i$ and $l$ run over all qubits ($i=l$ included) and $V_{il}$ is the coupling between qubits $i$ and $l$. Here
@@ -237,30 +237,30 @@ that only adds a global phase; they are kept so that $H_{zz}=J_z^2$ holds withou
 
 \subsection{Kick: single-qubit pulses}
 
-The terms of $J_y$ in \cref{eq:Jq} commute, so the exponential factorises:
+The terms of $J_x$ in \cref{eq:Jq} commute, so the exponential factorises:
 \begin{equation}
-  e^{-ipJ_y} = \prod_{i=1}^{n_q} e^{-i\frac p2\sigma^y_i}.
+  e^{-ihJ_x} = \prod_{i=1}^{n_q} e^{-i\frac h2\sigma^x_i}.
 \end{equation}
-The kick is the same rotation by $p$ about $y$, applied to every qubit independently.
+The kick is the same rotation by $h$ about $x$, applied to every qubit independently.
 
 \subsection{Free torsion: all-to-all Ising coupling}
 
 Between two kicks only the coupling acts, for unit time:
 \begin{equation}\label{eq:torq}
-  e^{-i\frac{k}{2j}H_{zz}} ,\qquad \frac{k}{2j} = \frac{k}{n_q}.
+  e^{-i\epsilon H_{zz}} ,\qquad \epsilon = \frac{k}{2j} = \frac{k}{n_q}.
 \end{equation}
 $H_{zz}$ is diagonal in the basis $|b\rangle$ of up and down qubits, so this multiplies every basis state by the phase
-$e^{-i(k/n_q)\sum_{i,l}V_{il}z_iz_l}$. One period of the chain, starting just before a kick, is
+$e^{-i\epsilon\sum_{i,l}V_{il}z_iz_l}$. One period of the chain, starting just before a kick, is
 \begin{equation}\label{eq:Uq}
-  U_{\rm chain} = e^{-i\frac{k}{2j}H_{zz}}\prod_{i}e^{-i\frac p2\sigma^y_i} ,
+  U_{\rm chain} = e^{-i\epsilon H_{zz}}\prod_{i}e^{-i\frac h2\sigma^x_i} ,
 \end{equation}
-which for $V_{il}=1/4$ equals $U$ of \cref{eq:U} exactly. Numerically, for $n_q=1,\dots,14$, several $p$ and $k$, and
+which for $V_{il}=1/4$ equals $U$ of \cref{eq:U} exactly. Numerically, for $n_q=1,\dots,14$, several $h$ and $k$, and
 coherent initial states, the amplitudes of the chain on the symmetric states agree with those of the spin-$j$ top to
 $3\times10^{-13}$ over 50 periods.
 
 \paragraph{Mean-field picture.}
-In \cref{eq:torq}, the terms that contain qubit $i$ are $(k/n_q)\,2V_{il}\,\sigma^z_i\sigma^z_l$ with $l\ne i$, so qubit
-$i$ is rotated about $z$ by the angle $(k/n_q)\sum_{l\ne i}\sigma^z_l$. Replacing the other qubits by their mean,
+In \cref{eq:torq}, the terms that contain qubit $i$ are $\epsilon\,2V_{il}\,\sigma^z_i\sigma^z_l$ with $l\ne i$, so qubit
+$i$ is rotated about $z$ by the angle $\epsilon\sum_{l\ne i}\sigma^z_l$. Replacing the other qubits by their mean,
 $\sum_{l\ne i}\sigma^z_l\approx 2\langle J_z\rangle = n_qZ$, gives the angle $kZ$. This is the classical torsion of
 \cref{eq:kick}: each qubit precesses in the field of all the others.
 
@@ -270,35 +270,35 @@ $\sum_{l\ne i}\sigma^z_l\approx 2\langle J_z\rangle = n_qZ$, gives the angle $kZ
 
 To run the evolution backwards one needs
 \begin{equation}
-  U_{\rm chain}^{-1} = U_{\rm chain}^\dagger = \prod_{i}e^{+i\frac p2\sigma^y_i}\;e^{+i\frac{k}{2j}H_{zz}} .
+  U_{\rm chain}^{-1} = U_{\rm chain}^\dagger = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{+i\epsilon H_{zz}} .
 \end{equation}
-The sign of the pulse is easily reversed, $p\to-p$. The coupling, however, is always on with a fixed sign, so
-$e^{+i\frac{k}{2j}H_{zz}}$ cannot be obtained by flipping it. The spectrum of $H_{zz}$ avoids this. By \cref{eq:Hzz}
+The sign of the pulse is easily reversed, $h\to-h$. The coupling, however, is always on with a fixed sign, so
+$e^{+i\epsilon H_{zz}}$ cannot be obtained by flipping it. The spectrum of $H_{zz}$ avoids this. By \cref{eq:Hzz}
 its eigenvalues are $m^2$ with $m=u-n_q/2$. For $n_q$ even all $m$ are integers, so $e^{-i2\pi m^2}=1$. For $n_q$ odd
 all $m$ are half-integers, $m=l+\frac12$, so $m^2=l^2+l+\frac14$ and $e^{-i2\pi m^2}=e^{-i\pi/2}$ for every basis
 state. Hence
 \begin{equation}\label{eq:2pi}
   e^{-i2\pi H_{zz}} = \gamma,\qquad \gamma = \begin{cases} 1 & n_q \text{ even},\\ -i & n_q\text{ odd},\end{cases}
 \end{equation}
-a global phase, and letting the coupling act with $2\pi-\frac{k}{2j}$ instead of $\frac{k}{2j}$ gives
+a global phase, and letting the coupling act with $2\pi-\epsilon$ instead of $\epsilon$ gives
 \begin{equation}
-  e^{-i(2\pi-\frac{k}{2j})H_{zz}} = \gamma\,e^{+i\frac{k}{2j}H_{zz}} .
+  e^{-i(2\pi-\epsilon)H_{zz}} = \gamma\,e^{+i\epsilon H_{zz}} .
 \end{equation}
-As in the spin chain, the backward period therefore changes $\frac{k}{2j}\to2\pi-\frac{k}{2j}$, i.e.\
-$k\to2\pi n_q-k$, changes the sign of $p$, and swaps the order of the two factors:
+As in the spin chain, the backward period therefore changes $\epsilon\to2\pi-\epsilon$, i.e.\
+$k\to2\pi n_q-k$ of the top, changes the sign of $h$, and swaps the order of the two factors:
 \begin{equation}\label{eq:Ub}
-  U_b = \prod_{i}e^{+i\frac p2\sigma^y_i}\;e^{-i(2\pi-\frac{k}{2j})H_{zz}} = \gamma\,U_{\rm chain}^\dagger .
+  U_b = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{-i(2\pi-\epsilon)H_{zz}} = \gamma\,U_{\rm chain}^\dagger .
 \end{equation}
 Then
 \begin{equation}
-  U_bU_{\rm chain} = e^{+ipJ_y}\,e^{-i(2\pi-\frac{k}{2j})H_{zz}}\,e^{-i\frac{k}{2j}H_{zz}}\,e^{-ipJ_y}
-  = e^{+ipJ_y}\,e^{-i2\pi H_{zz}}\,e^{-ipJ_y} = \gamma ,
+  U_bU_{\rm chain} = e^{+ihJ_x}\,e^{-i(2\pi-\epsilon)H_{zz}}\,e^{-i\epsilon H_{zz}}\,e^{-ihJ_x}
+  = e^{+ihJ_x}\,e^{-i2\pi H_{zz}}\,e^{-ihJ_x} = \gamma ,
 \end{equation}
-in every regime. In the language of the top, the backward period is $k\to-k$ and $p\to-p$, achieved without changing
+in every regime. In the language of the top, the backward period is $\epsilon\to-\epsilon$ and $h\to-h$, achieved without changing
 the sign of the coupling. At the turning point, the coupling of the last forward period and that of the first backward
 period combine into $e^{-i2\pi H_{zz}}=\gamma$: the coupling simply stays on, and the following pulses have the
-opposite sign. With the coupling strength fixed, a backward period lasts $(2\pi-\frac{k}{2j})/\frac{k}{2j}$ forward
-periods, about $2.14$ for $n_q=10$, $k=20$. This needs $\frac{k}{2j}<2\pi$. The construction relies on
+opposite sign. With the coupling strength fixed, a backward period lasts $(2\pi-\epsilon)/\epsilon$ forward
+periods, about $2.14$ for $n_q=10$, $\epsilon=2$ ($k=20$). This needs $\epsilon<2\pi$. The construction relies on
 \cref{eq:2pi}, which holds for $V_{il}=1/4$; for general couplings it requires the eigenvalues of $H_{zz}$ to differ by
 integers.
 
@@ -314,7 +314,7 @@ Two consequences follow. The state returns, $\psi(2t_r)=\gamma^{t_r}\psi_0$, so 
 mirror-symmetric about $t_r$: its value at $t_r+s$ equals its value at $t_r-s$, since $\psi(t_r+s)=\gamma^s\psi(t_r-s)$.
 Without imperfections the echo is perfect in all three regimes, so the regimes differ only in what happens between
 $0$ and $2t_r$. Here $t_r=30$. Numerically, $U_b=\gamma U_{\rm chain}^\dagger$ holds to $4\times10^{-14}$ per step for
-$n_q=1,\dots,14$, several $p$ and $k$, and coherent initial states.
+$n_q=1,\dots,14$, several $h$ and $k$, and coherent initial states.
 
 \paragraph{Butterfly effect.}
 With \texttt{butterfly\_effect = .true.} one qubit, $i=$ \texttt{i\_flip}, is flipped at $t_r$, between the forward
@@ -359,7 +359,7 @@ entanglement created by the coupling. The total spin $\langle\bm J^2\rangle = j(
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/three_regimes_echo.pdf}
-  \caption{Fidelity $F(t)$ (top) and single-qubit Bloch-vector length $r(t)$ (bottom) for $n_q=10$, $k=20$,
+  \caption{Fidelity $F(t)$ (top) and single-qubit Bloch-vector length $r(t)$ (bottom) for $n_q=10$, $\epsilon=2$ ($k=20$),
   reversal at $t_r=30$ (dashed), followed by $t_r$ backward periods. Dotted: $1/(2j+1)$.}
   \label{fig:echo}
 \end{figure}
@@ -367,18 +367,18 @@ entanglement created by the coupling. The total spin $\langle\bm J^2\rangle = j(
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{figures/three_regimes_husimi.pdf}
-  \caption{Husimi distribution \cref{eq:Q} of the chain state at $t=0$, $t_r/2$, $t_r$, $3t_r/2$ and $2t_r$, for the three values of $p$.}
+  \caption{Husimi distribution \cref{eq:Q} of the chain state at $t=0$, $t_r/2$, $t_r$, $3t_r/2$ and $2t_r$, for the three values of $h$.}
   \label{fig:husimi}
 \end{figure}
 
 \begin{description}
-\item[Regular, $p=0.02$:] The pole lies in the regular region, and the classical orbit stays within $Z>0.999$, far
+\item[Regular, $h=0.02$:] The pole lies in the regular region, and the classical orbit stays within $Z>0.999$, far
   inside one Planck cell. The state barely moves: $F\ge0.994$ and $r\ge0.99998$. The Husimi distribution at $t_r$ is
   indistinguishable from the initial one.
-\item[Mixed, $p=0.1$:] The pole lies in the regular polar cap $Z>Z_c$. The state stays localised there but oscillates
+\item[Mixed, $h=0.1$:] The pole lies in the regular polar cap $Z>Z_c$. The state stays localised there but oscillates
   around the regular orbit: $F$ oscillates between $0.87$ and $1$, and $r\ge0.989$, so almost no entanglement is
   created. The Husimi distribution at $t_r$ is deformed but stays in the cap.
-\item[Chaotic, $p=1$:] The state spreads after one kick, with $F(1)=0.07$. This agrees with the time over which a
+\item[Chaotic, $h=1$:] The state spreads after one kick, with $F(1)=0.07$. This agrees with the time over which a
   coherent state follows the classical orbit, about $\ln j/(2\Lambda)\approx0.4$ kicks. Afterwards $F$ fluctuates
   around $0.1\approx1/(2j+1)$. $r$ drops to $0.1$–$0.3$, so each qubit is strongly entangled with the rest. At $t_r$
   the Husimi distribution is no longer a single coherent spot: its maximum drops from $0.95$ to $0.45$, it lies far
@@ -394,7 +394,7 @@ $10^{-13}$ (\cref{fig:echo,fig:husimi}).
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/three_regimes_butterfly_fidelity.pdf}
-  \caption{Fidelity $F(t)$ as in \cref{fig:echo}, with qubit $i=1$ flipped by $\sigma^x_1$ at $t_r=30$ (dashed).
+  \caption{Fidelity $F(t)$ as in \cref{fig:echo}, with qubit $i=1$ flipped by $\sigma^y_1$ at $t_r=30$ (dashed).
   Dotted: $1/(2j+1)$.}
   \label{fig:butterfly-fidelity}
 \end{figure}
@@ -404,22 +404,22 @@ $10^{-13}$ (\cref{fig:echo,fig:husimi}).
   \includegraphics[width=\textwidth]{figures/three_regimes_butterfly_husimi.pdf}
   \caption{Husimi distribution \cref{eq:Q} at $t=0$, $t_r/2$, $t_r$, $3t_r/2$ and $2t_r$ with the flip of \cref{fig:butterfly-fidelity}.
   It is computed from the projection of the state onto the symmetric subspace, so at $2t_r$ it carries only the weight
-  $\frac{2j+1}{4\pi}\int d\phi\,dZ\,Q = 0.10$, $0.14$ and $0.50$ for $p=0.02$, $0.1$ and $1$. Each panel has its own colour
+  $\frac{2j+1}{4\pi}\int d\phi\,dZ\,Q = 0.10$, $0.14$ and $0.50$ for $h=0.02$, $0.1$ and $1$. Each panel has its own colour
   scale.}
   \label{fig:butterfly-husimi}
 \end{figure}
 
 \Cref{fig:butterfly-fidelity,fig:butterfly-husimi} repeat the runs of \cref{fig:echo,fig:husimi} with the flip
-$X_1=\sigma^x_1$ at $t_r$. The forward leg is unchanged. The flip lowers the fidelity at once, to $F(t_r+1)=1.4\times
-10^{-4}$, $4.2\times10^{-3}$ and $0.029$, and the echo does not recover: $F(2t_r)=\langle\sigma^x_1\rangle_{t_r}^2=7.3
+$Y_1=\sigma^y_1$ at $t_r$. The forward leg is unchanged. The flip lowers the fidelity at once, to $F(t_r+1)=1.4\times
+10^{-4}$, $4.2\times10^{-3}$ and $0.029$, and the echo does not recover: $F(2t_r)=\langle\sigma^y_1\rangle_{t_r}^2=7.3
 \times10^{-5}$, $2.5\times10^{-3}$ and $0.093$.
 \begin{description}
-\item[Regular, $p=0.02$:] At $t_r$ the state is still close to $\psi_0$, so the backward leg brings it back to $\psi_0$
-  with qubit 1 flipped, $\sigma^x_1\psi_0$, which is orthogonal to $\psi_0$. Its symmetric part is the Dicke state
+\item[Regular, $h=0.02$:] At $t_r$ the state is still close to $\psi_0$, so the backward leg brings it back to $\psi_0$
+  with qubit 1 flipped, $\sigma^y_1\psi_0$, which is orthogonal to $\psi_0$. Its symmetric part is the Dicke state
   $|j,j-1\rangle$ with weight $1/n_q=0.1$, the ring near the pole in \cref{fig:butterfly-husimi}.
-\item[Mixed, $p=0.1$:] As in the regular case, $F(2t_r)$ is small, and the symmetric part ($0.14$) lies in the polar
+\item[Mixed, $h=0.1$:] As in the regular case, $F(2t_r)$ is small, and the symmetric part ($0.14$) lies in the polar
   cap.
-\item[Chaotic, $p=1$:] At $t_r$ qubit 1 is strongly entangled and its Bloch vector is short, so the flip changes the
+\item[Chaotic, $h=1$:] At $t_r$ qubit 1 is strongly entangled and its Bloch vector is short, so the flip changes the
   state less: $F(2t_r)=0.093$, close to $1/(2j+1)$, and half of the state stays in the symmetric subspace. Its Husimi
   distribution at $2t_r$ is spread over the sphere instead of returning to the pole.
 \end{description}

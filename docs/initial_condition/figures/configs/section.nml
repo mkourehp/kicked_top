@@ -1,0 +1,17 @@
+&system
+  h = 1.5707963267948966
+  k = 2.4
+/
+&simulation
+  n_kicks = 1000
+  n_transient = 0
+  save_every = 1
+/
+&initial
+  mode = 'grid'
+  n_theta = 20
+  n_phi = 20
+/
+&output
+  out_dir = 'docs/initial_condition/figures/data/section'
+/

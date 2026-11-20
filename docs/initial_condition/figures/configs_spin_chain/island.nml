@@ -1,0 +1,20 @@
+&system
+  n_q = 12            ! j = n_q/2 = 6, as in the quantum kicked top
+  eps = 0.2           ! k/n_q for k = 2.4
+  h = 1.5707963267948966
+/
+&initial
+  theta0 = 1.5707963267948966
+  phi0 = -1.5707963267948966
+/
+&chain
+  t_r = 30
+  butterfly_effect = .false.
+/
+&husimi
+  n_theta = 100
+  n_phi = 200
+/
+&output
+  out_dir = 'docs/initial_condition/figures/data/island_chain'
+/

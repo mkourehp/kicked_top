@@ -1,4 +1,4 @@
-! States of the qubit chain: n_q spins 1/2 whose total spin S = sum_i sigma_i/2
+! States of the qubit chain: n_q spins 1/2 whose total spin J = sum_i sigma_i/2
 ! realises the spin J of the kicked top, j = n_q/2 for a ferromagnetic state.
 ! Computational basis |b>, b = 0 .. 2**n_q - 1: bit i of b is 1 if qubit i is
 ! up (sigma^z_i = +1) and 0 if it is down, as in the spin_chain repository.
