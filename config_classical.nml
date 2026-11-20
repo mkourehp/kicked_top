@@ -14,7 +14,7 @@
 
 &initial
   mode     = 'grid'   ! 'single' | 'grid' | 'random'
-  theta0   = 1.570796326794896   ! single: polar angle (island: pi/2, -pi/2; sea: pi/2, 0)
+  theta0   = 1.570796326794896   ! single: polar angle (island: pi/2, -pi/2; sea: pi/2, pi/4)
   phi0     = -1.570796326794896  ! single: azimuthal angle
   n_theta  = 10       ! grid: points in Z = cos(theta) (equal-area grid)
   n_phi    = 10       ! grid: points in phi

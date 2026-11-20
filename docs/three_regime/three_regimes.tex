@@ -394,7 +394,7 @@ $10^{-13}$ (\cref{fig:echo,fig:husimi}).
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/three_regimes_butterfly_fidelity.pdf}
-  \caption{Fidelity $F(t)$ as in \cref{fig:echo}, with qubit $i=1$ flipped by $\sigma^x_1$ at $t_r=30$ (dashed).
+  \caption{Fidelity $F(t)$ as in \cref{fig:echo}, with qubit $i=1$ flipped by $\sigma^y_1$ at $t_r=30$ (dashed).
   Dotted: $1/(2j+1)$.}
   \label{fig:butterfly-fidelity}
 \end{figure}
@@ -410,12 +410,12 @@ $10^{-13}$ (\cref{fig:echo,fig:husimi}).
 \end{figure}
 
 \Cref{fig:butterfly-fidelity,fig:butterfly-husimi} repeat the runs of \cref{fig:echo,fig:husimi} with the flip
-$X_1=\sigma^x_1$ at $t_r$. The forward leg is unchanged. The flip lowers the fidelity at once, to $F(t_r+1)=1.4\times
-10^{-4}$, $4.2\times10^{-3}$ and $0.029$, and the echo does not recover: $F(2t_r)=\langle\sigma^x_1\rangle_{t_r}^2=7.3
+$Y_1=\sigma^y_1$ at $t_r$. The forward leg is unchanged. The flip lowers the fidelity at once, to $F(t_r+1)=1.4\times
+10^{-4}$, $4.2\times10^{-3}$ and $0.029$, and the echo does not recover: $F(2t_r)=\langle\sigma^y_1\rangle_{t_r}^2=7.3
 \times10^{-5}$, $2.5\times10^{-3}$ and $0.093$.
 \begin{description}
 \item[Regular, $h=0.02$:] At $t_r$ the state is still close to $\psi_0$, so the backward leg brings it back to $\psi_0$
-  with qubit 1 flipped, $\sigma^x_1\psi_0$, which is orthogonal to $\psi_0$. Its symmetric part is the Dicke state
+  with qubit 1 flipped, $\sigma^y_1\psi_0$, which is orthogonal to $\psi_0$. Its symmetric part is the Dicke state
   $|j,j-1\rangle$ with weight $1/n_q=0.1$, the ring near the pole in \cref{fig:butterfly-husimi}.
 \item[Mixed, $h=0.1$:] As in the regular case, $F(2t_r)$ is small, and the symmetric part ($0.14$) lies in the polar
   cap.

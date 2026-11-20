@@ -55,7 +55,6 @@ contains
     n_q = 10
     eps = 2.0_wp
     h = huge(1.0_wp)
-    h(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
     s0 = -1
     pol = 'z'
     theta0 = huge(1.0_wp)
@@ -101,6 +100,7 @@ contains
 
     cfg%n_q = n_q
     cfg%eps = eps
+    if (all(h >= huge(1.0_wp))) h(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
     cfg%h = pack(h, h < huge(1.0_wp))
     cfg%s0 = s0
     cfg%pol = pol
