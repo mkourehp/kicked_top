@@ -1,13 +1,13 @@
-! Driver of the three-regime study: for every rotation angle p in the
+! Driver of the three-regime study: for every rotation angle h in the
 ! config it runs
 ! (make combined; make spin_chain runs the chain part alone, kicked_top_spin_chain)
 !   S1  the classical kicked top (Poincare section on a grid and the orbit of
-!       the initial state), with the torsion k of the chain;
+!       the initial state), with the torsion k = 2j eps = n_q eps of the chain;
 !   S3  the qubit chain, n_q spins 1/2 with all-to-all zz couplings V_il = 1/4,
 !       evolved by its Floquet step on the state vector only, with Husimi
 !       snapshots (S2);
 !   S4  time reversal of the chain: t_r forward steps U, then t_r backward
-!       steps U^dagger (coupling 2 pi - k/(2j), kick -p); with butterfly_effect
+!       steps U^dagger (coupling 2 pi - eps, kick -h); with butterfly_effect
 !       qubit i_flip is rotated about a = flip_axis by flip_angle
 !       (exp(-i flip_angle/2 sigma^a), pi = flip sigma^a) at t_r, before the backward leg.
 ! Usage: kicked_top_combined [namelist file]   (default config_combined.nml)
@@ -45,22 +45,22 @@ program kicked_top_combined
 
   e_zz = zz_energies(cfg%n_q, uniform_coupling(cfg%n_q))
 
-  do i = 1, size(cfg%p)
-    call run_classical(cfg%p(i), run_dir(cfg, i)//'/classical')
-    call run_chain(cfg, cfg%p(i), theta0, phi0, e_zz, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', 'kicked_top_combined')
+  do i = 1, size(cfg%h)
+    call run_classical(cfg%h(i), run_dir(cfg, i)//'/classical')
+    call run_chain(cfg, cfg%h(i), theta0, phi0, e_zz, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', 'kicked_top_combined')
   end do
 
 contains
 
-  ! S1: classical map, lecture notes eq. (20) [eq:map], with the p and k of the chain.
-  subroutine run_classical(p, dir)
-    real(wp), intent(in) :: p
+  ! S1: classical map, lecture notes eq. (20) [eq:map], with the h of the chain and k = n_q eps.
+  subroutine run_classical(h, dir)
+    real(wp), intent(in) :: h
     character(len=*), intent(in) :: dir
     type(config_t) :: c
     real(wp), allocatable :: s0(:,:), orbit(:,:,:)
 
-    c%p = p
-    c%k = cfg%k
+    c%h = h
+    c%k = cfg%n_q*cfg%eps
     c%n_kicks = cfg%n_kicks
     c%n_transient = 0
     c%save_every = 1

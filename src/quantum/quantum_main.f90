@@ -8,7 +8,7 @@ program kicked_top_quantum
   use io_utils_mod, only: make_dir
   use quantum_config_mod, only: qconfig_t, read_qconfig
   use spin_mod, only: coherent_state, expectation_j
-  use floquet_mod, only: diagonalise_jy, exp_jy, floquet_operator
+  use floquet_mod, only: diagonalise_jx, exp_jx, floquet_operator
   use sphere_mod, only: equal_area_grid
   use husimi_mod, only: husimi, husimi_norm
   use spectrum_mod, only: quasienergies, spacing_statistics, commutator_error, unitarity_error
@@ -34,12 +34,12 @@ program kicked_top_quantum
   call make_dir(cfg%out_dir)
 
   allocate(v(cfg%dim, cfg%dim), mu(cfg%dim))
-  call diagonalise_jy(cfg%j, cfg%dim, v, mu)
-  u = floquet_operator(cfg%j, cfg%p, cfg%k, v, mu)
+  call diagonalise_jx(cfg%j, cfg%dim, v, mu)
+  u = floquet_operator(cfg%j, cfg%h, cfg%eps, v, mu)
 
   allocate(names(0), values(0))
   call add('unitarity_error', unitarity_error(u))
-  call add('parity_commutator', commutator_error(u, exp_jy(v, mu, pi)))
+  call add('parity_commutator', commutator_error(u, exp_jx(v, mu, pi)))
 
   if (cfg%husimi) then
     allocate(theta(cfg%n_theta*cfg%n_phi), phi(cfg%n_theta*cfg%n_phi))

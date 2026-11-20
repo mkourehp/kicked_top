@@ -20,11 +20,11 @@ plt.rcParams.update({"font.size": 10, "axes.labelsize": 11, "savefig.bbox": "tig
 
 def load(i, name, data=DATA_DIR):
     """Numeric data of output file name of run i (1-based)."""
-    return np.loadtxt(data / f"p_{i}" / name, ndmin=2)
+    return np.loadtxt(data / f"h_{i}" / name, ndmin=2)
 
 
 def runs(data=DATA_DIR):
-    """(i, p, k, n_q) of every run."""
+    """(i, h, eps, n_q) of every run."""
     return [(int(r[0]), r[1], r[2], int(r[3])) for r in np.loadtxt(data / "regimes.dat", ndmin=2)]
 
 
@@ -36,20 +36,21 @@ def phase_axes(ax):
 
 
 def sections():
-    """Fig. [fig:sections]: Poincare sections; dashed: |Z| = Z_c where k p sqrt(1-Z^2) = K_c."""
+    """Fig. [fig:sections]: Poincare sections; dashed: |Z| = Z_c where k h sqrt(1-Z^2) = K_c, k = n_q eps."""
     rs = runs()
     fig, axes = plt.subplots(1, len(rs), figsize=(4.2 * len(rs), 3.8), sharey=True)
-    for ax, (i, p, k, _) in zip(axes, rs):
+    for ax, (i, h, eps, n_q) in zip(axes, rs):
+        k = n_q * eps
         s = load(i, "classical/section/phase_space.dat")
         o = load(i, "classical/orbit/phase_space.dat")
         ax.plot(s[:, 2], s[:, 3], ",", color="k", alpha=0.6, rasterized=True)
         ax.plot(o[:, 2], o[:, 3], ".", color="C3", ms=1.5, rasterized=True)
-        if K_CHIRIKOV < k * p:
-            zc = np.sqrt(1 - (K_CHIRIKOV / (k * p)) ** 2)
+        if K_CHIRIKOV < k * h:
+            zc = np.sqrt(1 - (K_CHIRIKOV / (k * h)) ** 2)
             for z in (zc, -zc):
                 ax.axhline(z, color="C0", ls="--", lw=1)
         phase_axes(ax)
-        ax.set_title(rf"$p = {p:g}$, $kp = {k * p:g}$")
+        ax.set_title(rf"$h = {h:g}$, $kh = {k * h:g}$")
     axes[0].set_ylabel(r"$Z=\cos\theta$")
     fig.savefig(FIG_DIR / "three_regimes_sections.pdf", dpi=200)
 
@@ -62,7 +63,7 @@ def husimi(data=DATA_DIR, name="three_regimes_husimi.pdf"):
     n_phi = len(np.unique(d0[d0[:, 0] == steps[0], 1]))
     fig, axes = plt.subplots(len(rs), len(steps), figsize=(3.6 * len(steps), 3.0 * len(rs)),
                              sharex=True, sharey=True)
-    for row, (i, p, _, _) in zip(axes, rs):
+    for row, (i, h, _, _) in zip(axes, rs):
         d = load(i, "chain/husimi.dat", data)
         for ax, t in zip(row, steps):
             b = d[d[:, 0] == t]
@@ -70,7 +71,7 @@ def husimi(data=DATA_DIR, name="three_regimes_husimi.pdf"):
             ax.pcolormesh(b[:, 1].reshape(shape), b[:, 2].reshape(shape), b[:, 5].reshape(shape),
                           shading="nearest", cmap="viridis", rasterized=True)
             phase_axes(ax)
-            ax.set_title(rf"$p = {p:g}$, $t = {t}$")
+            ax.set_title(rf"$h = {h:g}$, $t = {t}$")
             ax.label_outer()
         row[0].set_ylabel(r"$Z=\cos\theta$")
     fig.savefig(FIG_DIR / name, dpi=200)
@@ -79,10 +80,10 @@ def husimi(data=DATA_DIR, name="three_regimes_husimi.pdf"):
 def echo():
     """Fig. [fig:echo]: fidelity F(t) and single-qubit Bloch-vector length r(t) = |<J>|/j."""
     fig, (ax_f, ax_r) = plt.subplots(2, 1, figsize=(7, 5.5), sharex=True)
-    for i, p, _, n_q in runs():
+    for i, h, _, n_q in runs():
         f = load(i, "chain/fidelity.dat")
         s = load(i, "chain/total_spin.dat")
-        ax_f.plot(f[:, 0], f[:, 1], "o-", ms=2.5, lw=1, label=rf"$p = {p:g}$")
+        ax_f.plot(f[:, 0], f[:, 1], "o-", ms=2.5, lw=1, label=rf"$h = {h:g}$")
         ax_r.plot(s[:, 0], np.linalg.norm(s[:, 1:4], axis=1) / (n_q / 2), "o-", ms=2.5, lw=1)
     t_r = (len(f) - 1) // 2  # t = 0 .. 2 t_r
     for ax in (ax_f, ax_r):
@@ -99,9 +100,9 @@ def echo():
 def butterfly_fidelity():
     """Fig. [fig:butterfly-fidelity]: fidelity F(t) with qubit i_flip flipped at t_r."""
     fig, ax = plt.subplots(figsize=(7, 3))
-    for i, p, _, n_q in runs(BUTTERFLY_DIR):
+    for i, h, _, n_q in runs(BUTTERFLY_DIR):
         f = load(i, "chain/fidelity.dat", BUTTERFLY_DIR)
-        ax.plot(f[:, 0], f[:, 1], "o-", ms=2.5, lw=1, label=rf"$p = {p:g}$")
+        ax.plot(f[:, 0], f[:, 1], "o-", ms=2.5, lw=1, label=rf"$h = {h:g}$")
     t_r = (len(f) - 1) // 2  # t = 0 .. 2 t_r
     ax.axvline(t_r, color="0.5", ls="--", lw=0.8)
     ax.axhline(1 / (n_q + 1), color="0.5", ls=":", lw=0.8)

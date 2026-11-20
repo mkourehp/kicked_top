@@ -1,6 +1,6 @@
 ! Quasienergy spectrum of the Floquet operator U and its level-spacing statistics.
-! U commutes with the parity P = exp(-i pi J_y), the quantum version of the
-! classical symmetry S = R_y(pi), eq. (25) [eq:symmetry]. Spacing statistics are
+! U commutes with the parity P = exp(-i pi J_x), the quantum version of the
+! classical symmetry S = R_x(pi), eq. (25) [eq:symmetry]. Spacing statistics are
 ! only meaningful within one symmetry sector, so U is diagonalised separately in
 ! the two parity sectors.
 module spectrum_mod
@@ -12,7 +12,7 @@ module spectrum_mod
 contains
 
   ! Quasienergies eps in [-pi, pi), U|n> = exp(-i eps_n)|n>, sorted within each sector.
-  ! v holds the eigenvectors of J_y for the ascending eigenvalues mu = -j, ..., j.
+  ! v holds the eigenvectors of J_x for the ascending eigenvalues mu = -j, ..., j.
   ! P = exp(-i pi mu) changes sign from one mu to the next, so the odd and the even
   ! columns of v span the two parity sectors; sector(i) = 1 or 2 labels eps(i).
   ! max_dev = max | |lambda| - 1 | over the eigenvalues lambda of U (0 if U is unitary).

@@ -1,7 +1,7 @@
 """Plots the plot-ready data written by kicked_top_spin_chain.
 
 All computation is done in Fortran (build/kicked_top_spin_chain); this script only reads
-the ASCII files in the output directory and plots them, one column per value of p:
+the ASCII files in the output directory and plots them, one column per value of h:
 the Husimi snapshots of the qubit chain at t = 0, t_r/2, t_r, 3 t_r/2 and
 2 t_r, the fidelity, the total spin and the single-qubit spins.
 """
@@ -23,10 +23,10 @@ class SpinChainPostProcessor:
 
     def _load(self, i, name):
         """Numeric data of output file name of run i (1-based)."""
-        return np.loadtxt(self.out_dir / f"p_{i}" / name, ndmin=2)
+        return np.loadtxt(self.out_dir / f"h_{i}" / name, ndmin=2)
 
     def _runs(self):
-        """(i, p, k) of every run."""
+        """(i, h, eps) of every run."""
         return [(int(r[0]), r[1], r[2]) for r in self.regimes]
 
     def _t_r(self):
@@ -34,14 +34,14 @@ class SpinChainPostProcessor:
         return (len(self._load(1, "chain/fidelity.dat")) - 1) // 2
 
     def plot_husimi(self):
-        """Husimi distribution of the chain state in (phi, Z): one row per p, one column per snapshot."""
+        """Husimi distribution of the chain state in (phi, Z): one row per h, one column per snapshot."""
         runs = self._runs()
         d0 = self._load(1, "chain/husimi.dat")
         steps = np.unique(d0[:, 0]).astype(int)
         n_phi = len(np.unique(d0[d0[:, 0] == steps[0], 1]))
         fig, axes = plt.subplots(len(runs), len(steps), figsize=(4 * len(steps), 3.4 * len(runs)),
                                  squeeze=False)
-        for row, (i, p, k) in zip(axes, runs):
+        for row, (i, h, eps) in zip(axes, runs):
             d = self._load(i, "chain/husimi.dat")
             for ax, t in zip(row, steps):
                 b = d[d[:, 0] == t]
@@ -50,7 +50,7 @@ class SpinChainPostProcessor:
                               shading="nearest", cmap="viridis", rasterized=True)
                 ax.set_xlim(-np.pi, np.pi)
                 ax.set_ylim(-1, 1)
-                ax.set_title(f"$p = {p:g}$, $t = {t}$")
+                ax.set_title(f"$h = {h:g}$, $t = {t}$")
             row[0].set_ylabel(r"$Z = \cos\theta$")
         for ax in axes[-1]:
             ax.set_xlabel(r"$\phi$")
@@ -62,9 +62,9 @@ class SpinChainPostProcessor:
     def plot_fidelity(self):
         """Fidelity F(t) = |<psi0|psi(t)>|^2 through the time reversal at t_r."""
         fig, ax = plt.subplots(figsize=(7, 4))
-        for i, p, k in self._runs():
+        for i, h, eps in self._runs():
             d = self._load(i, "chain/fidelity.dat")
-            ax.plot(d[:, 0], d[:, 1], "o-", ms=3, label=f"$p = {p:g}$")
+            ax.plot(d[:, 0], d[:, 1], "o-", ms=3, label=f"$h = {h:g}$")
         ax.axvline(self._t_r(), color="0.5", ls="--", lw=0.8)
         ax.set_xlabel("step $t$")
         ax.set_ylabel(r"$F(t)$")
@@ -76,18 +76,18 @@ class SpinChainPostProcessor:
         return fig
 
     def plot_total_spin(self):
-        """<S_a> (top) and <S_a^2>, <S^2> (bottom) of the total spin, one column per p."""
+        """<J_a> (top) and <J_a^2>, <J^2> (bottom) of the total spin, one column per h."""
         runs = self._runs()
         fig, axes = plt.subplots(2, len(runs), figsize=(4.5 * len(runs), 6), sharex=True, squeeze=False)
-        for col, (i, p, k) in enumerate(runs):
+        for col, (i, h, eps) in enumerate(runs):
             d = self._load(i, "chain/total_spin.dat")
             for c, a in [(1, "x"), (2, "y"), (3, "z")]:
-                axes[0, col].plot(d[:, 0], d[:, c], label=rf"$\langle S_{a}\rangle$")
-                axes[1, col].plot(d[:, 0], d[:, c + 3], label=rf"$\langle S_{a}^2\rangle$")
-            axes[1, col].plot(d[:, 0], d[:, 7], "k", label=r"$\langle S^2\rangle$")
+                axes[0, col].plot(d[:, 0], d[:, c], label=rf"$\langle J_{a}\rangle$")
+                axes[1, col].plot(d[:, 0], d[:, c + 3], label=rf"$\langle J_{a}^2\rangle$")
+            axes[1, col].plot(d[:, 0], d[:, 7], "k", label=r"$\langle J^2\rangle$")
             for ax in axes[:, col]:
                 ax.axvline(self._t_r(), color="0.5", ls="--", lw=0.8)
-            axes[0, col].set_title(f"$p = {p:g}$")
+            axes[0, col].set_title(f"$h = {h:g}$")
             axes[1, col].set_xlabel("step $t$")
         axes[0, 0].legend(fontsize=8)
         axes[1, 0].legend(fontsize=8)
@@ -97,10 +97,10 @@ class SpinChainPostProcessor:
         return fig
 
     def plot_site_spins(self):
-        """<sigma_a^i>(t) of every qubit i as a colour map: rows a = x, y, z, one column per p."""
+        """<sigma_a^i>(t) of every qubit i as a colour map: rows a = x, y, z, one column per h."""
         runs = self._runs()
         fig, axes = plt.subplots(3, len(runs), figsize=(4.5 * len(runs), 7), sharex=True, squeeze=False)
-        for col, (i, p, k) in enumerate(runs):
+        for col, (i, h, eps) in enumerate(runs):
             d = self._load(i, "chain/site_spins.dat")
             n_q = (d.shape[1] - 1) // 3
             for row, a in enumerate("xyz"):
@@ -109,7 +109,7 @@ class SpinChainPostProcessor:
                                    shading="nearest", cmap="RdBu_r", vmin=-1, vmax=1)
                 ax.axvline(self._t_r(), color="k", ls="--", lw=0.8)
                 ax.set_ylabel(rf"qubit $i$, $\langle\sigma_{a}^i\rangle$")
-            axes[0, col].set_title(f"$p = {p:g}$")
+            axes[0, col].set_title(f"$h = {h:g}$")
             axes[-1, col].set_xlabel("step $t$")
         fig.colorbar(im, ax=axes, shrink=0.6)
         fig.suptitle("Qubit chain, single-qubit spins")

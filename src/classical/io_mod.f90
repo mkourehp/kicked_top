@@ -21,7 +21,7 @@ contains
   ! the energy terms are eq. (23) [eq:energy].
   !   trajectory.dat  : ic  n  X  Y  Z
   !   phase_space.dat : ic  n  phi  Z      (phi in (-pi, pi])
-  !   energy.dat      : pY  k/2*Z**2  total (same rows as the files above; only for mode='single' or 'grid')
+  !   energy.dat      : hX  k/2*Z**2  total (same rows as the files above; only for mode='single' or 'grid')
   subroutine write_results(cfg, orbit)
     type(config_t), intent(in) :: cfg
     real(wp), intent(in) :: orbit(:,:,:)
@@ -44,7 +44,7 @@ contains
     write(u_ps, '(a)') '# ic n phi Z'
     if (with_energy) then
       write(u_en, '(a)') '# '//title
-      write(u_en, '(a)') '# pY k/2*Z^2 total'
+      write(u_en, '(a)') '# hX k/2*Z^2 total'
     end if
 
     do ic = 1, size(orbit, 3)
@@ -53,7 +53,7 @@ contains
         write(u_traj, '(i0,1x,i0,3(1x,es23.15e3))') ic, n, orbit(:, isave, ic)
         write(u_ps, '(i0,1x,i0,2(1x,es23.15e3))') ic, n, &
           atan2(orbit(2, isave, ic), orbit(1, isave, ic)), orbit(3, isave, ic)
-        if (with_energy) write(u_en, '(3(es23.15e3,1x))') energy(orbit(:, isave, ic), cfg%p, cfg%k)
+        if (with_energy) write(u_en, '(3(es23.15e3,1x))') energy(orbit(:, isave, ic), cfg%h, cfg%k)
       end do
       write(u_traj, '(a)') ''
       write(u_ps, '(a)') ''
@@ -89,7 +89,7 @@ contains
     character(len=:), allocatable :: title
     character(len=64) :: buf
 
-    write(buf, '(a,f0.6,a,f0.6)') 'p = ', cfg%p, ', k = ', cfg%k
+    write(buf, '(a,f0.6,a,f0.6)') 'h = ', cfg%h, ', k = ', cfg%k
     title = trim(buf)
   end function header
 

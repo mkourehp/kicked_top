@@ -10,18 +10,18 @@ contains
 
   ! Energy terms at a point s = (X, Y, Z) of the unit sphere, i.e. the scaled
   ! Hamiltonian h of eq. (14) [eq:h] without the delta comb:
-  !   e(1) = E_kick = p*Y          (kick: rotation about y)
+  !   e(1) = E_kick = h*X          (kick: rotation about x)
   !   e(2) = E_tor  = (k/2)*Z**2   (free torsion about z)
   !   e(3) = E      = e(1) + e(2)
-  ! E is not conserved by the map (Sec. 4); it is nearly conserved only when p
+  ! E is not conserved by the map (Sec. 4); it is nearly conserved only when h
   ! and k are both small, where it is the effective Hamiltonian of eq. (24) [eq:heff].
-  pure function energy(s, p, k) result(e)
+  pure function energy(s, h, k) result(e)
     real(wp), intent(in) :: s(3)
-    real(wp), intent(in) :: p
+    real(wp), intent(in) :: h
     real(wp), intent(in) :: k
     real(wp) :: e(3)
 
-    e(1) = p*s(2)
+    e(1) = h*s(1)
     e(2) = 0.5_wp*k*s(3)**2
     e(3) = e(1) + e(2)
   end function energy

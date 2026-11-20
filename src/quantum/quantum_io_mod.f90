@@ -1,5 +1,5 @@
 ! Plot-ready ASCII output of the quantum kicked top. Python only reads these files.
-! Every file starts with a header line '# p = ..., k = ..., j = ...' and a column line.
+! Every file starts with a header line '# h = ..., eps = ..., j = ...' and a column line.
 module quantum_io_mod
   use kinds_mod, only: wp
   use quantum_config_mod, only: qconfig_t
@@ -100,7 +100,7 @@ contains
     character(len=96) :: buf
 
     open(newunit=u, file=trim(cfg%out_dir)//'/'//name, status='replace', action='write')
-    write(buf, '(a,f0.6,a,f0.6,a,f0.1)') 'p = ', cfg%p, ', k = ', cfg%k, ', j = ', cfg%j
+    write(buf, '(a,f0.6,a,f0.6,a,f0.1)') 'h = ', cfg%h, ', eps = ', cfg%eps, ', j = ', cfg%j
     write(u, '(a)') '# '//trim(buf)
     write(u, '(a)') '# '//columns
   end subroutine open_file
