@@ -17,6 +17,8 @@ module combined_config_mod
     real(wp), allocatable :: h(:)  ! kick: rotation angles about x, one run per value
     integer :: s0                  ! initial state: -1 all up, 0 all down (along pol)
     character(len=1) :: pol        ! axis of the initial polarisation: 'z', 'x', 'y'
+    logical :: has_angles          ! theta0 and phi0 given: they replace s0 and pol
+    real(wp) :: theta0, phi0       ! initial product coherent state |theta0, phi0>
     integer :: n_kicks             ! classical: kicks per orbit
     integer :: n_theta             ! classical: grid points in Z = cos(theta)
     integer :: n_phi               ! classical: grid points in phi
@@ -38,13 +40,13 @@ contains
 
     integer :: n_q, s0, n_kicks, n_theta, n_phi, t_r, i_flip
     logical :: butterfly_effect
-    real(wp) :: eps, h(max_h), flip_angle
+    real(wp) :: eps, h(max_h), flip_angle, theta0, phi0
     character(len=1) :: pol, flip_axis
     character(len=str_len) :: out_dir
     integer :: u, ios
 
     namelist /system/ n_q, eps, h
-    namelist /initial/ s0, pol
+    namelist /initial/ s0, pol, theta0, phi0
     namelist /classical/ n_kicks, n_theta, n_phi
     namelist /chain/ t_r, butterfly_effect, i_flip, flip_axis, flip_angle
     namelist /husimi/ n_theta, n_phi
@@ -56,6 +58,8 @@ contains
     h(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
     s0 = -1
     pol = 'z'
+    theta0 = huge(1.0_wp)
+    phi0 = huge(1.0_wp)
     t_r = 30
     butterfly_effect = .false.
     i_flip = 1
@@ -100,6 +104,9 @@ contains
     cfg%h = pack(h, h < huge(1.0_wp))
     cfg%s0 = s0
     cfg%pol = pol
+    cfg%has_angles = theta0 < huge(1.0_wp) .and. phi0 < huge(1.0_wp)
+    cfg%theta0 = theta0
+    cfg%phi0 = phi0
     cfg%t_r = t_r
     cfg%butterfly_effect = butterfly_effect
     cfg%i_flip = i_flip

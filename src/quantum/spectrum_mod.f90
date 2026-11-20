@@ -11,15 +11,15 @@ module spectrum_mod
 
 contains
 
-  ! Quasienergies eps in [-pi, pi), U|n> = exp(-i eps_n)|n>, sorted within each sector.
+  ! Quasienergies omega in [-pi, pi), U|n> = exp(-i eps_n)|n>, sorted within each sector.
   ! v holds the eigenvectors of J_x for the ascending eigenvalues mu = -j, ..., j.
   ! P = exp(-i pi mu) changes sign from one mu to the next, so the odd and the even
-  ! columns of v span the two parity sectors; sector(i) = 1 or 2 labels eps(i).
+  ! columns of v span the two parity sectors; sector(i) = 1 or 2 labels omega(i).
   ! max_dev = max | |lambda| - 1 | over the eigenvalues lambda of U (0 if U is unitary).
-  subroutine quasienergies(u, v, eps, sector, max_dev)
+  subroutine quasienergies(u, v, omega, sector, max_dev)
     complex(wp), intent(in) :: u(:,:)
     complex(wp), intent(in) :: v(:,:)
-    real(wp), allocatable, intent(out) :: eps(:)
+    real(wp), allocatable, intent(out) :: omega(:)
     integer, allocatable, intent(out) :: sector(:)
     real(wp), intent(out) :: max_dev
     complex(wp), allocatable :: vs(:,:), us(:,:), lam(:), work(:)
@@ -29,7 +29,7 @@ contains
     external :: zgeev
 
     n = size(u, 1)
-    allocate(eps(n), sector(n))
+    allocate(omega(n), sector(n))
     max_dev = 0.0_wp
     i0 = 0
     do s = 1, 2
@@ -44,7 +44,7 @@ contains
       max_dev = max(max_dev, maxval(abs(abs(lam) - 1.0_wp)))
       e = -atan2(aimag(lam), real(lam, wp))
       call sort(e)
-      eps(i0 + 1:i0 + ns) = e
+      omega(i0 + 1:i0 + ns) = e
       sector(i0 + 1:i0 + ns) = s
       i0 = i0 + ns
       deallocate(vs, us, lam, rwork, work, e)
@@ -58,8 +58,8 @@ contains
   ! normalised as a probability density (sum(density)*ds = fraction of s_i below s_max).
   ! mean_r: average of r_i = min(d_i, d_{i+1})/max(d_i, d_{i+1}) over neighbouring spacings,
   ! which needs no unfolding.
-  subroutine spacing_statistics(eps, sector, n_bins, s_max, s_centre, density, mean_r)
-    real(wp), intent(in) :: eps(:)
+  subroutine spacing_statistics(omega, sector, n_bins, s_max, s_centre, density, mean_r)
+    real(wp), intent(in) :: omega(:)
     integer, intent(in) :: sector(:)
     integer, intent(in) :: n_bins
     real(wp), intent(in) :: s_max
@@ -79,7 +79,7 @@ contains
       ns = count(sector == s)
       if (ns < 3) cycle
       allocate(e(ns), d(ns))
-      e = pack(eps, sector == s)
+      e = pack(omega, sector == s)
       d(1:ns - 1) = e(2:ns) - e(1:ns - 1)
       d(ns) = e(1) + two_pi - e(ns)
       do i = 1, ns

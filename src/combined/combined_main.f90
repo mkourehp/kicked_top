@@ -36,7 +36,12 @@ program kicked_top_combined
   if (command_argument_count() >= 1) call get_command_argument(1, cfg_path)
 
   call read_combined_config(trim(cfg_path), cfg)
-  call ferromagnetic_direction(cfg%s0, cfg%n_q, cfg%pol, theta0, phi0)
+  if (cfg%has_angles) then
+    theta0 = cfg%theta0
+    phi0 = cfg%phi0
+  else
+    call ferromagnetic_direction(cfg%s0, cfg%n_q, cfg%pol, theta0, phi0)
+  end if
   call make_dir(trim(cfg%out_dir))
   call write_regimes(cfg)
 

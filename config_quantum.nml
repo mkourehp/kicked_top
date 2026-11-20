@@ -1,10 +1,10 @@
-! Quantum kicked top: H = k/(2j) Jz^2 + p Jy sum_n delta(t-n),
-! U = exp(-i k/(2j) Jz^2) exp(-i p Jy), spin j (integer or half-integer).
+! Quantum kicked top: H = eps J_z^2 + h J_x sum_n delta(t-n),
+! U = exp(-i eps J_z^2) exp(-i h J_x), spin j (integer or half-integer); eps = k/(2j).
 ! Angles in radians.
 
 &system
-  p = 1.5707963267948966   ! pi/2
-  k = 2.5
+  h = 1.5707963267948966   ! pi/2
+  eps = 0.20833333333333334 ! k/(2j) for k = 2.5
   j = 6                   ! Hilbert-space dimension 2j+1
 /
 
@@ -14,7 +14,7 @@
 
 &initial
   theta0 = 2.25   ! centre of the initial spin coherent state (polar angle, [0, pi])
-  phi0   = 0.63   ! (azimuth)
+  phi0   = -0.94  ! (azimuth)
 /
 
 &husimi

@@ -48,16 +48,16 @@ contains
     close(u)
   end subroutine write_husimi
 
-  ! quasienergies.dat, one line per eigenvalue exp(-i eps) of U:  sector  eps
-  subroutine write_quasienergies(cfg, eps, sector)
+  ! quasienergies.dat, one line per eigenvalue exp(-i omega) of U:  sector  omega
+  subroutine write_quasienergies(cfg, omega, sector)
     type(qconfig_t), intent(in) :: cfg
-    real(wp), intent(in) :: eps(:)
+    real(wp), intent(in) :: omega(:)
     integer, intent(in) :: sector(:)
     integer :: u, i
 
-    call open_file(cfg, 'quasienergies.dat', 'sector eps', u)
-    do i = 1, size(eps)
-      write(u, '(i0,1x,es23.15e3)') sector(i), eps(i)
+    call open_file(cfg, 'quasienergies.dat', 'sector omega', u)
+    do i = 1, size(omega)
+      write(u, '(i0,1x,es23.15e3)') sector(i), omega(i)
     end do
     close(u)
   end subroutine write_quasienergies

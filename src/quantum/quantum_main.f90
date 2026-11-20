@@ -20,7 +20,7 @@ program kicked_top_quantum
   character(len=256) :: cfg_path
   complex(wp), allocatable :: v(:,:), u(:,:), psi(:)
   real(wp), allocatable :: mu(:), obs(:,:), theta(:), phi(:), q(:,:)
-  real(wp), allocatable :: eps(:), s_centre(:), density(:)
+  real(wp), allocatable :: omega(:), s_centre(:), density(:)
   integer, allocatable :: sector(:)
   character(len=40), allocatable :: names(:)
   real(wp), allocatable :: values(:)
@@ -72,10 +72,10 @@ program kicked_top_quantum
   end if
 
   if (cfg%spectrum) then
-    call quasienergies(u, v, eps, sector, max_dev)
+    call quasienergies(u, v, omega, sector, max_dev)
     allocate(s_centre(cfg%n_bins), density(cfg%n_bins))
-    call spacing_statistics(eps, sector, cfg%n_bins, cfg%s_max, s_centre, density, mean_r)
-    call write_quasienergies(cfg, eps, sector)
+    call spacing_statistics(omega, sector, cfg%n_bins, cfg%s_max, s_centre, density, mean_r)
+    call write_quasienergies(cfg, omega, sector)
     call write_spacings(cfg, s_centre, density)
     call add('max_eigenvalue_modulus_error', max_dev)
     call add('mean_gap_ratio', mean_r)
