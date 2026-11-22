@@ -1,18 +1,18 @@
 ! One-period (Floquet) operator of the quantum kicked top,
-!   U = exp(-i k/(2j) J_z**2) exp(-i p J_y)      (first the kick, then the torsion),
+!   U = exp(-i eps J_z**2) exp(-i h J_x)      (first the kick, then the torsion),
 ! the quantum counterpart of the classical map, Sec. 9 [sec:quantum].
 module floquet_mod
   use kinds_mod, only: wp
-  use spin_mod, only: m_values, jy_matrix
+  use spin_mod, only: m_values, jx_matrix
   implicit none
   private
-  public :: diagonalise_jy, exp_jy, floquet_operator
+  public :: diagonalise_jx, exp_jx, floquet_operator
 
 contains
 
-  ! Eigen-decomposition J_y = V diag(mu) V^dagger with LAPACK zheev.
+  ! Eigen-decomposition J_x = V diag(mu) V^dagger with LAPACK zheev.
   ! The eigenvalues mu are returned in ascending order (-j, -j+1, ..., j).
-  subroutine diagonalise_jy(j, n, v, mu)
+  subroutine diagonalise_jx(j, n, v, mu)
     real(wp), intent(in) :: j
     integer, intent(in) :: n
     complex(wp), intent(out) :: v(n, n)
@@ -23,15 +23,15 @@ contains
     integer :: info
     external :: zheev
 
-    v = jy_matrix(j, n)
+    v = jx_matrix(j, n)
     call zheev('V', 'U', n, v, n, mu, work_query, -1, rwork, info)
     allocate(work(max(1, int(real(work_query(1), wp)))))
     call zheev('V', 'U', n, v, n, mu, work, size(work), rwork, info)
     if (info /= 0) error stop 'floquet_mod: zheev failed'
-  end subroutine diagonalise_jy
+  end subroutine diagonalise_jx
 
-  ! exp(-i alpha J_y) = V diag(exp(-i alpha mu)) V^dagger, a rotation about y by alpha.
-  pure function exp_jy(v, mu, alpha) result(r)
+  ! exp(-i alpha J_x) = V diag(exp(-i alpha mu)) V^dagger, a rotation about x by alpha.
+  pure function exp_jx(v, mu, alpha) result(r)
     complex(wp), intent(in) :: v(:,:)
     real(wp), intent(in) :: mu(:)
     real(wp), intent(in) :: alpha
@@ -43,14 +43,14 @@ contains
       w(:, l) = v(:, l)*cmplx(cos(alpha*mu(l)), -sin(alpha*mu(l)), wp)
     end do
     r = matmul(w, conjg(transpose(v)))
-  end function exp_jy
+  end function exp_jx
 
-  ! U = T R with the kick R = exp(-i p J_y) and the diagonal torsion
-  ! T = diag(exp(-i k m**2/(2j))). v, mu: eigen-decomposition of J_y.
-  pure function floquet_operator(j, p, k, v, mu) result(u)
+  ! U = T R with the kick R = exp(-i h J_x) and the diagonal torsion
+  ! T = diag(exp(-i eps m**2)). v, mu: eigen-decomposition of J_x.
+  pure function floquet_operator(j, h, eps, v, mu) result(u)
     real(wp), intent(in) :: j
-    real(wp), intent(in) :: p
-    real(wp), intent(in) :: k
+    real(wp), intent(in) :: h
+    real(wp), intent(in) :: eps
     complex(wp), intent(in) :: v(:,:)
     real(wp), intent(in) :: mu(:)
     complex(wp) :: u(size(mu), size(mu))
@@ -58,9 +58,9 @@ contains
     integer :: i
 
     m = m_values(j, size(mu))
-    u = exp_jy(v, mu, p)
+    u = exp_jx(v, mu, h)
     do i = 1, size(mu)
-      phase = 0.5_wp*k*m(i)**2/j
+      phase = eps*m(i)**2
       u(i, :) = u(i, :)*cmplx(cos(phase), -sin(phase), wp)
     end do
   end function floquet_operator

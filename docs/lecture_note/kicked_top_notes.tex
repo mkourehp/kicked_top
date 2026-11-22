@@ -59,7 +59,7 @@ Recall that for canonical coordinates $q_a$ and momenta $p_a$ the Poisson bracke
                           - \frac{\partial A}{\partial p_a}\frac{\partial B}{\partial q_a} \right),
   \qquad \PB{q_a}{p_b} = \delta_{ab},
 \end{equation}
-where $\delta_{ab}$ is the Kronecker delta ($1$ if $a=b$, $0$ otherwise), and that any observable $A(q,p,t)$
+where $\delta_{ab}$ is the Kronecker delta ($1$ if $a=b$, $0$ otherwise), and that any observable $A(q,h,t)$
 evolves as
 \begin{equation}\label{eq:eom-general}
   \frac{dA}{dt} = \PB{A}{H} + \frac{\partial A}{\partial t}.
@@ -180,18 +180,18 @@ Take $H = \bm\omega\cdot\vJ$ with a constant vector $\bm\omega$. With \eqref{eq:
 This is \emph{precession}. $\vJ$ rotates rigidly about the axis $\hat{\bm\omega} = \bm\omega/|\bm\omega|$ (the unit vector along $\bm\omega$) with angular velocity
 $|\bm\omega|$, counter-clockwise when looking down the axis (right-hand rule). After a time $t$ the solution is $\vJ(t) = R_{\hat{\bm\omega}}(|\bm\omega|t)\,\vJ(0)$, where $R_{\hat{\bm n}}(\alpha)$ denotes the $3\times3$ matrix of
 a rotation by the angle $\alpha$ about the unit vector $\hat{\bm n}$ (counter-clockwise by the right-hand rule). We
-will need the rotations about $y$ and $z$, $R_y \equiv R_{\hat{\bm y}}$ and $R_z \equiv R_{\hat{\bm z}}$, where
+will need the rotations about $x$ and $z$, $R_x \equiv R_{\hat{\bm x}}$ and $R_z \equiv R_{\hat{\bm z}}$, where
 $\hat{\bm x} = (1,0,0)$, $\hat{\bm y} = (0,1,0)$, $\hat{\bm z} = (0,0,1)$ are the unit vectors along the axes:
 \begin{equation}\label{eq:rotations}
-  R_y(\alpha) = \begin{pmatrix} \cos\alpha & 0 & \sin\alpha\\ 0 & 1 & 0 \\ -\sin\alpha & 0 & \cos\alpha \end{pmatrix},
+  R_x(\alpha) = \begin{pmatrix} 1 & 0 & 0\\ 0 & \cos\alpha & -\sin\alpha \\ 0 & \sin\alpha & \cos\alpha \end{pmatrix},
   \qquad
   R_z(\alpha) = \begin{pmatrix} \cos\alpha & -\sin\alpha & 0\\ \sin\alpha & \cos\alpha & 0 \\ 0 & 0 & 1 \end{pmatrix}.
 \end{equation}
-Check: for $\bm\omega = \hat{\bm y}$, \eqref{eq:precession} gives $\dot\vJ = \hat{\bm y}\times\vJ = (J_z, 0,
--J_x)$, where a dot denotes a time derivative, $\dot\vJ = d\vJ/dt$. Differentiating \eqref{eq:rotations} at $\alpha = 0$
+Check: for $\bm\omega = \hat{\bm x}$, \eqref{eq:precession} gives $\dot\vJ = \hat{\bm x}\times\vJ = (0, -J_z,
+J_y)$, where a dot denotes a time derivative, $\dot\vJ = d\vJ/dt$. Differentiating \eqref{eq:rotations} at $\alpha = 0$
 gives the same,
 \begin{equation*}
-  \frac{d}{d\alpha}R_y(\alpha)\Big|_{\alpha=0}\vJ = \begin{pmatrix}0&0&1\\0&0&0\\-1&0&0\end{pmatrix}\vJ = (J_z, 0, -J_x),
+  \frac{d}{d\alpha}R_x(\alpha)\Big|_{\alpha=0}\vJ = \begin{pmatrix}0&0&0\\0&0&-1\\0&1&0\end{pmatrix}\vJ = (0, -J_z, J_y),
 \end{equation*}
 and in the same way $\frac{d}{d\alpha}R_z(\alpha)\bm v = \hat{\bm z}\times R_z(\alpha)\bm v$ for any vector $\bm v$.
 Rotation matrices are orthogonal, $R^{\mathsf T}R = I$ ($^{\mathsf T}$ is the transpose, $I$ the identity matrix), so
@@ -208,13 +208,13 @@ instant, but the axis and the rate depend on where $\vJ$ is. That nonlinearity i
 
 The kicked top is an angular momentum $\vJ$ with $|\vJ| = j$ and the time-periodic Hamiltonian
 \begin{equation}\label{eq:H}
-  \boxed{H(t) = \frac{k}{2j}\, J_z^2 + p\, J_y \sum_{n=-\infty}^{\infty} \delta(t-n) ,}
+  \boxed{H(t) = \frac{k}{2j}\, J_z^2 + h\, J_x \sum_{n=-\infty}^{\infty} \delta(t-n) ,}
 \end{equation}
 with two real parameters:
 \begin{itemize}
   \item $k$, the strength of the \emph{torsion}, also called the \emph{twist}, which acts all the time (the period
   is set to $1$);
-  \item $p$, the strength of the \emph{kick}: the angle by which each kick rotates $\vJ$ about the $y$ axis.
+  \item $h$, the strength of the \emph{kick}: the angle by which each kick rotates $\vJ$ about the $x$ axis.
 \end{itemize}
 Here $\delta(t)$ is the Dirac delta function: $\delta(t) = 0$ for $t\ne0$, and $\int_a^b f(t)\,\delta(t-t_0)\,dt =
 f(t_0)$ for any smooth $f$ and any interval $a < t_0 < b$. The sum $\sum_n\delta(t-n)$ (a \emph{Dirac comb}) switches
@@ -223,7 +223,7 @@ The first term acts at all times. It is quadratic in $J_z$: as shown below, it r
 an angular velocity proportional to $J_z$. Points on the upper hemisphere are turned one way, points on the lower
 hemisphere the other way, and the equator not at all, like twisting a towel. The factor $1/j$ makes the twist angle depend only on the
 \emph{direction} of $\vJ$ (see below). The second term acts only at the instants $t = n$ (integer $n$). It is
-linear, so it generates a rotation about $y$ (\cref{sec:precession}), here compressed into an instant.
+linear, so it generates a rotation about $x$ (\cref{sec:precession}), here compressed into an instant.
 
 Because $H$ depends explicitly on time, \eqref{eq:eom-general} with $A = H$ gives $dH/dt = \PB{H}{H} + \partial
 H/\partial t = \partial H/\partial t \ne 0$ (the bracket of anything with itself vanishes), so energy is \emph{not} conserved
@@ -239,21 +239,21 @@ Since $|\vJ| = j$ is fixed, only the direction of $\vJ$ can change. Introduce th
 Its components are written $s_1 = X$, $s_2 = Y$, $s_3 = Z$ (or $s_x, s_y, s_z$) whenever index notation is
 convenient.
 
-\paragraph{The scaled Hamiltonian.} Insert $J_y = jY$ and $J_z = jZ$ into \eqref{eq:H}:
+\paragraph{The scaled Hamiltonian.} Insert $J_x = jX$ and $J_z = jZ$ into \eqref{eq:H}:
 \begin{equation*}
-  H = \frac{k}{2j}\,(jZ)^2 + p\,(jY) \sum_n\delta(t-n)
-    = j\Big[\,\frac{k}{2}\,Z^2 + pY \sum_n\delta(t-n)\Big].
+  H = \frac{k}{2j}\,(jZ)^2 + h\,(jX) \sum_n\delta(t-n)
+    = j\Big[\,\frac{k}{2}\,Z^2 + hX \sum_n\delta(t-n)\Big].
 \end{equation*}
-The whole Hamiltonian is $j$ times a function of $\vs$ alone. We write $H = j\,h$ with
+The whole Hamiltonian is $j$ times a function of $\vs$ alone. We write $H = j\,\mathcal H$ with
 \begin{equation}\label{eq:h}
-  h(\vs,t) = \frac{k}{2}\, Z^2 + p\, Y \sum_n \delta(t-n).
+  \mathcal H(\vs,t) = \frac{k}{2}\, Z^2 + h\, X \sum_n \delta(t-n).
 \end{equation}
 
 \paragraph{The equation of motion for $\vs$.} Let $\nabla_{\!s}$ denote the gradient with respect to the three
 components of $\vs$, treated as independent variables:
 \begin{equation*}
-  \nabla_{\!s}\, h = \Big(\frac{\partial h}{\partial X},\ \frac{\partial h}{\partial Y},\ \frac{\partial h}{\partial Z}\Big),
-  \qquad\text{e.g.}\quad \nabla_{\!s}\Big(\frac k2 Z^2\Big) = (0, 0, kZ),\quad \nabla_{\!s}\big(pY\big) = (0, p, 0).
+  \nabla_{\!s}\, \mathcal H = \Big(\frac{\partial \mathcal H}{\partial X},\ \frac{\partial \mathcal H}{\partial Y},\ \frac{\partial \mathcal H}{\partial Z}\Big),
+  \qquad\text{e.g.}\quad \nabla_{\!s}\Big(\frac k2 Z^2\Big) = (0, 0, kZ),\quad \nabla_{\!s}\big(hX\big) = (h, 0, 0).
 \end{equation*}
 Now derive $\dot{\vs}$ in three steps.
 \begin{enumerate}
@@ -261,18 +261,18 @@ Now derive $\dot{\vs}$ in three steps.
   \[ \frac{ds_i}{dt} = \frac1j\,\frac{dJ_i}{dt} = \frac1j\,\PB{J_i}{H}. \]
   \item By \eqref{eq:J-f-bracket} with $f = H$,
   \[ \PB{J_i}{H} = \epsilon_{imk}\,\frac{\partial H}{\partial J_m}\,J_k . \]
-  \item $H(\vJ) = j\,h(\vJ/j)$, so by the chain rule $\dfrac{\partial H}{\partial J_m} = j\,\dfrac{\partial h}{\partial
-  s_m}\,\dfrac{\partial s_m}{\partial J_m} = j\,\dfrac{\partial h}{\partial s_m}\,\dfrac1j = \dfrac{\partial h}{\partial
+  \item $H(\vJ) = j\,\mathcal H(\vJ/j)$, so by the chain rule $\dfrac{\partial H}{\partial J_m} = j\,\dfrac{\partial \mathcal H}{\partial
+  s_m}\,\dfrac{\partial s_m}{\partial J_m} = j\,\dfrac{\partial \mathcal H}{\partial s_m}\,\dfrac1j = \dfrac{\partial \mathcal H}{\partial
   s_m}$, and $J_k = j\,s_k$.
 \end{enumerate}
 Putting the three together,
 \begin{equation*}
-  \frac{ds_i}{dt} = \frac1j\,\epsilon_{imk}\,\frac{\partial h}{\partial s_m}\, j\,s_k
-                 = \epsilon_{imk}\,\big(\nabla_{\!s} h\big)_m\, s_k ,
+  \frac{ds_i}{dt} = \frac1j\,\epsilon_{imk}\,\frac{\partial \mathcal H}{\partial s_m}\, j\,s_k
+                 = \epsilon_{imk}\,\big(\nabla_{\!s} \mathcal H\big)_m\, s_k ,
 \end{equation*}
 and the right-hand side is the $i$-th component of the cross product (\cref{sec:angmom}). Hence
 \begin{equation}\label{eq:eom-s}
-  \boxed{\frac{d\vs}{dt} = \nabla_{\!s}\, h \times \vs .}
+  \boxed{\frac{d\vs}{dt} = \nabla_{\!s}\, \mathcal H \times \vs .}
 \end{equation}
 Three remarks.
 \begin{itemize}
@@ -280,13 +280,13 @@ Three remarks.
   can work on the unit sphere. The value of $j$ only matters in the quantum theory, where $1/j$ plays the role of
   Planck's constant (\cref{sec:quantum}).
   \item \eqref{eq:eom-s} keeps $\vs$ on the unit sphere: $\frac{d}{dt}|\vs|^2 = 2\,\vs\cdot\dot{\vs} = 2\,\vs\cdot
-  (\nabla_{\!s} h\times\vs) = 0$, because a cross product is perpendicular to each of its factors.
+  (\nabla_{\!s} \mathcal H\times\vs) = 0$, because a cross product is perpendicular to each of its factors.
   \item Comparing with \eqref{eq:precession}, \eqref{eq:eom-s} says that at each instant $\vs$ precesses about the
-  vector $\bm\omega = \nabla_{\!s} h$, which depends on $\vs$ when $h$ is not linear.
+  vector $\bm\omega = \nabla_{\!s} \mathcal H$, which depends on $\vs$ when $\mathcal H$ is not linear.
 \end{itemize}
 For the kicked top \eqref{eq:h},
 \begin{equation}\label{eq:grad-h}
-  \nabla_{\!s}\, h = kZ\,\hat{\bm z} + p\sum_n \delta(t-n)\,\hat{\bm y} .
+  \nabla_{\!s}\, \mathcal H = kZ\,\hat{\bm z} + h\sum_n \delta(t-n)\,\hat{\bm x} .
 \end{equation}
 
 %---------------------------------------------------------------------
@@ -304,34 +304,35 @@ and let $\varepsilon\to0$. The torsion term $kZ\,\hat{\bm z}\times\vs$ is bounde
 its contribution to the change of $\vs$ is at most $2\varepsilon k \to 0$. Only the $\delta$ term of
 \eqref{eq:grad-h} survives:
 \begin{equation*}
-  \dot{\vs} = p\,\delta(t-n)\;\hat{\bm y}\times\vs, \qquad \hat{\bm y}\times\vs = (0,1,0)\times(X,Y,Z) = (Z,\ 0,\ -X).
+  \dot{\vs} = h\,\delta(t-n)\;\hat{\bm x}\times\vs, \qquad \hat{\bm x}\times\vs = (1,0,0)\times(X,Y,Z) = (0,\ -Z,\ Y).
 \end{equation*}
-In components, $\dot Y = 0$, so $Y$ does not change during the kick. The other two are
-$\dot X = p\,\delta(t-n)\,Z$ and $\dot Z = -p\,\delta(t-n)\,X$. Introduce the angle accumulated since the start of
+In components, $\dot X = 0$, so $X$ does not change during the kick. The other two are
+$\dot Y = -h\,\delta(t-n)\,Z$ and $\dot Z = h\,\delta(t-n)\,Y$. Introduce the angle accumulated since the start of
 the interval,
 \begin{equation*}
-  \alpha(t) = p\int_{n-\varepsilon}^{t}\delta(t''-n)\,dt'' ,
+  \alpha(t) = h\int_{n-\varepsilon}^{t}\delta(t''-n)\,dt'' ,
 \end{equation*}
-which rises from $\alpha = 0$ before the kick to $\alpha = p$ after it, with $d\alpha/dt = p\,\delta(t-n)$. By the
-chain rule $\dot X = (dX/d\alpha)\,\dot\alpha$, so the equations become
+which rises from $\alpha = 0$ before the kick to $\alpha = h$ after it, with $d\alpha/dt = h\,\delta(t-n)$. By the
+chain rule $\dot Y = (dY/d\alpha)\,\dot\alpha$, so the equations become
 \begin{equation*}
-  \frac{dX}{d\alpha} = Z, \qquad \frac{dZ}{d\alpha} = -X .
+  \frac{dY}{d\alpha} = -Z, \qquad \frac{dZ}{d\alpha} = Y .
 \end{equation*}
-Differentiating the first equation with respect to $\alpha$ and using the second gives $d^2X/d\alpha^2 = dZ/d\alpha =
--X$, a harmonic oscillator in the variable $\alpha$. With the initial values $(X,Y,Z)$ at $\alpha = 0$ the solution is
+Differentiating the second equation with respect to $\alpha$ and using the first gives $d^2Z/d\alpha^2 = dY/d\alpha =
+-Z$, a harmonic oscillator in the variable $\alpha$. With the initial values $(X,Y,Z)$ at $\alpha = 0$ the solution is
 \begin{equation*}
-  X(\alpha) = X\cos\alpha + Z\sin\alpha, \qquad Z(\alpha) = \frac{dX}{d\alpha} = -X\sin\alpha + Z\cos\alpha
+  Y(\alpha) = Y\cos\alpha - Z\sin\alpha, \qquad Z(\alpha) = Y\sin\alpha + Z\cos\alpha
 \end{equation*}
-(check: $X(0) = X$, $Z(0) = Z$, and $dZ/d\alpha = -X\cos\alpha - Z\sin\alpha = -X(\alpha)$). At the end of the kick,
-$\alpha = p$:
-\begin{equation}\label{eq:rotation-y}
-  X' = X\cos p + Z\sin p, \qquad Y' = Y, \qquad Z' = -X\sin p + Z\cos p ,
+(check: $Y(0) = Y$, $Z(0) = Z$, $dY/d\alpha = -Y\sin\alpha - Z\cos\alpha = -Z(\alpha)$ and $dZ/d\alpha = Y\cos\alpha -
+Z\sin\alpha = Y(\alpha)$). At the end of the kick,
+$\alpha = h$:
+\begin{equation}\label{eq:rotation-x}
+  X' = X, \qquad Y' = Y\cos h - Z\sin h, \qquad Z' = Y\sin h + Z\cos h ,
 \end{equation}
-which is $\vs' = R_y(p)\,\vs_n$ with $R_y$ from \eqref{eq:rotations}: a rotation about $y$ by the angle $p$.
-(Replacing $\delta$ by any narrow pulse of unit area gives the same result, since only the total angle $p$ enters.)
+which is $\vs' = R_x(h)\,\vs_n$ with $R_x$ from \eqref{eq:rotations}: a rotation about $x$ by the angle $h$.
+(Replacing $\delta$ by any narrow pulse of unit area gives the same result, since only the total angle $h$ enters.)
 
 \paragraph{Step 2: free torsion.} For $n < t < n+1$ every $\delta(t-n)$ vanishes, so \eqref{eq:grad-h} is
-$\nabla_{\!s} h = kZ\,\hat{\bm z}$ and \eqref{eq:eom-s} becomes
+$\nabla_{\!s} \mathcal H = kZ\,\hat{\bm z}$ and \eqref{eq:eom-s} becomes
 \begin{equation}\label{eq:torsion-ode}
   \dot{\vs} = kZ\;\hat{\bm z}\times\vs, \qquad \hat{\bm z}\times\vs = (0,0,1)\times(X,Y,Z) = (-Y,\ X,\ 0).
 \end{equation}
@@ -355,7 +356,7 @@ i.e.\ $\vs'' = R_z(kZ')\,\vs'$. This is a \emph{torsion}: a rotation about $z$ w
 
 \paragraph{The map.} Together:
 \begin{equation}\label{eq:map}
-  \boxed{\vs_{n+1} = F(\vs_n) = R_z\!\big(k Z'\big)\, R_y(p)\, \vs_n , \qquad Z' = \big(R_y(p)\vs_n\big)_z .}
+  \boxed{\vs_{n+1} = F(\vs_n) = R_z\!\big(k Z'\big)\, R_x(h)\, \vs_n , \qquad Z' = \big(R_x(h)\vs_n\big)_z .}
 \end{equation}
 \Cref{fig:map-steps} illustrates the two steps. Two properties follow directly.
 \begin{itemize}
@@ -363,7 +364,7 @@ i.e.\ $\vs'' = R_z(kZ')\,\vs'$. This is a \emph{torsion}: a rotation about $z$ w
   \item The map is invertible. The torsion does not change $Z$, so the $z$ component of $\vs_{n+1}$ is $Z'$
   itself. Undoing the torsion and then the rotation gives
   \begin{equation*}
-    F^{-1}(\vs) = R_y(-p)\,R_z(-kZ)\,\vs ,
+    F^{-1}(\vs) = R_x(-h)\,R_z(-kZ)\,\vs ,
   \end{equation*}
   where $Z$ is the $z$ component of the argument $\vs$.
 \end{itemize}
@@ -375,13 +376,13 @@ i.e.\ $\vs'' = R_z(kZ')\,\vs'$. This is a \emph{torsion}: a rotation about $z$ w
       \draw[thick] (0,0) circle (1);
       \draw[gray] (-1,0) arc (180:360:1 and 0.3);
       \draw[gray,dashed] (1,0) arc (0:180:1 and 0.3);
-      \draw[->] (0,0) -- (1.45,0) node[right] {$y$};
+      \draw[->] (0,0) -- (1.45,0) node[right] {$x$};
       \draw[->] (0,0) -- (0,1.3) node[above] {$z$};
       \draw[gray] (0,-1) arc (-90:90:0.3 and 1);
       \draw[gray,dashed] (0,1) arc (90:270:0.3 and 1);
       \draw[->,very thick,blue!70!black] (1.2,-0.35) arc (-70:70:0.15 and 0.4);
-      \node[blue!70!black] at (1.25,0.55) {$p$};
-      \node at (0,-1.45) {(a) kick: rotation about $y$ by $p$};
+      \node[blue!70!black] at (1.25,0.55) {$h$};
+      \node at (0,-1.45) {(a) kick: rotation about $x$ by $h$};
     \end{scope}
     \begin{scope}[xshift=3.4cm]
       \draw[thick] (0,0) circle (1);
@@ -400,7 +401,7 @@ i.e.\ $\vs'' = R_z(kZ')\,\vs'$. This is a \emph{torsion}: a rotation about $z$ w
       \node at (0,-1.45) {(b) free torsion about $z$ by $kZ$};
     \end{scope}
   \end{tikzpicture}
-  \caption{The two steps of one period of the kicked top, \cref{eq:map}. (a) The kick, a rigid rotation about $y$. (b) The
+  \caption{The two steps of one period of the kicked top, \cref{eq:map}. (a) The kick, a rigid rotation about $x$. (b) The
   free evolution between kicks, a rotation about $z$ whose angle $kZ$ grows with height: the upper and lower hemispheres are twisted in opposite
   directions and the equator stays put.}
   \label{fig:map-steps}
@@ -430,9 +431,9 @@ So a rotation about $z$ only shifts $\phi$ by $\alpha$. With $\alpha = kZ'$,
 and $\det D_{\rm torsion} = 1\cdot1 - k\cdot0 = 1$. A map of this form, where one coordinate is shifted by an amount
 that grows with the other, is called a \emph{twist map}.
 
-\paragraph{The rotation.} $R_y(p)$ moves the sphere rigidly, so it preserves geometric area on the sphere. By
+\paragraph{The rotation.} $R_x(h)$ moves the sphere rigidly, so it preserves geometric area on the sphere. By
 \eqref{eq:area} geometric area and phase-space area $d\phi\,dZ$ are the same, so $|\det D_{\rm rotation}| = 1$. (The
-same follows from Liouville's theorem, since the kick $R_y(p)$ is generated by the Hamiltonian $pY$.)
+same follows from Liouville's theorem, since the kick $R_x(h)$ is generated by the Hamiltonian $hX$.)
 
 \paragraph{The full map.} By the chain rule the Jacobian of a composition is the product of the Jacobians, and
 $\det(AB) = \det A\,\det B$. Hence
@@ -450,97 +451,97 @@ the trace of the Jacobian (\cref{sec:stability}).
 The code evaluates, at every recorded point $\vs_n$, the two terms of the scaled Hamiltonian \eqref{eq:h} without the
 $\delta$ comb, and their sum:
 \begin{equation}\label{eq:energy}
-  E_{\rm kick} = pY, \qquad E_{\rm tor} = \frac{k}{2}Z^2, \qquad E = E_{\rm kick} + E_{\rm tor} = pY + \frac{k}{2}Z^2 .
+  E_{\rm kick} = hX, \qquad E_{\rm tor} = \frac{k}{2}Z^2, \qquad E = E_{\rm kick} + E_{\rm tor} = hX + \frac{k}{2}Z^2 .
 \end{equation}
-For $p, k \ge 0$, $|Y|\le1$ and $0\le Z^2\le1$ give $-p \le E \le p + k/2$. The minimum $E = -p$ is reached at
-$-\hat{\bm y}$, where $Y=-1$ and $Z=0$.
+For $h, k \ge 0$, $|X|\le1$ and $0\le Z^2\le1$ give $-h \le E \le h + k/2$. The minimum $E = -h$ is reached at
+$-\hat{\bm x}$, where $X=-1$ and $Z=0$.
 
-\paragraph{Why $E$ is not conserved.} Follow $E$ through one period with \eqref{eq:rotation-y} and \eqref{eq:torsion}.
+\paragraph{Why $E$ is not conserved.} Follow $E$ through one period with \eqref{eq:rotation-x} and \eqref{eq:torsion}.
 \begin{itemize}
-  \item During the kick $Y$ is constant, so $E_{\rm kick}$ is unchanged, but $Z \to Z' = -X\sin p + Z\cos p$
+  \item During the kick $X$ is constant, so $E_{\rm kick}$ is unchanged, but $Z \to Z' = Y\sin h + Z\cos h$
   changes $E_{\rm tor}$.
-  \item During the free torsion $Z$ is constant, so $E_{\rm tor}$ is unchanged, but $Y \to Y'' = X'\sin(kZ') +
-  Y'\cos(kZ')$ changes $E_{\rm kick}$.
+  \item During the free torsion $Z$ is constant, so $E_{\rm tor}$ is unchanged, but $X \to X'' = X'\cos(kZ') -
+  Y'\sin(kZ')$ changes $E_{\rm kick}$.
 \end{itemize}
 Over one period
 \begin{equation*}
-  E_{n+1} - E_n = p\,\big(Y'' - Y\big) + \frac k2\big(Z'^2 - Z^2\big),
+  E_{n+1} - E_n = h\,\big(X'' - X\big) + \frac k2\big(Z'^2 - Z^2\big),
 \end{equation*}
 which is not zero in general. This is the explicit form of $dH/dt = \partial H/\partial t \ne 0$
 (\cref{sec:model}). There are, however, two reasons why $E$ is a useful quantity.
 
-\paragraph{The near-continuous limit.} Suppose both $p$ and $k$ are small. Expand both steps to first order. A
+\paragraph{The near-continuous limit.} Suppose both $h$ and $k$ are small. Expand both steps to first order. A
 rotation by a small angle $\alpha$ about $\hat{\bm n}$ is $R_{\hat{\bm n}}(\alpha)\vs = \vs + \alpha\,\hat{\bm n}
 \times\vs + O(\alpha^2)$ (the derivative of the rotation at $\alpha = 0$, as checked in \cref{sec:precession}).
 So
 \begin{align*}
-  \vs' &= \vs + p\,\hat{\bm y}\times\vs + O(p^2), \\
-  \vs_{n+1} &= \vs' + kZ'\,\hat{\bm z}\times\vs' + O(k^2) = \vs + \big(p\,\hat{\bm y} + kZ\,\hat{\bm z}\big)\times\vs
-  + O(p^2, pk, k^2),
+  \vs' &= \vs + h\,\hat{\bm x}\times\vs + O(h^2), \\
+  \vs_{n+1} &= \vs' + kZ'\,\hat{\bm z}\times\vs' + O(k^2) = \vs + \big(h\,\hat{\bm x} + kZ\,\hat{\bm z}\big)\times\vs
+  + O(h^2, hk, k^2),
 \end{align*}
-where we used $Z' = Z + O(p)$ and $\vs' = \vs + O(p)$. Now $p\,\hat{\bm y} + kZ\,\hat{\bm z} = (0,\, p,\, kZ) =
-\nabla_{\!s}\,h_{\rm eff}$ with the \emph{effective Hamiltonian}
+where we used $Z' = Z + O(h)$ and $\vs' = \vs + O(h)$. Now $h\,\hat{\bm x} + kZ\,\hat{\bm z} = (h,\, 0,\, kZ) =
+\nabla_{\!s}\,\mathcal H_{\rm eff}$ with the \emph{effective Hamiltonian}
 \begin{equation}\label{eq:heff}
-  h_{\rm eff} = pY + \frac{k}{2}Z^2 = E .
+  \mathcal H_{\rm eff} = hX + \frac{k}{2}Z^2 = E .
 \end{equation}
-So $\vs_{n+1} = \vs_n + \nabla_{\!s} h_{\rm eff}\times\vs_n + O(p^2, pk, k^2)$: one period is, to first order, a step
-of length $1$ of the continuous motion $\dot{\vs} = \nabla_{\!s} h_{\rm eff}\times\vs$. (The Baker--Campbell--Hausdorff
-formula makes this systematic: the exact time-$1$ flow of $h_{\rm eff}$ and the map $F$ differ only at order $pk$.)
+So $\vs_{n+1} = \vs_n + \nabla_{\!s} \mathcal H_{\rm eff}\times\vs_n + O(h^2, hk, k^2)$: one period is, to first order, a step
+of length $1$ of the continuous motion $\dot{\vs} = \nabla_{\!s} \mathcal H_{\rm eff}\times\vs$. (The Baker--Campbell--Hausdorff
+formula makes this systematic: the exact time-$1$ flow of $\mathcal H_{\rm eff}$ and the map $F$ differ only at order $hk$.)
 The flow of a time-independent Hamiltonian conserves it:
 \begin{equation*}
-  \frac{d h_{\rm eff}}{dt} = \nabla_{\!s} h_{\rm eff}\cdot\dot{\vs} = \nabla_{\!s} h_{\rm eff}\cdot\big(\nabla_{\!s}
-  h_{\rm eff}\times\vs\big) = 0 .
+  \frac{d \mathcal H_{\rm eff}}{dt} = \nabla_{\!s} \mathcal H_{\rm eff}\cdot\dot{\vs} = \nabla_{\!s} \mathcal H_{\rm eff}\cdot\big(\nabla_{\!s}
+  \mathcal H_{\rm eff}\times\vs\big) = 0 .
 \end{equation*}
 So in this limit $E$ is nearly conserved and orbits follow the level curves of $E$. \Cref{fig:near-flow} shows this
-for $p = 0.1$, $k = 0.2$: every orbit traces a curve of (almost) constant colour.
+for $h = 0.1$, $k = 0.2$: every orbit traces a curve of (almost) constant colour.
 
-\paragraph{Fixed points of the effective flow.} The flow stops where $\dot{\vs} = \nabla_{\!s} h_{\rm eff}\times\vs =
-0$, i.e.\ where $\nabla_{\!s} h_{\rm eff}$ is parallel to $\vs$: $\nabla_{\!s} h_{\rm eff} = \mu\,\vs$ for some
-number $\mu$. (This is also the Lagrange condition for the extrema of $h_{\rm eff}$ on the sphere, with $\mu$ the
+\paragraph{Fixed points of the effective flow.} The flow stops where $\dot{\vs} = \nabla_{\!s} \mathcal H_{\rm eff}\times\vs =
+0$, i.e.\ where $\nabla_{\!s} \mathcal H_{\rm eff}$ is parallel to $\vs$: $\nabla_{\!s} \mathcal H_{\rm eff} = \mu\,\vs$ for some
+number $\mu$. (This is also the Lagrange condition for the extrema of $\mathcal H_{\rm eff}$ on the sphere, with $\mu$ the
 Lagrange multiplier.) In components,
 \begin{equation*}
-  0 = \mu X, \qquad p = \mu Y, \qquad kZ = \mu Z .
+  h = \mu X, \qquad 0 = \mu Y, \qquad kZ = \mu Z .
 \end{equation*}
-For $p\ne0$ the second equation forces $\mu\ne0$, so the first gives $X = 0$. The third has two solutions.
+For $h\ne0$ the first equation forces $\mu\ne0$, so the second gives $Y = 0$. The third has two solutions.
 \begin{itemize}
-  \item $Z = 0$: then $Y = \pm1$, the poles $\pm\hat{\bm y}$.
-  \item $\mu = k$: then $Y = p/k$ and $Z = \pm\sqrt{1 - p^2/k^2}$, which exists only if $k \ge p$.
+  \item $Z = 0$: then $X = \pm1$, the poles $\pm\hat{\bm x}$.
+  \item $\mu = k$: then $X = h/k$ and $Z = \pm\sqrt{1 - h^2/k^2}$, which exists only if $k \ge h$.
 \end{itemize}
-For $p=0.1$, $k=0.2$ the second pair is at $Y = 0.5$, $X = 0$, i.e.\ $\phi = \pi/2$, $Z = \pm0.87$: the two centres
+For $h=0.1$, $k=0.2$ the second pair is at $X = 0.5$, $Y = 0$, i.e.\ $\phi = 0$, $Z = \pm0.87$: the two centres
 visible in \cref{fig:near-flow}.
 
-To see which points are centres and which are saddles, expand $h_{\rm eff}$ near $\sigma\hat{\bm y}$
-($\sigma = \pm1$) with small $x = X$, $z = Z$. From $Y = \sigma\sqrt{1 - x^2 - z^2} \approx \sigma\big(1 - \tfrac12(x^2
+To see which points are centres and which are saddles, expand $\mathcal H_{\rm eff}$ near $\sigma\hat{\bm x}$
+($\sigma = \pm1$) with small $y = Y$, $z = Z$. From $X = \sigma\sqrt{1 - y^2 - z^2} \approx \sigma\big(1 - \tfrac12(y^2
 + z^2)\big)$,
 \begin{equation*}
-  h_{\rm eff} \approx \sigma p - \frac{\sigma p}{2}\,x^2 + \frac{k - \sigma p}{2}\,z^2 .
+  \mathcal H_{\rm eff} \approx \sigma h - \frac{\sigma h}{2}\,y^2 + \frac{k - \sigma h}{2}\,z^2 .
 \end{equation*}
-At $-\hat{\bm y}$ ($\sigma=-1$) both coefficients are positive, so $h_{\rm eff}$ has a minimum there. Its level curves
-are small closed curves around the point, so it is a \emph{centre}. At $+\hat{\bm y}$ the coefficients are $-p/2$
-and $(k-p)/2$. For $k<p$ both are negative (a maximum, a centre). For $k>p$ they have opposite signs, the level curves
-are hyperbolas, and $+\hat{\bm y}$ is a \emph{saddle}: orbits approach it along one direction and leave along
-another. This is the case in \cref{fig:near-flow} ($\phi = \pi/2$, $Z = 0$), where the curve through the saddle (the
+At $-\hat{\bm x}$ ($\sigma=-1$) both coefficients are positive, so $\mathcal H_{\rm eff}$ has a minimum there. Its level curves
+are small closed curves around the point, so it is a \emph{centre}. At $+\hat{\bm x}$ the coefficients are $-h/2$
+and $(k-h)/2$. For $k<h$ both are negative (a maximum, a centre). For $k>h$ they have opposite signs, the level curves
+are hyperbolas, and $+\hat{\bm x}$ is a \emph{saddle}: orbits approach it along one direction and leave along
+another. This is the case in \cref{fig:near-flow} ($\phi = 0$, $Z = 0$), where the curve through the saddle (the
 \emph{separatrix}) is clearly visible.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.75\textwidth]{figures/near_flow.pdf}
-  \caption{Phase portrait for small parameters $p = 0.1$, $k = 0.2$ ($12\times12$ grid of initial conditions, $1000$
+  \caption{Phase portrait for small parameters $h = 0.1$, $k = 0.2$ ($12\times12$ grid of initial conditions, $1000$
   kicks each), coloured by $E$ of \cref{eq:energy}. Orbits lie on level curves of $E$, as predicted by \cref{eq:heff}.}
   \label{fig:near-flow}
 \end{figure}
 
-\paragraph{Away from that limit.} For $p = \pi/2$ the near-continuous picture does not apply and $E$ fluctuates from
+\paragraph{Away from that limit.} For $h = \pi/2$ the near-continuous picture does not apply and $E$ fluctuates from
 kick to kick (\cref{fig:energy}). On a regular orbit (left) the fluctuations are quasi-periodic and stay inside a narrow
-band. On a chaotic orbit (right) they are erratic, and $E$ wanders over a large part of its range $[-p,\ p + k/2]$. The
+band. On a chaotic orbit (right) they are erratic, and $E$ wanders over a large part of its range $[-h,\ h + k/2]$. The
 behaviour of $E_n$ is thus a simple diagnostic of regular versus chaotic motion.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{figures/energy.pdf}
   \caption{The energy terms \eqref{eq:energy} along a regular orbit (left, started inside the island around the fixed
-  point $\vs_+$ of \cref{sec:pi2}) and along a chaotic orbit (right, started next to the unstable pole $+\hat{\bm y}$),
-  for $p = \pi/2$, $k = 3$.}
+  point $\vs_+$ of \cref{sec:pi2}) and along a chaotic orbit (right, started next to the unstable pole $+\hat{\bm x}$),
+  for $h = \pi/2$, $k = 3$.}
   \label{fig:energy}
 \end{figure}
 
@@ -550,22 +551,22 @@ behaviour of $E_n$ is thus a simple diagnostic of regular versus chaotic motion.
 \paragraph{Integrable limits.} A map is called \emph{integrable} if there is a conserved function $I(\vs)$,
 $I(F(\vs)) = I(\vs)$. Each orbit then stays on one level curve $I = $ const, an \emph{invariant curve}.
 \begin{itemize}
-  \item $k = 0$: the torsion is $R_z(0)$, the identity, and $F = R_y(p)$. $Y$ is conserved. Every orbit lies on a
-  circle $Y = $ const and advances by the angle $p$ per kick. If $p/2\pi = r/q$ with integers $r, q$, then
-  $R_y(p)^q = R_y(2\pi r)$ is the identity and every orbit is periodic with period $q$ (for $p = \pi/2$, $q = 4$).
-  \item $p = 0$: $F$ is the pure twist \eqref{eq:twist} and $Z$ is conserved. Each circle of latitude rotates rigidly
+  \item $k = 0$: the torsion is $R_z(0)$, the identity, and $F = R_x(h)$. $X$ is conserved. Every orbit lies on a
+  circle $X = $ const and advances by the angle $h$ per kick. If $h/2\pi = r/q$ with integers $r, q$, then
+  $R_x(h)^q = R_x(2\pi r)$ is the identity and every orbit is periodic with period $q$ (for $h = \pi/2$, $q = 4$).
+  \item $h = 0$: $F$ is the pure twist \eqref{eq:twist} and $Z$ is conserved. Each circle of latitude rotates rigidly
   by its own angle, $\phi_n = \phi_0 + n\,kZ$.
 \end{itemize}
-When both $p$ and $k$ are non-zero there is in general no conserved quantity.
+When both $h$ and $k$ are non-zero there is in general no conserved quantity.
 
-\paragraph{A symmetry.} Let $S = R_y(\pi)$. From \eqref{eq:rotations} with $\cos\pi = -1$, $\sin\pi = 0$,
+\paragraph{A symmetry.} Let $S = R_x(\pi)$. From \eqref{eq:rotations} with $\cos\pi = -1$, $\sin\pi = 0$,
 \begin{equation*}
-  S = \begin{pmatrix}-1&0&0\\0&1&0\\0&0&-1\end{pmatrix}, \qquad (X,Y,Z)\mapsto(-X,\ Y,\ -Z), \qquad S^{-1} = S .
+  S = \begin{pmatrix}1&0&0\\0&-1&0\\0&0&-1\end{pmatrix}, \qquad (X,Y,Z)\mapsto(X,\ -Y,\ -Z), \qquad S^{-1} = S .
 \end{equation*}
 We show that $F(S\vs) = S\,F(\vs)$.
 \begin{enumerate}
-  \item Rotations about the same axis commute, $R_y(\pi)R_y(p) = R_y(\pi+p) = R_y(p)R_y(\pi)$. So $R_y(p)\,S\vs =
-  S\,\vs'$ with $\vs' = R_y(p)\vs$.
+  \item Rotations about the same axis commute, $R_x(\pi)R_x(h) = R_x(\pi+h) = R_x(h)R_x(\pi)$. So $R_x(h)\,S\vs =
+  S\,\vs'$ with $\vs' = R_x(h)\vs$.
   \item $S$ flips the sign of the $z$ component, so the torsion angle for $S\vs'$ is $-kZ'$. Hence $F(S\vs) =
   R_z(-kZ')\,S\,\vs'$.
   \item Multiply out $S R_z(\alpha) S$ with \eqref{eq:rotations}: each entry $(R_z)_{ab}$ gets the factor $S_{aa}
@@ -578,8 +579,8 @@ The two sign changes (of the axis and of the height) cancel:
   F(S\vs) = S\,F(\vs) .
 \end{equation}
 If $\vs_0, \vs_1, \dots$ is an orbit, then $S\vs_{n+1} = S F(\vs_n) = F(S\vs_n)$, so $S\vs_0, S\vs_1, \dots$ is also an
-orbit. In the coordinates $(\phi, Z)$, $S$ is $(\phi, Z)\mapsto(\pi-\phi, -Z)$, since $\cos(\pi-\phi) = -\cos\phi$ and
-$\sin(\pi-\phi) = \sin\phi$. This is a point reflection about $(\pi/2, 0)$ (with $\phi$ taken modulo $2\pi$), and every
+orbit. In the coordinates $(\phi, Z)$, $S$ is $(\phi, Z)\mapsto(-\phi, -Z)$, since $\cos(-\phi) = \cos\phi$ and
+$\sin(-\phi) = -\sin\phi$. This is a point reflection about $(0, 0)$ (with $\phi$ taken modulo $2\pi$), and every
 phase portrait in these notes is symmetric under it. Orbits either come in symmetric pairs or are symmetric
 themselves.
 
@@ -631,66 +632,65 @@ with $\lambda_1\lambda_2 = 1$. Three cases:
   birth to a period-2 orbit (\emph{period doubling}).
 \end{itemize}
 
-\subsection{The poles \texorpdfstring{$\pm\hat{\bm y}$}{+-y}}\label{sec:poles}
+\subsection{The poles \texorpdfstring{$\pm\hat{\bm x}$}{+-x}}\label{sec:poles}
 
-The two points $\vs = \sigma\hat{\bm y}$, $\sigma = \pm1$, are fixed for all $p$ and $k$. $R_y(p)$ leaves them alone,
+The two points $\vs = \sigma\hat{\bm x}$, $\sigma = \pm1$, are fixed for all $h$ and $k$. $R_x(h)$ leaves them alone,
 because they lie on its axis. Then $Z' = 0$, so the torsion angle $kZ'$ is zero and the torsion does nothing.
 
-Near $\sigma\hat{\bm y}$ write $\vs = (x,\ \sigma\sqrt{1-x^2-z^2},\ z) \approx (x,\ \sigma,\ z)$ with small $x, z$. The
-tangent plane is spanned by $\hat{\bm x}, \hat{\bm z}$, and $(x, z)$ are the coordinates in it.
+Near $\sigma\hat{\bm x}$ write $\vs = (\sigma\sqrt{1-y^2-z^2},\ y,\ z) \approx (\sigma,\ y,\ z)$ with small $y, z$. The
+tangent plane is spanned by $\hat{\bm y}, \hat{\bm z}$, and $(y, z)$ are the coordinates in it.
 \begin{itemize}
-  \item The rotation \eqref{eq:rotation-y} acts on $(x,z)$ as $x' = x\cos p + z\sin p$, $z' = -x\sin p + z\cos p$.
-  \item The torsion \eqref{eq:torsion} with $X' = x'$, $Y' \approx \sigma$ and the small angle $kz'$
-  ($\cos kz'\approx1$, $\sin kz'\approx kz'$) gives $x'' \approx x' - \sigma kz'$, $z'' = z'$, dropping products of small
+  \item The rotation \eqref{eq:rotation-x} acts on $(y,z)$ as $y' = y\cos h - z\sin h$, $z' = y\sin h + z\cos h$.
+  \item The torsion \eqref{eq:torsion} with $X' \approx \sigma$, $Y' = y'$ and the small angle $kz'$
+  ($\cos kz'\approx1$, $\sin kz'\approx kz'$) gives $y'' \approx y' + \sigma kz'$, $z'' = z'$, dropping products of small
   quantities.
 \end{itemize}
 Hence
 \begin{equation}
-  M_\sigma = \begin{pmatrix}1 & -\sigma k\\ 0 & 1\end{pmatrix}\begin{pmatrix}\cos p & \sin p\\ -\sin p & \cos p\end{pmatrix}
-           = \begin{pmatrix} \cos p + \sigma k \sin p & \sin p - \sigma k\cos p\\ -\sin p & \cos p\end{pmatrix},
+  M_\sigma = \begin{pmatrix}1 & \sigma k\\ 0 & 1\end{pmatrix}\begin{pmatrix}\cos h & -\sin h\\ \sin h & \cos h\end{pmatrix}
+           = \begin{pmatrix} \cos h + \sigma k \sin h & -\sin h + \sigma k\cos h\\ \sin h & \cos h\end{pmatrix},
 \end{equation}
-with $\det M_\sigma = (\cos p + \sigma k\sin p)\cos p + \sin p\,(\sin p - \sigma k\cos p) = \cos^2p + \sin^2p = 1$ and
+with $\det M_\sigma = (\cos h + \sigma k\sin h)\cos h - \sin h\,(-\sin h + \sigma k\cos h) = \cos^2h + \sin^2h = 1$ and
 \begin{equation}\label{eq:pole-trace}
-  \boxed{\Tr M_\sigma = 2\cos p + \sigma\, k \sin p .}
+  \boxed{\Tr M_\sigma = 2\cos h + \sigma\, k \sin h .}
 \end{equation}
-For $p = \pi/2$ ($\cos p = 0$, $\sin p = 1$) this is $\Tr M_\pm = \pm k$. Both poles are stable for $k<2$, and both
-become unstable at $k = 2$: $+\hat{\bm y}$ through $\Tr = +2$ and $-\hat{\bm y}$ through $\Tr = -2$. For small $p$,
-$\cos p \approx 1 - p^2/2$ and $\sin p \approx p$ give $\Tr M_+ \approx 2 - p^2 + kp$, which exceeds $2$ when $k > p$:
-the same threshold at which $+\hat{\bm y}$ became a saddle of $h_{\rm eff}$ in \cref{sec:energy}.
+For $h = \pi/2$ ($\cos h = 0$, $\sin h = 1$) this is $\Tr M_\pm = \pm k$. Both poles are stable for $k<2$, and both
+become unstable at $k = 2$: $+\hat{\bm x}$ through $\Tr = +2$ and $-\hat{\bm x}$ through $\Tr = -2$. For small $h$,
+$\cos h \approx 1 - h^2/2$ and $\sin h \approx h$ give $\Tr M_+ \approx 2 - h^2 + kh$, which exceeds $2$ when $k > h$:
+the same threshold at which $+\hat{\bm x}$ became a saddle of $\mathcal H_{\rm eff}$ in \cref{sec:energy}.
 
-\subsection{The case \texorpdfstring{$p = \pi/2$}{p = pi/2}}\label{sec:pi2}
+\subsection{The case \texorpdfstring{$h = \pi/2$}{h = pi/2}}\label{sec:pi2}
 
-From now on we use the standard choice $p = \pi/2$. With $\cos p = 0$, $\sin p = 1$, \eqref{eq:rotation-y} becomes
-$(X', Y', Z') = (Z,\ Y,\ -X)$. The torsion angle is $kZ' = -kX$, and with $\cos(-kX) = \cos kX$, $\sin(-kX) = -\sin
-kX$, \eqref{eq:torsion} gives
+From now on we use the standard choice $h = \pi/2$. With $\cos h = 0$, $\sin h = 1$, \eqref{eq:rotation-x} becomes
+$(X', Y', Z') = (X,\ -Z,\ Y)$. The torsion angle is $kZ' = kY$, and \eqref{eq:torsion} gives
 \begin{equation}\label{eq:map-pi2}
-  X_{n+1} = Z_n\cos(kX_n) + Y_n\sin(kX_n), \quad
-  Y_{n+1} = -Z_n\sin(kX_n) + Y_n\cos(kX_n), \quad
-  Z_{n+1} = -X_n .
+  X_{n+1} = X_n\cos(kY_n) + Z_n\sin(kY_n), \quad
+  Y_{n+1} = X_n\sin(kY_n) - Z_n\cos(kY_n), \quad
+  Z_{n+1} = Y_n .
 \end{equation}
 
-\paragraph{The fixed points born at $k=2$.} A fixed point needs $Z_{n+1} = Z_n$, i.e.\ $Z = -X$. Write $a = kX$ and
-insert $Z = -X$ into the first two equations of \eqref{eq:map-pi2}, using $1 + \cos a = 2\cos^2\frac a2$, $1 - \cos a =
+\paragraph{The fixed points born at $k=2$.} A fixed point needs $Z_{n+1} = Z_n$, i.e.\ $Z = Y$. Write $a = kY$ and
+insert $Z = Y$ into the first two equations of \eqref{eq:map-pi2}, using $1 + \cos a = 2\cos^2\frac a2$, $1 - \cos a =
 2\sin^2\frac a2$ and $\sin a = 2\sin\frac a2\cos\frac a2$:
 \begin{align*}
-  X = -X\cos a + Y\sin a \;&\Longrightarrow\; X(1+\cos a) = Y\sin a \;\Longrightarrow\; X\cos\tfrac a2 = Y\sin\tfrac a2, \\
-  Y = X\sin a + Y\cos a \;&\Longrightarrow\; Y(1-\cos a) = X\sin a \;\Longrightarrow\; Y\sin\tfrac a2 = X\cos\tfrac a2 .
+  X = X\cos a + Y\sin a \;&\Longrightarrow\; X(1-\cos a) = Y\sin a \;\Longrightarrow\; X\sin\tfrac a2 = Y\cos\tfrac a2, \\
+  Y = X\sin a - Y\cos a \;&\Longrightarrow\; Y(1+\cos a) = X\sin a \;\Longrightarrow\; Y\cos\tfrac a2 = X\sin\tfrac a2 .
 \end{align*}
-Both give the same condition $Y = X\cot(kX/2)$. ($X = 0$ gives $Z = 0$, $Y=\pm1$: the poles again.) The normalisation
+Both give the same condition $X = Y\cot(kY/2)$. ($Y = 0$ gives $Z = 0$, $X=\pm1$: the poles again.) The normalisation
 $X^2 + Y^2 + Z^2 = 1$ then gives
 \begin{equation}\label{eq:fp}
-  g(X) \equiv 2X^2 + X^2\cot^2\!\Big(\frac{kX}{2}\Big) = 1, \qquad \vs_\pm = \big(\pm X,\ X\cot(kX/2),\ \mp X\big).
+  g(Y) \equiv 2Y^2 + Y^2\cot^2\!\Big(\frac{kY}{2}\Big) = 1, \qquad \vs_\pm = \big(Y\cot(kY/2),\ \mp Y,\ \mp Y\big), \quad Y > 0.
 \end{equation}
-$X\cot(kX/2)$ is even in $X$, so the solutions come in pairs $\pm X$ with the same $Y$. For small $u$, $\cot u \approx
-1/u$, so $X\cot(kX/2) \to 2/k$ and $g(X) \to 4/k^2$ as $X\to0$.
+$Y\cot(kY/2)$ is even in $Y$, so the solutions come in pairs $\pm Y$ with the same $X$. For small $u$, $\cot u \approx
+1/u$, so $Y\cot(kY/2) \to 2/k$ and $g(Y) \to 4/k^2$ as $Y\to0$.
 \begin{itemize}
   \item $k < 2$: $g(0) = 4/k^2 > 1$, and a numerical scan confirms that $g(X) = 1$ has no solution.
-  \item $k = 2$: $g(0) = 1$, the solution sits at $X = 0$, $Y = 2/k = 1$, i.e.\ at the pole $+\hat{\bm y}$.
-  \item $k > 2$: a pair $\vs_\pm$ with small $X$ moves away from $+\hat{\bm y}$.
+  \item $k = 2$: $g(0) = 1$, the solution sits at $Y = 0$, $X = 2/k = 1$, i.e.\ at the pole $+\hat{\bm x}$.
+  \item $k > 2$: a pair $\vs_\pm$ with small $Y$ moves away from $+\hat{\bm x}$.
 \end{itemize}
-So $\vs_\pm$ branch off the pole $+\hat{\bm y}$ exactly at $k = 2$, where the pole's trace passes $+2$: a
+So $\vs_\pm$ branch off the pole $+\hat{\bm x}$ exactly at $k = 2$, where the pole's trace passes $+2$: a
 \emph{pitchfork bifurcation} (one fixed point becomes three). The two points are mapped onto each other by $S$ of
-\eqref{eq:symmetry}: $S(X, Y, -X) = (-X, Y, X)$. Solving \eqref{eq:fp} numerically and computing the trace of the
+\eqref{eq:symmetry}: $S(X, Y, Y) = (X, -Y, -Y)$. Solving \eqref{eq:fp} numerically and computing the trace of the
 Jacobian of \eqref{eq:map-pi2} in the tangent plane:
 
 \begin{center}
@@ -698,26 +698,26 @@ Jacobian of \eqref{eq:map-pi2} in the tangent plane:
 \toprule
 $k$ & $\vs_+ = (X,Y,Z)$ & $(\phi, Z)$ & $\Tr M$ \\
 \midrule
-2.5 & $(0.514,\ 0.687,\ -0.514)$ & $(0.928,\ -0.514)$ & $\phantom{-}1.00$ \\
-3.0 & $(0.629,\ 0.456,\ -0.629)$ & $(0.627,\ -0.629)$ & $\phantom{-}0.06$ \\
-3.5 & $(0.681,\ 0.272,\ -0.681)$ & $(0.380,\ -0.681)$ & $-0.77$ \\
-4.0 & $(0.702,\ 0.118,\ -0.702)$ & $(0.167,\ -0.702)$ & $-1.47$ \\
+2.5 & $(0.687,\ -0.514,\ -0.514)$ & $(-0.642,\ -0.514)$ & $\phantom{-}1.00$ \\
+3.0 & $(0.456,\ -0.629,\ -0.629)$ & $(-0.944,\ -0.629)$ & $\phantom{-}0.06$ \\
+3.5 & $(0.272,\ -0.681,\ -0.681)$ & $(-1.191,\ -0.681)$ & $-0.77$ \\
+4.0 & $(0.118,\ -0.702,\ -0.702)$ & $(-1.404,\ -0.702)$ & $-1.47$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \paragraph{Period doubling of $\vs_\pm$ at $k = \pi\sqrt2$.} The trace decreases with $k$ and reaches $-2$ at $k =
-\pi\sqrt2 \approx 4.443$. This can be checked exactly. At $k = \pi\sqrt2$ and $X = 1/\sqrt2$, $kX/2 = \pi/2$ and
-$\cot(\pi/2) = 0$, so $Y = 0$ and $g = 2\cdot\frac12 = 1$: \eqref{eq:fp} is solved by $\vs_+ = (1, 0, -1)/\sqrt2$.
-Its tangent plane is spanned by $\hat{\bm u} = \hat{\bm y}$ and $\hat{\bm w} = (\hat{\bm x}+\hat{\bm z})/\sqrt2$.
+\pi\sqrt2 \approx 4.443$. This can be checked exactly. At $k = \pi\sqrt2$ and $Y = 1/\sqrt2$, $kY/2 = \pi/2$ and
+$\cot(\pi/2) = 0$, so $X = 0$ and $g = 2\cdot\frac12 = 1$: \eqref{eq:fp} is solved by $\vs_+ = (0, -1, -1)/\sqrt2$.
+Its tangent plane is spanned by $\hat{\bm u} = \hat{\bm x}$ and $\hat{\bm w} = (\hat{\bm z}-\hat{\bm y})/\sqrt2$.
 Write $\vs = \vs_+ + a\,\hat{\bm u} + b\,\hat{\bm w}$:
 \begin{equation*}
-  X = \frac{1+b}{\sqrt2}, \qquad Y = a, \qquad Z = \frac{-1+b}{\sqrt2}, \qquad kX = \pi(1+b),
+  X = a, \qquad Y = -\frac{1+b}{\sqrt2}, \qquad Z = \frac{-1+b}{\sqrt2}, \qquad kY = -\pi(1+b),
 \end{equation*}
-so to first order $\cos kX = -\cos\pi b \approx -1$ and $\sin kX = -\sin\pi b \approx -\pi b$. Inserting into
+so to first order $\cos kY = -\cos\pi b \approx -1$ and $\sin kY = \sin\pi b \approx \pi b$. Inserting into
 \eqref{eq:map-pi2} and dropping products of $a, b$:
 \begin{equation*}
-  X_{n+1} \approx \frac{1-b}{\sqrt2}, \qquad Y_{n+1} \approx -\frac{\pi}{\sqrt2}\,b - a, \qquad Z_{n+1} = -\frac{1+b}{\sqrt2},
+  X_{n+1} \approx -a - \frac{\pi}{\sqrt2}\,b, \qquad Y_{n+1} \approx -\frac{1-b}{\sqrt2}, \qquad Z_{n+1} = -\frac{1+b}{\sqrt2},
 \end{equation*}
 i.e.\ $\vs_{n+1} = \vs_+ + a'\hat{\bm u} + b'\hat{\bm w}$ with $a' = -a - \frac{\pi}{\sqrt2}b$, $b' = -b$. Hence
 \begin{equation*}
@@ -726,22 +726,22 @@ i.e.\ $\vs_{n+1} = \vs_+ + a'\hat{\bm u} + b'\hat{\bm w}$ with $a' = -a - \frac{
 Beyond $k\approx4.44$ the fixed points $\vs_\pm$ are unstable (period doubling), and their islands disappear from the
 phase portraits (\cref{fig:portraits}, $k = 4.5$).
 
-\paragraph{A period-2 orbit born at $k = 2$.} At $k=2$ the pole $-\hat{\bm y}$ passes $\Tr = -2$ and, by the period
+\paragraph{A period-2 orbit born at $k = 2$.} At $k=2$ the pole $-\hat{\bm x}$ passes $\Tr = -2$ and, by the period
 doubling scenario of \cref{sec:stability}, emits a period-2 orbit: two points $\vs_A, \vs_B$ with $F(\vs_A) = \vs_B$,
-$F(\vs_B) = \vs_A$. For $k = 3$ a numerical search gives $(\phi, Z) = (-0.627,\ 0.629)$ and $(-2.515,\ -0.629)$, with
+$F(\vs_B) = \vs_A$. For $k = 3$ a numerical search gives $(\phi, Z) = (-2.198,\ 0.629)$ and $(2.197,\ -0.629)$, with
 $\Tr M^{(2)} = \Tr\big[DF(\vs_B)\,DF(\vs_A)\big] = -1.93$ (stable, close to its own period doubling).
 
-\paragraph{A period-4 orbit for every $k$.} Follow $\hat{\bm x}$ under \eqref{eq:map-pi2}, using $R_y(\pi/2):
-(X,Y,Z)\mapsto(Z,Y,-X)$:
+\paragraph{A period-4 orbit for every $k$.} Follow $-\hat{\bm y}$ under \eqref{eq:map-pi2}, using $R_x(\pi/2):
+(X,Y,Z)\mapsto(X,-Z,Y)$:
 \begin{gather*}
-  \hat{\bm x} \xrightarrow{R_y} -\hat{\bm z} \xrightarrow{\text{torsion}} -\hat{\bm z}, \qquad
-  -\hat{\bm z} \xrightarrow{R_y} -\hat{\bm x} \xrightarrow{\text{torsion}} -\hat{\bm x}, \\
-  -\hat{\bm x} \xrightarrow{R_y} \hat{\bm z} \xrightarrow{\text{torsion}} \hat{\bm z}, \qquad
-  \hat{\bm z} \xrightarrow{R_y} \hat{\bm x} \xrightarrow{\text{torsion}} \hat{\bm x}.
+  -\hat{\bm y} \xrightarrow{R_x} -\hat{\bm z} \xrightarrow{\text{torsion}} -\hat{\bm z}, \qquad
+  -\hat{\bm z} \xrightarrow{R_x} \hat{\bm y} \xrightarrow{\text{torsion}} \hat{\bm y}, \\
+  \hat{\bm y} \xrightarrow{R_x} \hat{\bm z} \xrightarrow{\text{torsion}} \hat{\bm z}, \qquad
+  \hat{\bm z} \xrightarrow{R_x} -\hat{\bm y} \xrightarrow{\text{torsion}} -\hat{\bm y}.
 \end{gather*}
 After each rotation the point lies either on the $z$ axis (which a rotation about $z$ does not move) or on the
-equator (where the torsion angle is zero). So $\hat{\bm x} \to -\hat{\bm z} \to -\hat{\bm x} \to \hat{\bm z} \to
-\hat{\bm x}$ is a period-4 orbit for every $k$.
+equator (where the torsion angle is zero). So $-\hat{\bm y} \to -\hat{\bm z} \to \hat{\bm y} \to \hat{\bm z} \to
+-\hat{\bm y}$ is a period-4 orbit for every $k$.
 
 Its stability needs the linearised torsion. Differentiate $T(\vs) = R_z(kZ)\,\vs$, using the derivative of
 $R_z$ from \cref{sec:precession}:
@@ -749,16 +749,16 @@ $R_z$ from \cref{sec:precession}:
   DT(\vs)\,\delta\vs = R_z(kZ)\,\delta\vs + k\,\delta Z\;\hat{\bm z}\times R_z(kZ)\,\vs .
 \end{equation*}
 At the poles $\pm\hat{\bm z}$ the second term vanishes ($\hat{\bm z}\times\hat{\bm z} = 0$) and the torsion acts on the
-tangent plane as the rotation $R_z(\pm k)$. On the equator at $\pm\hat{\bm x}$, $R_z(0) = I$ and $\hat{\bm z}\times
-(\pm\hat{\bm x}) = \pm\hat{\bm y}$, so $DT\,\delta\vs = \delta\vs \pm k\,\delta Z\,\hat{\bm y}$, a shear. Use the
-tangent bases $(\hat{\bm y}, \hat{\bm z})$ at $\pm\hat{\bm x}$ and $(\hat{\bm x}, \hat{\bm y})$ at $\pm\hat{\bm z}$.
-Following a displacement through $R_y(\pi/2)$ ($\hat{\bm y}\to\hat{\bm y}$, $\hat{\bm z}\to\hat{\bm x}$, $\hat{\bm
-x}\to-\hat{\bm z}$) and then the torsion gives the four $2\times2$ Jacobians
+tangent plane as the rotation $R_z(\pm k)$. On the equator at $\mp\hat{\bm y}$, $R_z(0) = I$ and $\hat{\bm z}\times
+(\mp\hat{\bm y}) = \pm\hat{\bm x}$, so $DT\,\delta\vs = \delta\vs \pm k\,\delta Z\,\hat{\bm x}$, a shear. Use the
+tangent bases $(\hat{\bm x}, \hat{\bm z})$ at $\pm\hat{\bm y}$ and $(-\hat{\bm y}, \hat{\bm x})$ at $\pm\hat{\bm z}$.
+Following a displacement through $R_x(\pi/2)$ ($\hat{\bm x}\to\hat{\bm x}$, $\hat{\bm z}\to-\hat{\bm y}$, $-\hat{\bm
+y}\to-\hat{\bm z}$) and then the torsion gives the four $2\times2$ Jacobians
 \begin{align*}
-  \hat{\bm x}\to-\hat{\bm z}:\ D_1 &= \begin{pmatrix}\sin k & \cos k\\ \cos k & -\sin k\end{pmatrix}, &
-  -\hat{\bm z}\to-\hat{\bm x}:\ D_2 &= \begin{pmatrix}k & 1\\ -1 & 0\end{pmatrix}, \\
-  -\hat{\bm x}\to\hat{\bm z}:\ D_3 &= \begin{pmatrix}-\sin k & \cos k\\ \cos k & \sin k\end{pmatrix}, &
-  \hat{\bm z}\to\hat{\bm x}:\ D_4 &= \begin{pmatrix}-k & 1\\ -1 & 0\end{pmatrix}.
+  -\hat{\bm y}\to-\hat{\bm z}:\ D_1 &= \begin{pmatrix}\sin k & \cos k\\ \cos k & -\sin k\end{pmatrix}, &
+  -\hat{\bm z}\to\hat{\bm y}:\ D_2 &= \begin{pmatrix}k & 1\\ -1 & 0\end{pmatrix}, \\
+  \hat{\bm y}\to\hat{\bm z}:\ D_3 &= \begin{pmatrix}-\sin k & \cos k\\ \cos k & \sin k\end{pmatrix}, &
+  \hat{\bm z}\to-\hat{\bm y}:\ D_4 &= \begin{pmatrix}-k & 1\\ -1 & 0\end{pmatrix}.
 \end{align*}
 (The bases are not all oriented the same way, so $\det D_1 = \det D_3 = -1$. Only the product is meaningful, and it
 has determinant $1$.) Multiplying out $M^{(4)} = D_4 D_3 D_2 D_1$ and simplifying with $\cos^2k - \sin^2k = \cos2k$,
@@ -778,7 +778,7 @@ $\Tr M^{(4)}$ & 1.98 & 0.68 & $-1.99$ & 0.42 & 21.2 & $-1.94$ \\
 \end{tabular}
 \end{center}
 These values agree with a direct numerical evaluation of the Jacobians. The orbit is stable at $k = 3$ and at $k = 6$:
-its islands are visible around $(\phi,Z) = (0,0)$, $(\pm\pi, 0)$ and near the poles $Z = \pm1$ in
+its islands are visible around $(\phi,Z) = (\pm\pi/2, 0)$ and near the poles $Z = \pm1$ in
 \cref{fig:portraits}. At $k = 4.5$ it is unstable.
 
 %---------------------------------------------------------------------
@@ -787,7 +787,7 @@ its islands are visible around $(\phi,Z) = (0,0)$, $(\pm\pi, 0)$ and near the po
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{figures/portraits.pdf}
-  \caption{Phase portraits of the kicked top for $p = \pi/2$ and increasing $k$, in the canonical coordinates
+  \caption{Phase portraits of the kicked top for $h = \pi/2$ and increasing $k$, in the canonical coordinates
   $(\phi, Z=\cos\theta)$ (equal areas in the plot are equal areas on the sphere). Each panel shows a $20\times20$
   equal-area grid of initial conditions iterated for $500$ kicks, one colour per orbit. Closed curves are regular
   (quasi-periodic) orbits. Uniformly speckled regions are filled by chaotic orbits.}
@@ -805,32 +805,32 @@ is the average fraction of a full turn per kick. If $\nu$ is irrational, the orb
 (\emph{quasi-periodic} motion). If $\nu = r/q$ is rational, the orbit is periodic with period $q$. In a phase portrait,
 regular orbits appear as smooth closed curves.
 
-\paragraph{Why small $k$ looks integrable at $p = \pi/2$.} For small $k$ (\cref{fig:portraits}, $k=0.5$), the phase
-portrait looks almost integrable, although the unperturbed map $R = R_y(\pi/2)$ is degenerate: $R^4 = R_y(2\pi) = I$,
+\paragraph{Why small $k$ looks integrable at $h = \pi/2$.} For small $k$ (\cref{fig:portraits}, $k=0.5$), the phase
+portrait looks almost integrable, although the unperturbed map $R = R_x(\pi/2)$ is degenerate: $R^4 = R_x(2\pi) = I$,
 every orbit has period 4. So look at four periods at once. Write $F = TR$, with $T$ the torsion, the time-$1$ flow of
-the free Hamiltonian $h_T = \frac k2 Z^2$ (Step 2 of \cref{sec:map}). Inserting $R^{-m}R^m = I$,
+the free Hamiltonian $\mathcal H_T = \frac k2 Z^2$ (Step 2 of \cref{sec:map}). Inserting $R^{-m}R^m = I$,
 \begin{equation*}
   F^4 = TRTRTRTR = T\,\big(RTR^{-1}\big)\,\big(R^2TR^{-2}\big)\,\big(R^3TR^{-3}\big)\,R^4 ,
   \qquad R^4 = I .
 \end{equation*}
-Each factor $R^mTR^{-m}$ is again the time-$1$ flow of a Hamiltonian, namely $h_T\circ R^{-m}$ ($h_T$ evaluated at
-$R^{-m}\vs$). To see this, let $\vs(t)$ follow $h_T$ and put $\bm u = R^m\vs$. Rotations preserve cross products, and by
-the chain rule $\nabla_{\!u}\big[h_T(R^{-m}\bm u)\big] = R^m\,\nabla_{\!s}h_T$ (because $R^{-m} = (R^m)^{\mathsf T}$),
+Each factor $R^mTR^{-m}$ is again the time-$1$ flow of a Hamiltonian, namely $\mathcal H_T\circ R^{-m}$ ($\mathcal H_T$ evaluated at
+$R^{-m}\vs$). To see this, let $\vs(t)$ follow $\mathcal H_T$ and put $\bm u = R^m\vs$. Rotations preserve cross products, and by
+the chain rule $\nabla_{\!u}\big[\mathcal H_T(R^{-m}\bm u)\big] = R^m\,\nabla_{\!s}\mathcal H_T$ (because $R^{-m} = (R^m)^{\mathsf T}$),
 so
 \begin{equation*}
-  \dot{\bm u} = R^m\big(\nabla_{\!s}h_T\times\vs\big) = \big(R^m\nabla_{\!s}h_T\big)\times\big(R^m\vs\big)
-  = \nabla_{\!u}\big[h_T\circ R^{-m}\big]\times\bm u .
+  \dot{\bm u} = R^m\big(\nabla_{\!s}\mathcal H_T\times\vs\big) = \big(R^m\nabla_{\!s}\mathcal H_T\big)\times\big(R^m\vs\big)
+  = \nabla_{\!u}\big[\mathcal H_T\circ R^{-m}\big]\times\bm u .
 \end{equation*}
-From \eqref{eq:rotations}, the $z$ component of $R^{-m}\vs$ is $Z$, $X$, $-Z$, $-X$ for $m = 0, 1, 2, 3$, so the four
-Hamiltonians are $\frac k2 Z^2$, $\frac k2X^2$, $\frac k2 Z^2$, $\frac k2X^2$. Each factor is the identity plus a
+From \eqref{eq:rotations}, the $z$ component of $R^{-m}\vs$ is $Z$, $-Y$, $-Z$, $Y$ for $m = 0, 1, 2, 3$, so the four
+Hamiltonians are $\frac k2 Z^2$, $\frac k2Y^2$, $\frac k2 Z^2$, $\frac k2Y^2$. Each factor is the identity plus a
 correction of order $k$, so to first order in $k$ the product is the time-$1$ flow of the sum,
 \begin{equation}\label{eq:hbar}
-  \bar h = \frac{k}{2}\,\big(Z^2 + X^2 + Z^2 + X^2\big) = k\,(X^2 + Z^2) = k\,(1 - Y^2).
+  \bar{\mathcal H} = \frac{k}{2}\,\big(Z^2 + Y^2 + Z^2 + Y^2\big) = k\,(Y^2 + Z^2) = k\,(1 - X^2).
 \end{equation}
-$\nabla_{\!s}\bar h = -2kY\,\hat{\bm y}$, so the flow of $\bar h$ is a rotation about $y$ with rate $-2kY$, and $Y$ is
-conserved. The invariant curves of $F^4$ are therefore close to circles $Y = \sqrt{1-Z^2}\sin\phi = $ const around the
-poles $\pm\hat{\bm y}$. In the $(\phi,Z)$ plane these are the closed curves around $(\pm\pi/2, 0)$ in the $k=0.5$
-panel. On the great circle $Y = 0$ (the lines $\phi = 0, \pm\pi$) the rate $-2kY$ vanishes, so higher-order terms
+$\nabla_{\!s}\bar{\mathcal H} = -2kX\,\hat{\bm x}$, so the flow of $\bar{\mathcal H}$ is a rotation about $x$ with rate $-2kX$, and $X$ is
+conserved. The invariant curves of $F^4$ are therefore close to circles $X = \sqrt{1-Z^2}\cos\phi = $ const around the
+poles $\pm\hat{\bm x}$. In the $(\phi,Z)$ plane these are the closed curves around $(0, 0)$ and $(\pm\pi, 0)$ in the $k=0.5$
+panel. On the great circle $X = 0$ (the lines $\phi = \pm\pi/2$) the rate $-2kX$ vanishes, so higher-order terms
 decide what happens there. Numerically a thin chaotic layer forms along these lines.
 
 \subsection{KAM theorem and the breakup of invariant curves}
@@ -858,32 +858,32 @@ enter an island and a regular orbit can never leave one.
 
 \subsection{Mixed and global chaos in the kicked top}
 
-\Cref{fig:portraits} shows the scenario for $p = \pi/2$:
+\Cref{fig:portraits} shows the scenario for $h = \pi/2$:
 \begin{itemize}
   \item $k = 0.5$ and $1.5$: almost everything is regular. Large families of closed curves surround the stable poles
-  $\pm\hat{\bm y}$ ($|\Tr M_\pm| = k < 2$, \eqref{eq:pole-trace}), with thin chaotic layers near $\phi = 0, \pm\pi$.
+  $\pm\hat{\bm x}$ ($|\Tr M_\pm| = k < 2$, \eqref{eq:pole-trace}), with thin chaotic layers near $\phi = \pm\pi/2$.
   \item $k = 2.5$: the poles have just become unstable (\cref{sec:poles}). Chaos spreads from them, and the new
   islands of $\vs_\pm$ and of the period-2 orbit appear, together with a mixture of smaller island chains.
-  \item $k = 3$: a \emph{mixed phase space}. A large chaotic sea surrounds islands around $\vs_\pm$ (at $(0.63,
-  -0.63)$ and its mirror image $(2.51, 0.63)$), around the period-2 orbit (at $(-0.63, 0.63)$ and $(-2.51, -0.63)$),
-  and around the period-4 orbit (at $(0,0)$, $(\pm\pi, 0)$ and near $Z = \pm1$). The pairing of islands under $S$
+  \item $k = 3$: a \emph{mixed phase space}. A large chaotic sea surrounds islands around $\vs_\pm$ (at $(-0.94,
+  -0.63)$ and its mirror image $(0.94, 0.63)$), around the period-2 orbit (at $(-2.20, 0.63)$ and $(2.20, -0.63)$),
+  and around the period-4 orbit (at $(\pm\pi/2, 0)$ and near $Z = \pm1$). The pairing of islands under $S$
   of \eqref{eq:symmetry} is clearly visible.
   \item $k = 4.5$ and $6$: almost \emph{global chaos}. The islands of $\vs_\pm$ are gone ($k > \pi\sqrt2$) and only
-  tiny islands remain (e.g.\ the period-4 island at $(0,0)$ for $k=6$, where $|\Tr M^{(4)}| < 2$ by
+  tiny islands remain (e.g.\ the period-4 island at $(-\pi/2,0)$ for $k=6$, where $|\Tr M^{(4)}| < 2$ by
   \eqref{eq:period4-trace}).
 \end{itemize}
 
 \Cref{fig:single-orbits} shows the difference between the two kinds of motion for $k=3$. A single orbit started
 inside the island around $\vs_+$ stays on a closed curve. A single orbit started next to the unstable pole
-$+\hat{\bm y}$ wanders through the whole chaotic sea but never enters any island. \Cref{fig:sphere} shows the $k=3$
+$+\hat{\bm x}$ wanders through the whole chaotic sea but never enters any island. \Cref{fig:sphere} shows the $k=3$
 portrait on the sphere itself.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.75\textwidth]{figures/single_orbits.pdf}
-  \caption{Two single orbits for $p = \pi/2$, $k = 3$, $300$ kicks each, on top of the full portrait (grey). Blue:
-  started at $(\phi_0, Z_0) = (0.6, -0.6)$, inside the island of $\vs_+$. Red: started at $(1.4, 0)$, near the
-  hyperbolic pole $+\hat{\bm y}$. Stars mark the starting points.}
+  \caption{Two single orbits for $h = \pi/2$, $k = 3$, $300$ kicks each, on top of the full portrait (grey). Blue:
+  started at $(\phi_0, Z_0) = (-0.97, -0.6)$, inside the island of $\vs_+$. Red: started at $(-0.17, 0)$, near the
+  hyperbolic pole $+\hat{\bm x}$. Stars mark the starting points.}
   \label{fig:single-orbits}
 \end{figure}
 
@@ -917,7 +917,7 @@ another, so the two exponents are $\pm\Lambda$. Typical values:
   \item regular (quasi-periodic) orbits: $\Lambda = 0$. Nearby orbits on neighbouring invariant curves separate only
   linearly, $d_n \propto n$, because their rotation numbers differ slightly, and $\frac1n\ln n \to 0$;
   \item a hyperbolic fixed point with eigenvalue $\lambda_u$: there $M_n = M^n$, so $\|M_n\delta\vs_0\| \sim
-  |\lambda_u|^n$ and $\Lambda = \ln|\lambda_u|$. For the pole $+\hat{\bm y}$ at $k=3$, \eqref{eq:pole-trace} gives
+  |\lambda_u|^n$ and $\Lambda = \ln|\lambda_u|$. For the pole $+\hat{\bm x}$ at $k=3$, \eqref{eq:pole-trace} gives
   $\Tr M = 3$, so $\lambda^2 - 3\lambda + 1 = 0$, $\lambda_u = (3+\sqrt5)/2 \approx 2.62$ and $\Lambda \approx 0.96$;
   \item chaotic orbits: $\Lambda > 0$. The value is an average over the whole chaotic sea, which contains regions of
   very different local stretching.
@@ -935,7 +935,7 @@ in exactly this way (\cref{sec:benettin}).
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.6\textwidth]{figures/divergence.pdf}
-  \caption{Distance between two orbits whose initial $\theta_0$ differ by $10^{-8}$, for $p = \pi/2$, $k = 3$. Blue:
+  \caption{Distance between two orbits whose initial $\theta_0$ differ by $10^{-8}$, for $h = \pi/2$, $k = 3$. Blue:
   both inside the island of $\vs_+$. Orange: both in the chaotic sea. The straight segment on the logarithmic axis is
   exponential separation.}
   \label{fig:divergence}
@@ -943,11 +943,11 @@ in exactly this way (\cref{sec:benettin}).
 
 \subsection{Computing \texorpdfstring{$\Lambda$}{Lambda}: the tangent map and the Benettin algorithm}\label{sec:benettin}
 
-\paragraph{The tangent map for any $p$.} The definition \eqref{eq:lyapunov} needs $DF(\vs)\,\delta\vs$, the image of a
+\paragraph{The tangent map for any $h$.} The definition \eqref{eq:lyapunov} needs $DF(\vs)\,\delta\vs$, the image of a
 small displacement under one kick. Write the map \eqref{eq:map} as $F(\vs) = R_z\big(kZ'(\vs)\big)\,\vs'(\vs)$ with
-$\vs' = R_y(p)\,\vs$ and $Z' = (\vs')_z$, and vary $\vs \to \vs + \delta\vs$.
+$\vs' = R_x(h)\,\vs$ and $Z' = (\vs')_z$, and vary $\vs \to \vs + \delta\vs$.
 \begin{enumerate}
-  \item The rotation is linear: $\delta\vs' = R_y(p)\,\delta\vs$, and $\delta Z' = (\delta\vs')_z$.
+  \item The rotation is linear: $\delta\vs' = R_x(h)\,\delta\vs$, and $\delta Z' = (\delta\vs')_z$.
   \item The torsion depends on $\vs'$ twice, through the vector it rotates and through its angle $kZ'$. By the
   product rule,
   \[ \delta\big[R_z(kZ')\,\vs'\big] = R_z(kZ')\,\delta\vs' + \frac{dR_z}{d\alpha}\Big|_{\alpha = kZ'}\vs'\;k\,\delta Z' . \]
@@ -957,9 +957,9 @@ $\vs' = R_y(p)\,\vs$ and $Z' = (\vs')_z$, and vary $\vs \to \vs + \delta\vs$.
 Hence
 \begin{equation}\label{eq:tangent}
   \boxed{\delta\vs_{n+1} = DF(\vs_n)\,\delta\vs_n = R_z(kZ')\,\delta\vs' + k\,\delta Z'\;\hat{\bm z}\times\vs_{n+1},
-  \qquad \delta\vs' = R_y(p)\,\delta\vs_n .}
+  \qquad \delta\vs' = R_x(h)\,\delta\vs_n .}
 \end{equation}
-(For $p = \pi/2$ and the points of the period-4 orbit this reduces to the $DT$ used in \cref{sec:pi2}.) The image is
+(For $h = \pi/2$ and the points of the period-4 orbit this reduces to the $DT$ used in \cref{sec:pi2}.) The image is
 again tangent to the sphere. If $\vs_n\cdot\delta\vs_n = 0$, then, because rotations preserve dot products and $\hat{\bm
 z}\times\vs_{n+1}$ is perpendicular to $\vs_{n+1}$,
 \begin{equation*}
@@ -986,13 +986,13 @@ so $\Lambda_N \approx \ln N/N$, small but not zero.
 initial conditions. The islands of \cref{fig:portraits} appear as regions with $\Lambda_N \approx 0$, and the chaotic
 sea has a nearly uniform value $\Lambda \approx 0.33$, as it must, since a single chaotic orbit visits the whole sea.
 (The larger slope $\approx 0.47$ of \cref{fig:divergence} is a local rate over the first $40$ kicks near the
-pole $+\hat{\bm y}$, where the stretching $\ln\lambda_u \approx 0.96$ is stronger than the average.)
+pole $+\hat{\bm x}$, where the stretching $\ln\lambda_u \approx 0.96$ is stronger than the average.)
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.75\textwidth]{figures/lyapunov_map.pdf}
   \caption{Finite-time Lyapunov exponent $\Lambda_N$ ($N = 2000$ kicks, Benettin algorithm with rescaling every kick)
-  of each initial condition of an $80\times80$ equal-area grid, $p = \pi/2$, $k = 3$. Dark: regular islands
+  of each initial condition of an $80\times80$ equal-area grid, $h = \pi/2$, $k = 3$. Dark: regular islands
   ($\Lambda_N\approx0$). Bright: chaotic sea ($\Lambda\approx0.33$).}
   \label{fig:lyapunov-map}
 \end{figure}
@@ -1028,10 +1028,10 @@ column vector $|\psi\rangle = \sum_m \psi_m|j,m\rangle$ of $2j+1$ complex number
   a(m) = \sqrt{j(j+1) - m(m+1)} .
 \end{equation}
 (Derivation of $a(m)$: $\hat J_-\hat J_+ = \hat J^2 - \hat J_z^2 - \hat J_z$ by \eqref{eq:q-algebra}, so
-$\|\hat J_+|j,m\rangle\|^2 = \langle j,m|\hat J_-\hat J_+|j,m\rangle = j(j+1) - m^2 - m$.) Hence $\hat J_y = (\hat J_+ -
-\hat J_-)/(2i)$ has the only non-zero matrix elements
-\begin{equation}\label{eq:jy-elements}
-  \langle j,m+1|\hat J_y|j,m\rangle = -\frac{i}{2}\,a(m), \qquad \langle j,m|\hat J_y|j,m+1\rangle = +\frac{i}{2}\,a(m),
+$\|\hat J_+|j,m\rangle\|^2 = \langle j,m|\hat J_-\hat J_+|j,m\rangle = j(j+1) - m^2 - m$.) Hence $\hat J_x = (\hat J_+ +
+\hat J_-)/2$ has the only non-zero matrix elements
+\begin{equation}\label{eq:jx-elements}
+  \langle j,m+1|\hat J_x|j,m\rangle = \frac{1}{2}\,a(m), \qquad \langle j,m|\hat J_x|j,m+1\rangle = \frac{1}{2}\,a(m),
 \end{equation}
 and $\langle\hat J_+\rangle = \langle\hat J_x\rangle + i\langle\hat J_y\rangle = \sum_m \psi_{m+1}^*\,a(m)\,\psi_m$
 gives the two transverse expectation values ($^*$ is complex conjugation).
@@ -1039,31 +1039,31 @@ gives the two transverse expectation values ($^*$ is complex conjugation).
 \section{The Floquet operator}\label{sec:floquet}
 
 \paragraph{Derivation.} The state obeys the Schrödinger equation $i\,\frac{d}{dt}|\psi\rangle = \hat H(t)|\psi\rangle$
-with $\hat H(t)$ the operator version of \eqref{eq:H}. We integrate it over one period exactly as in \cref{sec:map}.
+with $\hat H(t) = \epsilon\hat J_z^2 + h\hat J_x\sum_n\delta(t-n)$ the operator version of \eqref{eq:H}, $\epsilon = k/(2j)$. We integrate it over one period exactly as in \cref{sec:map}.
 \begin{enumerate}
   \item Across the kick only the $\delta$ term matters (the same argument as Step 1 of \cref{sec:map}):
-  $i\frac{d}{dt}|\psi\rangle = p\hat J_y\,\delta(t-n)|\psi\rangle$. All operators involved commute
+  $i\frac{d}{dt}|\psi\rangle = h\hat J_x\,\delta(t-n)|\psi\rangle$. All operators involved commute
   with each other, so the solution is the exponential of the integral,
-  $|\psi(n^+)\rangle = \hat R\,|\psi(n^-)\rangle$ with $\hat R = e^{-ip\hat J_y}$.
-  \item For $n < t < n+1$, $\hat H = \frac{k}{2j}\hat J_z^2$ does not depend on time, so $|\psi(t)\rangle =
-  e^{-i(t-n)\frac{k}{2j}\hat J_z^2}|\psi(n^+)\rangle$. After the unit time, $|\psi\rangle \to \hat T\,|\psi\rangle$
-  with $\hat T = e^{-i\frac{k}{2j}\hat J_z^2}$.
+  $|\psi(n^+)\rangle = \hat R\,|\psi(n^-)\rangle$ with $\hat R = e^{-ih\hat J_x}$.
+  \item For $n < t < n+1$, $\hat H = \epsilon\hat J_z^2$ does not depend on time, so $|\psi(t)\rangle =
+  e^{-i(t-n)\epsilon\hat J_z^2}|\psi(n^+)\rangle$. After the unit time, $|\psi\rangle \to \hat T\,|\psi\rangle$
+  with $\hat T = e^{-i\epsilon\hat J_z^2}$.
 \end{enumerate}
 One period is therefore
 \begin{equation}\label{eq:floquet}
-  \boxed{\hat U = \hat T\hat R = \exp\!\Big(-i\frac{k}{2j}\hat J_z^2\Big)\exp\!\big(-ip\hat J_y\big), \qquad
+  \boxed{\hat U = \hat T\hat R = \exp\!\big(-i\epsilon\hat J_z^2\big)\exp\!\big(-ih\hat J_x\big), \qquad
   |\psi_{n+1}\rangle = \hat U|\psi_n\rangle ,}
 \end{equation}
 first the kick, then the torsion, as in \eqref{eq:map}. In the basis \eqref{eq:jm-basis} the torsion is diagonal,
-$\hat T|j,m\rangle = e^{-ikm^2/(2j)}|j,m\rangle$. $\hat U$ is unitary ($\hat U^\dagger\hat U = 1$, $^\dagger$ the conjugate
+$\hat T|j,m\rangle = e^{-i\epsilon m^2}|j,m\rangle$. $\hat U$ is unitary ($\hat U^\dagger\hat U = 1$, $^\dagger$ the conjugate
 transpose) because it is a product of exponentials of $-i$ times Hermitian operators; hence $\langle\psi_n|\psi_n\rangle$
 is conserved.
 
-\paragraph{The rotation in matrix form.} $\hat J_y$ is Hermitian, so it has an orthonormal basis of eigenvectors,
-$\hat J_y = \hat V\,\mathrm{diag}(\mu_l)\,\hat V^\dagger$ with eigenvalues $\mu_l = -j, -j+1, \dots, j$ (the same
-spectrum as $\hat J_z$, since $\hat J_y$ is $\hat J_z$ rotated). Then
-\begin{equation}\label{eq:exp-jy}
-  e^{-i\alpha\hat J_y} = \hat V\,\mathrm{diag}\big(e^{-i\alpha\mu_l}\big)\,\hat V^\dagger
+\paragraph{The rotation in matrix form.} $\hat J_x$ is Hermitian, so it has an orthonormal basis of eigenvectors,
+$\hat J_x = \hat V\,\mathrm{diag}(\mu_l)\,\hat V^\dagger$ with eigenvalues $\mu_l = -j, -j+1, \dots, j$ (the same
+spectrum as $\hat J_z$, since $\hat J_x$ is $\hat J_z$ rotated). Then
+\begin{equation}\label{eq:exp-jx}
+  e^{-i\alpha\hat J_x} = \hat V\,\mathrm{diag}\big(e^{-i\alpha\mu_l}\big)\,\hat V^\dagger
 \end{equation}
 for any angle $\alpha$, because $(\hat V D\hat V^\dagger)^n = \hat V D^n\hat V^\dagger$ term by term in the exponential
 series.
@@ -1071,14 +1071,14 @@ series.
 \paragraph{The classical limit.} Write $\hat{\bm s} = \hat{\vJ}/j$. Then \eqref{eq:q-algebra} becomes $[\hat s_a, \hat
 s_b] = \frac{i}{j}\,\epsilon_{abc}\,\hat s_c$: the components of $\hat{\bm s}$ commute in the limit $j\to\infty$, and
 $1/j$ plays the role of an effective Planck constant. In the Heisenberg picture an operator evolves as $\hat A \to
-\hat U^\dagger\hat A\hat U$. For the rotation, $\hat R^\dagger\hat J_a\hat R = \sum_b R_y(p)_{ab}\hat J_b$ (the quantum
-rotation rotates the vector operator exactly as \eqref{eq:rotation-y}). For the torsion, $\hat J_z$ commutes with $\hat T$,
+\hat U^\dagger\hat A\hat U$. For the rotation, $\hat R^\dagger\hat J_a\hat R = \sum_b R_x(h)_{ab}\hat J_b$ (the quantum
+rotation rotates the vector operator exactly as \eqref{eq:rotation-x}). For the torsion, $\hat J_z$ commutes with $\hat T$,
 and for $\hat J_+$, using $\hat J_+ f(\hat J_z) = f(\hat J_z - 1)\hat J_+$,
 \begin{equation*}
-  \hat T^\dagger\hat J_+\hat T = e^{i\frac{k}{2j}\hat J_z^2}\,e^{-i\frac{k}{2j}(\hat J_z-1)^2}\,\hat J_+
-  = e^{i\frac{k}{2j}(2\hat J_z - 1)}\,\hat J_+ = e^{ik\hat s_z - \frac{ik}{2j}}\,\hat J_+ ,
+  \hat T^\dagger\hat J_+\hat T = e^{i\epsilon\hat J_z^2}\,e^{-i\epsilon(\hat J_z-1)^2}\,\hat J_+
+  = e^{i\epsilon(2\hat J_z - 1)}\,\hat J_+ = e^{ik\hat s_z - i\epsilon}\,\hat J_+ , \qquad k = 2j\epsilon ,
 \end{equation*}
-i.e.\ $\hat J_x + i\hat J_y$ is rotated about $z$ by the angle $k\hat s_z - k/(2j)$. For $j\to\infty$ this is the
+i.e.\ $\hat J_x + i\hat J_y$ is rotated about $z$ by the angle $k\hat s_z - \epsilon$. For $j\to\infty$ this is the
 torsion \eqref{eq:torsion} with angle $kZ$. So the Heisenberg equations of $\hat{\bm s}$ reduce to the classical map
 \eqref{eq:map} when $j\to\infty$.
 
@@ -1141,20 +1141,20 @@ grows to order one.
 
 \section{Symmetry and quasienergy spectrum}\label{sec:qspectrum}
 
-\paragraph{Parity.} Let $\hat P = e^{-i\pi\hat J_y}$, the quantum version of $S = R_y(\pi)$ of \eqref{eq:symmetry}.
-$\hat P$ commutes with $\hat R = e^{-ip\hat J_y}$ (both are functions of $\hat J_y$). It also commutes with $\hat T$: $\hat
-P^\dagger\hat J_z\hat P = -\hat J_z$ (rotation by $\pi$ about $y$ reverses $z$), so $\hat P^\dagger\hat J_z^2\hat P = \hat
-J_z^2$ and $\hat P^\dagger\hat T\hat P = \hat T$. Hence $[\hat U, \hat P] = 0$. By \eqref{eq:exp-jy} the eigenvalues of
+\paragraph{Parity.} Let $\hat P = e^{-i\pi\hat J_x}$, the quantum version of $S = R_x(\pi)$ of \eqref{eq:symmetry}.
+$\hat P$ commutes with $\hat R = e^{-ih\hat J_x}$ (both are functions of $\hat J_x$). It also commutes with $\hat T$: $\hat
+P^\dagger\hat J_z\hat P = -\hat J_z$ (rotation by $\pi$ about $x$ reverses $z$), so $\hat P^\dagger\hat J_z^2\hat P = \hat
+J_z^2$ and $\hat P^\dagger\hat T\hat P = \hat T$. Hence $[\hat U, \hat P] = 0$. By \eqref{eq:exp-jx} the eigenvalues of
 $\hat P$ are $e^{-i\pi\mu_l}$; consecutive $\mu_l$ differ by one, so $e^{-i\pi\mu_l}$ alternates in sign along $l$. The
-eigenvectors of $\hat J_y$ with odd $l$ span one parity sector, those with even $l$ the other, and $\hat U$ is
+eigenvectors of $\hat J_x$ with odd $l$ span one parity sector, those with even $l$ the other, and $\hat U$ is
 block-diagonal in this basis.
 
 \paragraph{Quasienergies.} $\hat U$ is unitary, so its eigenvalues lie on the unit circle:
-$\hat U|\varepsilon\rangle = e^{-i\varepsilon}|\varepsilon\rangle$ with quasienergy $\varepsilon \in [-\pi, \pi)$
+$\hat U|\omega\rangle = e^{-i\omega}|\omega\rangle$ with quasienergy $\omega \in [-\pi, \pi)$
 (defined modulo $2\pi$, like a phase). In each sector of $N_s$ levels the mean spacing is $2\pi/N_s$ and the density is
 uniform on the circle, so the spacings are unfolded simply as
 \begin{equation}\label{eq:unfold}
-  s_i = \frac{N_s}{2\pi}\,(\varepsilon_{i+1} - \varepsilon_i), \qquad \langle s\rangle = 1 ,
+  s_i = \frac{N_s}{2\pi}\,(\omega_{i+1} - \omega_i), \qquad \langle s\rangle = 1 ,
 \end{equation}
 with the last spacing wrapping around the circle.
 
@@ -1175,12 +1175,12 @@ Its mean is $\langle r\rangle = 2\ln2 - 1 \approx 0.386$ for Poisson, $\approx 0
 for the CUE \cite{Atas2013}. Levels of different sectors do not repel, so mixing two sectors spoils both measures;
 that is why the sectors are treated separately.
 
-\paragraph{The special value $p = \pi/2$.} At $p = \pi/2$ the code finds $\langle r\rangle \approx 0.54$ in one parity
+\paragraph{The special value $h = \pi/2$.} At $h = \pi/2$ the code finds $\langle r\rangle \approx 0.54$ in one parity
 sector but only $\approx 0.41$--$0.44$ in the other, even for strongly chaotic $k$ and $j = 1000$. A value near
 $0.42$ is what a superposition of two independent COE spectra gives, which indicates an additional symmetry of
-$\hat U$ at $p = \pi/2$ that splits that sector again. We have not identified it (the rotations by $\pi$ about $x$ and
+$\hat U$ at $h = \pi/2$ that splits that sector again. We have not identified it (the rotations by $\pi$ about $y$ and
 $z$ and by $\pi/2$ about $z$ do not commute with $\hat U$). For spectral statistics we therefore use a generic value,
-$p = 1.7$, where both sectors agree with the COE (\cref{sec:qcode}).
+$h = 1.7$, where both sectors agree with the COE (\cref{sec:qcode}).
 
 \paragraph{Experiments.} The kicked top was introduced by Haake, Ku\'s and Scharf \cite{HKS1987} as a model of quantum
 chaos; Haake's book \cite{Haake} is the standard reference. It has been realised with the hyperfine spin of cesium
@@ -1273,13 +1273,13 @@ numbering of these notes changes.
     File & Role & Physics \\
     \midrule
     \texttt{kinds\_mod.f90} & working precision \texttt{wp} (double), constants $\pi$, $2\pi$ & -- \\
-    \texttt{config\_mod.f90} & type \texttt{config\_t}; reads the namelist groups, checks values & parameters $p$, $k$ of \eqref{eq:H} \\
+    \texttt{config\_mod.f90} & type \texttt{config\_t}; reads the namelist groups, checks values & parameters $h$, $k$ of \eqref{eq:H} \\
     \texttt{init\_mod.f90} & \texttt{initial\_conditions}: \texttt{single} / \texttt{grid} / \texttt{random}; \texttt{spherical\_to\_cartesian} & \eqref{eq:unit}; equal-area grid from \eqref{eq:area} \\
-    \texttt{map\_mod.f90} & pure functions \texttt{kick(s, p, k)}: one period; \texttt{kick\_tangent(s, ds, p, k)}: its
-    tangent map; \texttt{rotate\_y}, \texttt{rotate\_z}: the two rotations & \eqref{eq:rotation-y}, \eqref{eq:torsion}, \eqref{eq:map}, \eqref{eq:tangent} \\
+    \texttt{map\_mod.f90} & pure functions \texttt{kick(s, h, k)}: one period; \texttt{kick\_tangent(s, ds, h, k)}: its
+    tangent map; \texttt{rotate\_x}, \texttt{rotate\_z}: the two rotations & \eqref{eq:rotation-x}, \eqref{eq:torsion}, \eqref{eq:map}, \eqref{eq:tangent} \\
     \texttt{evolve\_mod.f90} & iterates \texttt{kick} for all initial conditions (OpenMP), transient and \texttt{save\_every} & $\vs_n = F^n(\vs_0)$ \\
     \texttt{lyapunov\_mod.f90} & \texttt{lyapunov}: Benettin algorithm for every initial condition (OpenMP) & \eqref{eq:lyapunov}, \cref{sec:benettin} \\
-    \texttt{energy\_mod.f90} & pure function \texttt{energy(s, p, k)} $\to [pY,\ \frac k2 Z^2,\ \text{total}]$ & \eqref{eq:energy} \\
+    \texttt{energy\_mod.f90} & pure function \texttt{energy(s, h, k)} $\to [hX,\ \frac k2 Z^2,\ \text{total}]$ & \eqref{eq:energy} \\
     \texttt{io\_mod.f90} & writes the ASCII output files; computes $\phi = \operatorname{atan2}(Y,X) \in (-\pi,\pi]$ & coordinates of \cref{sec:canonical} \\
     \texttt{main.f90} & driver: \texttt{read\_config} $\to$ \texttt{initial\_conditions} $\to$ \texttt{evolve} $\to$ \texttt{write\_results} ($\to$ \texttt{lyapunov} $\to$ \texttt{write\_lyapunov}) & -- \\
     \texttt{post\_processor.py} (in \texttt{scripts/}) & class \texttt{PostProcessor}: phase-space plot $(\phi, Z)$, 3D plot on the sphere, map of $\Lambda$ & -- \\
@@ -1289,8 +1289,8 @@ numbering of these notes changes.
   \label{tab:modules}
 \end{table}
 
-\paragraph{The map.} \texttt{kick} in \texttt{map\_mod.f90} applies \texttt{rotate\_y}, the rotation
-\eqref{eq:rotation-y}, and then \texttt{rotate\_z} with the angle $kZ'$, the torsion \eqref{eq:torsion}.
+\paragraph{The map.} \texttt{kick} in \texttt{map\_mod.f90} applies \texttt{rotate\_x}, the rotation
+\eqref{eq:rotation-x}, and then \texttt{rotate\_z} with the angle $kZ'$, the torsion \eqref{eq:torsion}.
 \texttt{kick\_tangent} is the tangent map \eqref{eq:tangent}; its last line is $R_z(kZ')\,\delta\vs' + k\,\delta Z'\,
 \hat{\bm z}\times\vs_{n+1}$, with $\hat{\bm z}\times\vs = (-Y, X, 0)$:
 \lstinputlisting[firstline=13, lastline=45, firstnumber=13]{../../src/classical/map_mod.f90}
@@ -1309,7 +1309,7 @@ command-line argument). Missing groups or variables keep their defaults.
   \toprule
   Group & Variable & Meaning \\
   \midrule
-  \texttt{\&system} & \texttt{p}, \texttt{k} & kick rotation angle $p$ and torsion strength $k$ in \eqref{eq:H} \\
+  \texttt{\&system} & \texttt{h}, \texttt{k} & kick rotation angle $h$ and torsion strength $k$ in \eqref{eq:H} \\
   \texttt{\&simulation} & \texttt{n\_kicks} & number of kicks recorded after the transient \\
    & \texttt{n\_transient} & kicks discarded before recording \\
    & \texttt{save\_every} & store every \texttt{save\_every}-th kick \\
@@ -1326,7 +1326,7 @@ command-line argument). Missing groups or variables keep their defaults.
 
 \subsection{Output files}
 
-All files are ASCII, start with a header line \texttt{\# p = \dots, k = \dots} and a column line, and contain one
+All files are ASCII, start with a header line \texttt{\# h = \dots, k = \dots} and a column line, and contain one
 block per initial condition separated by a blank line. The first three files have the same row order, so row $r$ of
 each refers to the same point $\vs_n$. \texttt{lyapunov.dat} (written only if \texttt{\&lyapunov} is enabled) has one line
 per initial condition.
@@ -1338,7 +1338,7 @@ per initial condition.
   \midrule
   \texttt{trajectory.dat} & orbit index \texttt{ic}, kick \texttt{n}, $X$, $Y$, $Z$ \\
   \texttt{phase\_space.dat} & \texttt{ic}, \texttt{n}, $\phi$, $Z$ \quad (canonical coordinates, \cref{sec:canonical}) \\
-  \texttt{energy.dat} & $pY$, $\frac k2 Z^2$, total \quad (\cref{eq:energy}) \\
+  \texttt{energy.dat} & $hX$, $\frac k2 Z^2$, total \quad (\cref{eq:energy}) \\
   \texttt{lyapunov.dat} & \texttt{ic}, $\phi_0$, $Z_0$ (initial point), $\Lambda_N$ \quad (\cref{sec:benettin}) \\
   \bottomrule
 \end{tabular}
@@ -1364,16 +1364,16 @@ namelist in \texttt{docs/lecture\_note/figures/configs/}, writing the output to
 
 The following checks were carried out on the code:
 \begin{itemize}
-  \item $k = 0$, $p = \pi/2$: the map is $R_y(\pi/2)$, so every orbit must return to its starting point after 4 kicks.
+  \item $k = 0$, $h = \pi/2$: the map is $R_x(\pi/2)$, so every orbit must return to its starting point after 4 kicks.
   Observed error: $5\times10^{-16}$.
   \item $\big||\vs_n| - 1\big| \le 3.4\times10^{-15}$ for the default run ($400$ orbits, $500$ kicks, $k=3$).
-  \item The three columns of \texttt{energy.dat} agree with $pY$, $\frac k2 Z^2$ and their sum recomputed from
+  \item The three columns of \texttt{energy.dat} agree with $hX$, $\frac k2 Z^2$ and their sum recomputed from
   \texttt{trajectory.dat} to $10^{-15}$.
   \item The fixed points, traces and symmetry of \cref{sec:symmetry,sec:stability} were checked against the map
   numerically, and they agree with the islands in \cref{fig:portraits}.
   \item \texttt{kick\_tangent} agrees with a centred finite difference of \texttt{kick} to $10^{-10}$ (relative, for
   $\|\delta\vs\| \approx 10^{-7}$).
-  \item $\Lambda$ at the hyperbolic pole $+\hat{\bm y}$, $k = 3$: the $1/N$ term of \cref{sec:benettin} cancels in
+  \item $\Lambda$ at the hyperbolic pole $+\hat{\bm x}$, $k = 3$: the $1/N$ term of \cref{sec:benettin} cancels in
   $(30\Lambda_{30} - 20\Lambda_{20})/10 = 0.96242365$, which agrees with the exact $\ln\frac{3+\sqrt5}{2} =
   0.96242365$ (\cref{sec:lyapunov}) to $3\times10^{-9}$. (Longer runs leave the pole, because round-off moves the orbit
   off it.)
@@ -1386,7 +1386,7 @@ New functionality follows the same pattern: one module with its own namelist gro
 \texttt{main.f90}. The Lyapunov exponent is an example:
 \begin{enumerate}
   \item \texttt{map\_mod} provides the tangent map \texttt{kick\_tangent} \eqref{eq:tangent} next to \texttt{kick},
-  built from the same \texttt{rotate\_y} and \texttt{rotate\_z};
+  built from the same \texttt{rotate\_x} and \texttt{rotate\_z};
   \item \texttt{lyapunov\_mod.f90} evolves $(\vs, \delta\vs)$ together and implements the algorithm of
   \cref{sec:benettin};
   \item the namelist group \texttt{\&lyapunov} switches it on, \texttt{io\_mod} writes \texttt{lyapunov.dat}, and the
@@ -1403,7 +1403,7 @@ The quantum model is a separate program, \texttt{build/kicked\_top\_quantum} (\t
 namelist file \texttt{config\_quantum.nml}, output directory \texttt{output\_quantum/} and plotting script
 \texttt{scripts/quantum\_post\_processor.py}. Its sources are in \texttt{src/quantum/}; it shares only
 \texttt{src/common/} (precision, the equal-area grid and the namelist helpers) with the classical code. It needs
-LAPACK: \texttt{zheev} diagonalises $\hat J_y$ and \texttt{zgeev} computes the eigenvalues of $\hat U$.
+LAPACK: \texttt{zheev} diagonalises $\hat J_x$ and \texttt{zgeev} computes the eigenvalues of $\hat U$.
 
 \begin{table}[h]
 \centering\small
@@ -1411,9 +1411,9 @@ LAPACK: \texttt{zheev} diagonalises $\hat J_y$ and \texttt{zgeev} computes the e
 \toprule
 File & Role & Physics \\
 \midrule
-\texttt{quantum\_config\_mod.f90} & reads and checks \texttt{config\_quantum.nml} & $p, k, j$ \\
-\texttt{spin\_mod.f90} & $\hat J_y$ matrix, $\langle\hat{\vJ}\rangle$, coherent states & \eqref{eq:jy-elements}, \eqref{eq:coherent} \\
-\texttt{floquet\_mod.f90} & $\hat V, \mu_l$ (\texttt{zheev}), $e^{-i\alpha\hat J_y}$, $\hat U$ & \eqref{eq:exp-jy}, \eqref{eq:floquet} \\
+\texttt{quantum\_config\_mod.f90} & reads and checks \texttt{config\_quantum.nml} & $h, \epsilon, j$ \\
+\texttt{spin\_mod.f90} & $\hat J_x$ matrix, $\langle\hat{\vJ}\rangle$, coherent states & \eqref{eq:jx-elements}, \eqref{eq:coherent} \\
+\texttt{floquet\_mod.f90} & $\hat V, \mu_l$ (\texttt{zheev}), $e^{-i\alpha\hat J_x}$, $\hat U$ & \eqref{eq:exp-jx}, \eqref{eq:floquet} \\
 \texttt{husimi\_mod.f90} & $Q$ on the equal-area grid, its normalisation & \eqref{eq:husimi}, \eqref{eq:husimi-norm} \\
 \texttt{spectrum\_mod.f90} & quasienergies per parity sector (\texttt{zgeev}), $s_i$, $\langle r\rangle$ & \eqref{eq:unfold}, \eqref{eq:wigner} \\
 \texttt{quantum\_io\_mod.f90} & ASCII output & -- \\
@@ -1424,7 +1424,7 @@ File & Role & Physics \\
 \label{tab:qmodules}
 \end{table}
 
-\paragraph{Algorithm.} (1) Diagonalise $\hat J_y$ once and build $\hat U$ from \eqref{eq:exp-jy} and the diagonal torsion.
+\paragraph{Algorithm.} (1) Diagonalise $\hat J_x$ once and build $\hat U$ from \eqref{eq:exp-jx} and the diagonal torsion.
 (2) Start from the coherent state \eqref{eq:coherent} at $(\theta_0,\phi_0)$; its amplitudes are computed from
 logarithms, so large $j$ does not overflow. (3) Apply $\hat U$ \texttt{n\_kicks} times, writing
 $\langle\hat{\vJ}\rangle/j$, the norm and the spread after every kick (\texttt{expectation.dat}) and $Q$ at the kicks
@@ -1439,22 +1439,22 @@ $N = 2j+1$: a few seconds for $j = 500$.
   5\times10^{-13}$; $|\langle\psi_n|\psi_n\rangle - 1| < 3\times10^{-13}$; every eigenvalue of $\hat U$ has modulus 1
   to $3\times10^{-14}$.
   \item The Husimi normalisation \eqref{eq:husimi-norm} is $1.0000$ on a $100\times200$ grid for $j = 50$.
-  \item $k = 0$, $p = \pi/2$: $\hat U^4$ is a rotation by $2\pi$, and $\langle\hat{\bm s}\rangle$ returns to its initial
+  \item $\epsilon = 0$, $h = \pi/2$: $\hat U^4$ is a rotation by $2\pi$, and $\langle\hat{\bm s}\rangle$ returns to its initial
   value after 4 kicks to $10^{-14}$ with spread $1/j$, as for a coherent state.
-  \item Correspondence, $j = 500$, $k = 3$, $p=\pi/2$: started in the island at $(\theta_0,\phi_0) = (2.25, 0.63)$,
-  $|\langle\hat{\bm s}\rangle_n - \bm s_n| < 0.008$ for 50 kicks. Started in the chaotic sea at $(\pi/2, 1.4)$ the
+  \item Correspondence, $j = 500$, $\epsilon = 0.003$ ($k = 2j\epsilon = 3$), $h=\pi/2$: started in the island at $(\theta_0,\phi_0) = (2.25, -0.94)$,
+  $|\langle\hat{\bm s}\rangle_n - \bm s_n| < 0.008$ for 50 kicks. Started in the chaotic sea at $(\pi/2, -0.17)$ the
   difference is $0.11$ at $n = 5$ and $0.50$ at $n = 10$, consistent with $n_E = \ln 500/(2\times0.33) \approx 9$
   from \eqref{eq:ehrenfest} (\cref{fig:quantum-expectation}).
-  \item Spectrum, $j = 500$, $p = 1.7$, $k = 10$: $\langle r\rangle = 0.537$ and $0.511$ in the two sectors,
+  \item Spectrum, $j = 500$, $h = 1.7$, $\epsilon = 0.01$ ($k = 10$): $\langle r\rangle = 0.537$ and $0.511$ in the two sectors,
   against $0.531$ for the COE, and $P(s)$ follows the COE curve (\cref{fig:quantum-spacings}).
 \end{itemize}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/quantum_husimi.pdf}
-\caption{Husimi distribution \eqref{eq:husimi} of a coherent state, $j = 200$, $p = \pi/2$, $k = 3$, after $n = 0, 5,
-10, 30$ kicks. Top: started in the regular island at $(\theta_0,\phi_0) = (2.25, 0.63)$, where it stays.
-Bottom: started in the chaotic sea at $(\pi/2, 1.4)$, where it spreads over the chaotic region of
+\caption{Husimi distribution \eqref{eq:husimi} of a coherent state, $j = 200$, $h = \pi/2$, $\epsilon = 0.0075$ ($k = 3$), after $n = 0, 5,
+10, 30$ kicks. Top: started in the regular island at $(\theta_0,\phi_0) = (2.25, -0.94)$, where it stays.
+Bottom: started in the chaotic sea at $(\pi/2, -0.17)$, where it spreads over the chaotic region of
 \cref{fig:portraits} and avoids the islands.}
 \label{fig:quantum-husimi}
 \end{figure}
@@ -1471,8 +1471,8 @@ initial states of \cref{fig:quantum-husimi}. The island start lies close to the 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.6\textwidth]{figures/quantum_spacings.pdf}
-\caption{Distribution of unfolded quasienergy spacings \eqref{eq:unfold}, both parity sectors, $j = 500$, $p = 1.7$,
-$k = 10$, compared with \eqref{eq:wigner}.}
+\caption{Distribution of unfolded quasienergy spacings \eqref{eq:unfold}, both parity sectors, $j = 500$, $h = 1.7$,
+$\epsilon = 0.01$, compared with \eqref{eq:wigner}.}
 \label{fig:quantum-spacings}
 \end{figure}
 

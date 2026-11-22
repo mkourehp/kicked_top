@@ -1,5 +1,5 @@
 ! Plot-ready ASCII output of the quantum kicked top. Python only reads these files.
-! Every file starts with a header line '# p = ..., k = ..., j = ...' and a column line.
+! Every file starts with a header line '# h = ..., eps = ..., j = ...' and a column line.
 module quantum_io_mod
   use kinds_mod, only: wp
   use quantum_config_mod, only: qconfig_t
@@ -48,16 +48,16 @@ contains
     close(u)
   end subroutine write_husimi
 
-  ! quasienergies.dat, one line per eigenvalue exp(-i eps) of U:  sector  eps
-  subroutine write_quasienergies(cfg, eps, sector)
+  ! quasienergies.dat, one line per eigenvalue exp(-i omega) of U:  sector  omega
+  subroutine write_quasienergies(cfg, omega, sector)
     type(qconfig_t), intent(in) :: cfg
-    real(wp), intent(in) :: eps(:)
+    real(wp), intent(in) :: omega(:)
     integer, intent(in) :: sector(:)
     integer :: u, i
 
-    call open_file(cfg, 'quasienergies.dat', 'sector eps', u)
-    do i = 1, size(eps)
-      write(u, '(i0,1x,es23.15e3)') sector(i), eps(i)
+    call open_file(cfg, 'quasienergies.dat', 'sector omega', u)
+    do i = 1, size(omega)
+      write(u, '(i0,1x,es23.15e3)') sector(i), omega(i)
     end do
     close(u)
   end subroutine write_quasienergies
@@ -100,7 +100,7 @@ contains
     character(len=96) :: buf
 
     open(newunit=u, file=trim(cfg%out_dir)//'/'//name, status='replace', action='write')
-    write(buf, '(a,f0.6,a,f0.6,a,f0.1)') 'p = ', cfg%p, ', k = ', cfg%k, ', j = ', cfg%j
+    write(buf, '(a,f0.6,a,f0.6,a,f0.1)') 'h = ', cfg%h, ', eps = ', cfg%eps, ', j = ', cfg%j
     write(u, '(a)') '# '//trim(buf)
     write(u, '(a)') '# '//columns
   end subroutine open_file

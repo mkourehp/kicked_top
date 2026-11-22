@@ -31,14 +31,14 @@ contains
     do ic = 1, size(s0, 2)
       s = s0(:, ic)
       do n = 1, cfg%n_transient
-        s = kick(s, cfg%p, cfg%k)
+        s = kick(s, cfg%h, cfg%k)
       end do
 
       ds = initial_tangent(s)
       log_sum = 0.0_wp
       do n = 1, cfg%n_kicks
-        ds = kick_tangent(s, ds, cfg%p, cfg%k)
-        s = kick(s, cfg%p, cfg%k)
+        ds = kick_tangent(s, ds, cfg%h, cfg%k)
+        s = kick(s, cfg%h, cfg%k)
         if (mod(n, cfg%n_renorm) == 0 .or. n == cfg%n_kicks) call renormalise(s, ds, log_sum)
       end do
       lam(ic) = log_sum/real(cfg%n_kicks, wp)

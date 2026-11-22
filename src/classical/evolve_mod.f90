@@ -28,13 +28,13 @@ contains
     do ic = 1, size(s0, 2)
       s = s0(:, ic)
       do n = 1, cfg%n_transient
-        s = kick(s, cfg%p, cfg%k)
+        s = kick(s, cfg%h, cfg%k)
       end do
 
       isave = 1
       orbit(:, isave, ic) = s
       do n = 1, cfg%n_kicks
-        s = kick(s, cfg%p, cfg%k)
+        s = kick(s, cfg%h, cfg%k)
         if (mod(n, cfg%save_every) == 0) then
           isave = isave + 1
           orbit(:, isave, ic) = s

@@ -1,6 +1,6 @@
 ! Configuration of kicked_top_combined, read from a namelist file (default
 ! config_combined.nml). One parameter set drives the classical kicked top and
-! the qubit chain for every rotation angle p in the list p(:).
+! the qubit chain for every rotation angle h in the list h(:).
 module combined_config_mod
   use kinds_mod, only: wp
   use io_utils_mod, only: check_nml_read
@@ -9,14 +9,16 @@ module combined_config_mod
   public :: rconfig_t, read_combined_config, str_len
 
   integer, parameter :: str_len = 256   ! length of string parameters
-  integer, parameter :: max_p = 20      ! maximum number of p values
+  integer, parameter :: max_h = 20      ! maximum number of h values
 
   type :: rconfig_t
     integer :: n_q                 ! number of qubits, j = n_q/2
-    real(wp) :: k                  ! torsion strength per period
-    real(wp), allocatable :: p(:)  ! kick: rotation angles about y, one run per value
+    real(wp) :: eps                ! coupling: coefficient of H_zz (eps = k/(2j))
+    real(wp), allocatable :: h(:)  ! kick: rotation angles about x, one run per value
     integer :: s0                  ! initial state: -1 all up, 0 all down (along pol)
     character(len=1) :: pol        ! axis of the initial polarisation: 'z', 'x', 'y'
+    logical :: has_angles          ! theta0 and phi0 given: they replace s0 and pol
+    real(wp) :: theta0, phi0       ! initial product coherent state |theta0, phi0>
     integer :: n_kicks             ! classical: kicks per orbit
     integer :: n_theta             ! classical: grid points in Z = cos(theta)
     integer :: n_phi               ! classical: grid points in phi
@@ -38,24 +40,25 @@ contains
 
     integer :: n_q, s0, n_kicks, n_theta, n_phi, t_r, i_flip
     logical :: butterfly_effect
-    real(wp) :: k, p(max_p), flip_angle
+    real(wp) :: eps, h(max_h), flip_angle, theta0, phi0
     character(len=1) :: pol, flip_axis
     character(len=str_len) :: out_dir
     integer :: u, ios
 
-    namelist /system/ n_q, k, p
-    namelist /initial/ s0, pol
+    namelist /system/ n_q, eps, h
+    namelist /initial/ s0, pol, theta0, phi0
     namelist /classical/ n_kicks, n_theta, n_phi
     namelist /chain/ t_r, butterfly_effect, i_flip, flip_axis, flip_angle
     namelist /husimi/ n_theta, n_phi
     namelist /output/ out_dir
 
     n_q = 10
-    k = 20.0_wp
-    p = huge(1.0_wp)
-    p(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
+    eps = 2.0_wp
+    h = huge(1.0_wp)
     s0 = -1
     pol = 'z'
+    theta0 = huge(1.0_wp)
+    phi0 = huge(1.0_wp)
     t_r = 30
     butterfly_effect = .false.
     i_flip = 1
@@ -96,10 +99,14 @@ contains
     close(u)
 
     cfg%n_q = n_q
-    cfg%k = k
-    cfg%p = pack(p, p < huge(1.0_wp))
+    cfg%eps = eps
+    if (all(h >= huge(1.0_wp))) h(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
+    cfg%h = pack(h, h < huge(1.0_wp))
     cfg%s0 = s0
     cfg%pol = pol
+    cfg%has_angles = theta0 < huge(1.0_wp) .and. phi0 < huge(1.0_wp)
+    cfg%theta0 = theta0
+    cfg%phi0 = phi0
     cfg%t_r = t_r
     cfg%butterfly_effect = butterfly_effect
     cfg%i_flip = i_flip
@@ -114,7 +121,7 @@ contains
     type(rconfig_t), intent(in) :: cfg
 
     if (cfg%n_q < 1 .or. cfg%n_q > 26) error stop 'combined_config_mod: n_q must be in 1 .. 26'
-    if (size(cfg%p) < 1) error stop 'combined_config_mod: give at least one value of p'
+    if (size(cfg%h) < 1) error stop 'combined_config_mod: give at least one value of h'
     if (cfg%n_kicks < 1) error stop 'combined_config_mod: n_kicks must be >= 1'
     if (cfg%n_theta < 1 .or. cfg%n_phi < 1) error stop 'combined_config_mod: n_theta and n_phi must be >= 1'
     if (cfg%t_r < 1) error stop 'combined_config_mod: t_r must be >= 1'

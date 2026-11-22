@@ -30,7 +30,7 @@ def phase_axes(ax):
 
 
 def portraits():
-    """Fig. 5 [fig:portraits]: phase portraits for p = pi/2 and six values of k."""
+    """Fig. 5 [fig:portraits]: phase portraits for h = pi/2 and six values of k."""
     fig, axes = plt.subplots(2, 3, figsize=(12, 6.5), sharex=True, sharey=True)
     for ax, k in zip(axes.flat, PORTRAIT_K):
         d = load(f"portrait_k{k}", "phase_space.dat")
@@ -42,13 +42,13 @@ def portraits():
 
 
 def near_flow():
-    """Fig. 3 [fig:near-flow]: small p, k; colour = E of eq. (23)."""
+    """Fig. 3 [fig:near-flow]: small h, k; colour = E of eq. (23)."""
     d = load("near_flow", "phase_space.dat")
     e = load("near_flow", "energy.dat")
     fig, ax = plt.subplots(figsize=(7, 4))
     sc = ax.scatter(d[:, 2], d[:, 3], c=e[:, 2], s=0.1, cmap="viridis", rasterized=True)
     phase_axes(ax)
-    fig.colorbar(sc, ax=ax, label=r"$E = pY + \frac{k}{2}Z^2$")
+    fig.colorbar(sc, ax=ax, label=r"$E = hX + \frac{k}{2}Z^2$")
     fig.savefig(FIG_DIR / "near_flow.pdf", dpi=150)
 
 
@@ -72,7 +72,7 @@ def energy():
     for ax, run, title in zip(axes, ["single_regular", "single_chaotic"], ["regular orbit", "chaotic orbit"]):
         e = load(run, "energy.dat")
         n = np.arange(len(e))
-        ax.plot(n, e[:, 0], lw=0.8, label=r"$pY$")
+        ax.plot(n, e[:, 0], lw=0.8, label=r"$hX$")
         ax.plot(n, e[:, 1], lw=0.8, label=r"$\frac{k}{2}Z^2$")
         ax.plot(n, e[:, 2], "k", lw=1.0, label="total")
         ax.set_xlim(0, 100)

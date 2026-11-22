@@ -1,7 +1,7 @@
 ! Run configuration: the derived type config_t and the reader of the namelist
 ! file (default config.nml). Each namelist group has its own block of fields;
 ! a missing group or variable keeps its default value.
-! Lecture notes: Sec. 11.1 (table of parameters); p and k are the parameters
+! Lecture notes: Sec. 11.1 (table of parameters); h and k are the parameters
 ! of the Hamiltonian, eq. (12) [eq:H].
 module config_mod
   use kinds_mod, only: wp
@@ -14,7 +14,7 @@ module config_mod
 
   type :: config_t
     ! &system
-    real(wp) :: p              ! kick: rotation angle about y, eq. (12)
+    real(wp) :: h              ! kick: rotation angle about x, eq. (12)
     real(wp) :: k              ! torsion strength per period, eq. (12)
     ! &simulation
     integer :: n_kicks         ! kicks recorded after the transient
@@ -42,7 +42,7 @@ contains
     character(len=*), intent(in) :: path
     type(config_t), intent(out) :: cfg
 
-    real(wp) :: p, k, theta0, phi0
+    real(wp) :: h, k, theta0, phi0
     integer :: n_kicks, n_transient, save_every
     integer :: n_theta, n_phi, n_random, seed
     character(len=str_len) :: mode, out_dir
@@ -50,13 +50,13 @@ contains
     integer :: n_renorm
     integer :: u, ios
 
-    namelist /system/ p, k
+    namelist /system/ h, k
     namelist /simulation/ n_kicks, n_transient, save_every
     namelist /initial/ mode, theta0, phi0, n_theta, n_phi, n_random, seed
     namelist /output/ out_dir
     namelist /lyapunov/ enabled, n_renorm
 
-    p = acos(-1.0_wp)/2.0_wp
+    h = acos(-1.0_wp)/2.0_wp
     k = 3.0_wp
     n_kicks = 500
     n_transient = 0
@@ -91,7 +91,7 @@ contains
     call check_nml_read(ios, 'lyapunov', 'config_mod')
     close(u)
 
-    cfg%p = p
+    cfg%h = h
     cfg%k = k
     cfg%n_kicks = n_kicks
     cfg%n_transient = n_transient

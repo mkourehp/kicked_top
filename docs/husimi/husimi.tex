@@ -16,7 +16,7 @@
 \newtheorem*{theorem*}{Theorem}
 \newcommand{\vs}{\bm{s}}
 \newcommand{\vJ}{\bm{J}}
-\newcommand{\vS}{\bm{S}}
+
 \newcommand{\vn}{\hat{\bm n}}
 \newcommand{\PB}[2]{\{#1,#2\}}
 \newcommand{\Tr}{\operatorname{Tr}}
@@ -79,10 +79,10 @@ A state is $|\psi\rangle = \sum_m \psi_m|j,m\rangle$. In the code (\texttt{spin\
 index $i = 1,\dots,2j+1$ with $m = j-(i-1)$. $\binom{n}{r} = \frac{n!}{r!\,(n-r)!}$ is the binomial coefficient.
 The kicked top has the Hamiltonian and the one-period (Floquet) operator, sampled just before each kick,
 \begin{equation}\label{eq:H}
-  H(t) = \frac{k}{2j}\,J_z^2 + p\,J_y\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
-  U = e^{-i\frac{k}{2j}J_z^2}\,e^{-ipJ_y},
+  H(t) = \epsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
+  U = e^{-i\epsilon J_z^2}\,e^{-ihJ_x},
 \end{equation}
-with torsion strength $k$ and kick angle $p$; $|\psi_n\rangle = U^n|\psi_0\rangle$ is the state after $n$ kicks.
+with coupling $\epsilon$ (the classical torsion strength is $k = 2j\epsilon$) and kick angle $h$; $|\psi_n\rangle = U^n|\psi_0\rangle$ is the state after $n$ kicks.
 The rotation matrices about $z$ and $y$ (counter-clockwise by the right-hand rule) are
 \begin{equation}\label{eq:rot}
   R_z(\alpha) = \begin{pmatrix} \cos\alpha & -\sin\alpha & 0\\ \sin\alpha & \cos\alpha & 0 \\ 0 & 0 & 1 \end{pmatrix},
@@ -140,35 +140,35 @@ Take $n = 2j$ spins $\frac12$ (qubits) with Pauli matrices $\sigma^a_i$ for qubi
   \sigma^z = \begin{pmatrix}1&0\\0&-1\end{pmatrix},
   \qquad\text{e.g. } \sigma^y|\up\rangle = i|\dn\rangle,\ \sigma^y|\dn\rangle = -i|\up\rangle .
 \end{equation}
-The collective spin $\vS = \frac12\sum_{i=1}^{n}\bm\sigma_i$ satisfies \eqref{eq:comm}, because operators of different
+The collective spin $\vJ = \frac12\sum_{i=1}^{n}\bm\sigma_i$ satisfies \eqref{eq:comm}, because operators of different
 qubits commute and $[\sigma^a_i/2,\sigma^b_i/2] = i\epsilon_{abc}\sigma^c_i/2$.
-A product basis state with $u$ qubits up and $n-u$ down has $S_z = \frac12(u - (n-u)) = u - \frac n2$. Define the
+A product basis state with $u$ qubits up and $n-u$ down has $J_z = \frac12(u - (n-u)) = u - \frac n2$. Define the
 \emph{Dicke state} as the normalised equal-weight sum of all $\binom{n}{u}$ such product states,
 \begin{equation}\label{eq:dicke-abstract}
-  |D_u\rangle = \binom{n}{u}^{-1/2}\sum_{\text{$u$ up}}|\cdots\rangle ,\qquad S_z|D_u\rangle = \Big(u-\frac n2\Big)|D_u\rangle .
+  |D_u\rangle = \binom{n}{u}^{-1/2}\sum_{\text{$u$ up}}|\cdots\rangle ,\qquad J_z|D_u\rangle = \Big(u-\frac n2\Big)|D_u\rangle .
 \end{equation}
 It is symmetric under every permutation of the qubits. We now show that $|D_u\rangle = |j,m\rangle$ with $j = n/2$ and
 $m = u - j$, including the phases of \eqref{eq:ladder}.
 
-\emph{Step 1.} The all-up state $|D_n\rangle = |\up\up\cdots\up\rangle$ has $S_z = n/2 = j$, the largest possible
-value, and $S_+ = \sum_i\sigma^+_i$ (with $\sigma^+ = |\up\rangle\langle\dn|$) annihilates it. So it is $|j,j\rangle$.
+\emph{Step 1.} The all-up state $|D_n\rangle = |\up\up\cdots\up\rangle$ has $J_z = n/2 = j$, the largest possible
+value, and $J_+ = \sum_i\sigma^+_i$ (with $\sigma^+ = |\up\rangle\langle\dn|$) annihilates it. So it is $|j,j\rangle$.
 
-\emph{Step 2.} $S_- = \sum_i \sigma^-_i$ with $\sigma^- = |\dn\rangle\langle\up|$ turns one up qubit down. Acting on
+\emph{Step 2.} $J_- = \sum_i \sigma^-_i$ with $\sigma^- = |\dn\rangle\langle\up|$ turns one up qubit down. Acting on
 $|D_u\rangle$, every one of its $\binom nu$ terms produces $u$ terms with $u-1$ up qubits. A given product state with
 $u-1$ up qubits is produced from each of the states obtained by turning one of its $n-u+1$ down qubits up, i.e.\
 $n-u+1$ times. Therefore
 \begin{equation*}
-  S_-|D_u\rangle = \binom nu^{-1/2}(n-u+1)\sum_{\text{$u-1$ up}}|\cdots\rangle
+  J_-|D_u\rangle = \binom nu^{-1/2}(n-u+1)\sum_{\text{$u-1$ up}}|\cdots\rangle
   = (n-u+1)\binom nu^{-1/2}\binom{n}{u-1}^{1/2}|D_{u-1}\rangle .
 \end{equation*}
 With $\binom{n}{u-1}\big/\binom nu = \frac{u!\,(n-u)!}{(u-1)!\,(n-u+1)!} = \frac{u}{n-u+1}$ the coefficient is
 $\sqrt{u\,(n-u+1)}$. Inserting $u = j+m$ and $n-u+1 = j-m+1$,
 \begin{equation*}
-  S_-|D_u\rangle = \sqrt{(j+m)(j-m+1)}\;|D_{u-1}\rangle = \sqrt{j(j+1)-m(m-1)}\;|D_{u-1}\rangle = a(m-1)\,|D_{u-1}\rangle ,
+  J_-|D_u\rangle = \sqrt{(j+m)(j-m+1)}\;|D_{u-1}\rangle = \sqrt{j(j+1)-m(m-1)}\;|D_{u-1}\rangle = a(m-1)\,|D_{u-1}\rangle ,
 \end{equation*}
-which is exactly $J_-|j,m\rangle = a(m-1)|j,m-1\rangle$ of \eqref{eq:ladder}. Starting from Step 1 and applying $S_-$
+which is exactly $J_-|j,m\rangle = a(m-1)|j,m-1\rangle$ of \eqref{eq:ladder}. Starting from Step 1 and applying $J_-$
 repeatedly, $|D_u\rangle = |j,u-j\rangle$ for all $u$. The $2j+1$ Dicke states span the \emph{symmetric subspace} and in
-it $\vS$ acts as the spin-$j$ operator $\vJ$. In the rest of this section we write $\vJ$ for $\vS$.
+it $\vJ$ acts as the spin-$j$ operator $\vJ$. In the rest of this section we write $\vJ$ for $\vJ$.
 
 \subsection{Rotating the spin operators}\label{sec:rotation}
 
@@ -482,16 +482,16 @@ bit $i-1$ of $b$ is $1$ if qubit $i$ is up ($\sigma^z_i = +1$) and $0$ if it is 
 $u = \mathrm{popcnt}(b)$, the number of set bits. The state is the vector $\psi(b) = \langle b|\psi\rangle$ of length
 $2^{n_q}$; no $2^{n_q}\times2^{n_q}$ matrix is ever stored. The collective spin is
 \begin{equation}\label{eq:S}
-  \vS = \frac12\sum_{i=1}^{n_q}\bm\sigma_i ,\qquad S_z|b\rangle = \Big(u - \frac{n_q}{2}\Big)|b\rangle .
+  \vJ = \frac12\sum_{i=1}^{n_q}\bm\sigma_i ,\qquad J_z|b\rangle = \Big(u - \frac{n_q}{2}\Big)|b\rangle .
 \end{equation}
-The chain is driven by \eqref{eq:H} with $\vJ\to\vS$, where $S_z^2$ is realised as the all-to-all Ising coupling
-$H_{zz} = \sum_{i,l}V_{il}\sigma^z_i\sigma^z_l$ with $V_{il} = \frac14$ ($i = l$ included), so that $H_{zz} = S_z^2$.
+The chain is driven by \eqref{eq:H} with $\vJ$ the collective spin \eqref{eq:S}, where $J_z^2$ is realised as the all-to-all Ising coupling
+$H_{zz} = \sum_{i,l}V_{il}\sigma^z_i\sigma^z_l$ with $V_{il} = \frac14$ ($i = l$ included), so that $H_{zz} = J_z^2$.
 
 By \cref{sec:two-j} with $n = n_q$, the symmetric subspace is spanned by the Dicke states
 \begin{equation}\label{eq:dicke}
   |j,m\rangle = \binom{n_q}{u}^{-1/2}\sum_{b:\ \mathrm{popcnt}(b)=u}|b\rangle ,\qquad j = \frac{n_q}{2},\quad u = j+m ,
 \end{equation}
-and in this subspace $\vS$ is the spin-$j$ operator $\vJ$ of the kicked top. Each sum contains $\binom{n_q}{u}$ terms,
+and in this subspace $\vJ$ is the spin-$j$ operator $\vJ$ of the kicked top. Each sum contains $\binom{n_q}{u}$ terms,
 which is why the prefactor normalises the state.
 
 \subsection{Projection onto the Dicke states: \texttt{dicke\_amplitudes}}
@@ -567,18 +567,18 @@ $n_q+1$ operations, the same as for the spin-$j$ top.
 \section{Symmetry caveat: leaving the symmetric subspace}\label{sec:caveat}
 %=====================================================================
 
-\paragraph{The dynamics keeps the symmetric subspace.} The kick $e^{-ipS_y} = \prod_ie^{-ip\sigma^y_i/2}$ and the
-coupling $e^{-i\frac{k}{2j}H_{zz}}$ with uniform $V_{il} = \frac14$ are unchanged when qubits are permuted. The
-symmetric subspace is the span of $|j,j\rangle$ and the states $S_-^r|j,j\rangle$, and these operators are functions of
-$\vS$, which maps it into itself; so $UP = PUP$, and since $U^\dagger$ is also a function of $\vS$, $PU = PUP$ too.
+\paragraph{The dynamics keeps the symmetric subspace.} The kick $e^{-ihJ_x} = \prod_ie^{-ih\sigma^x_i/2}$ and the
+coupling $e^{-i\epsilon H_{zz}}$ with uniform $V_{il} = \frac14$ are unchanged when qubits are permuted. The
+symmetric subspace is the span of $|j,j\rangle$ and the states $J_-^r|j,j\rangle$, and these operators are functions of
+$\vJ$, which maps it into itself; so $UP = PUP$, and since $U^\dagger$ is also a function of $\vJ$, $PU = PUP$ too.
 Hence $[U,P] = 0$, and $w(t) = \langle\psi(t)|P|\psi(t)\rangle$ is conserved. The same holds for the backward step (time
-reversal with $k/(2j)\to2\pi-k/(2j)$, $p\to-p$). Starting from a product coherent state, $w = 1$ on the whole forward leg.
+reversal with $\epsilon\to2\pi-\epsilon$, $h\to-h$). Starting from a product coherent state, $w = 1$ on the whole forward leg.
 
 \paragraph{A single-qubit perturbation leaks weight.} With \texttt{butterfly\_effect}, \texttt{rotate\_qubit} applies
 $e^{-i\vartheta\sigma^a_{i_{\rm flip}}/2}$ at $t_r$: a rotation of qubit $i_{\rm flip}$ about $a$ = \texttt{flip\_axis}
 by $\vartheta$ = \texttt{flip\_angle} (default $\pi$, the flip $\sigma^a_{i_{\rm flip}}$ up to the phase $-i$). It acts on
 one qubit only and does not commute with permutations, so the state acquires a component $(1-P)|\psi\rangle$ outside the
-symmetric subspace. That component has $\vS^2 < j(j+1)$ and lives in sectors of smaller total spin; it has no spin-$j$
+symmetric subspace. That component has $\vJ^2 < j(j+1)$ and lives in sectors of smaller total spin; it has no spin-$j$
 Dicke amplitudes. Afterwards $w$ is again conserved, so on the whole backward leg
 \begin{equation}
   |\psi\rangle = \underbrace{P|\psi\rangle}_{\text{weight } w} + \underbrace{(1-P)|\psi\rangle}_{\text{weight } 1-w} .

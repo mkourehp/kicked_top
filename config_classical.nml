@@ -1,9 +1,9 @@
-! Classical kicked top: kick = rotation about y by p, then free torsion about z by k*Z.
+! Classical kicked top: kick = rotation about x by h, then free torsion about z by k*Z.
 ! Angles in radians.
 
 &system
-  p = 1.570796326794896     ! pi/2 = 1.570796326794896
-  k = 1.0
+  h = 1.570796326794896     ! pi/2 = 1.570796326794896
+  k = 2.4                   ! mixed phase space: about half islands, half chaotic sea
 /
 
 &simulation
@@ -14,8 +14,8 @@
 
 &initial
   mode     = 'grid'   ! 'single' | 'grid' | 'random'
-  theta0   = 1.5      ! single: polar angle
-  phi0     = 0.7      ! single: azimuthal angle
+  theta0   = 1.570796326794896   ! single: polar angle (island: pi/2, -pi/2; sea: pi/2, pi/4)
+  phi0     = -1.570796326794896  ! single: azimuthal angle
   n_theta  = 10       ! grid: points in Z = cos(theta) (equal-area grid)
   n_phi    = 10       ! grid: points in phi
   n_random = 100      ! random: number of points, uniform on the sphere

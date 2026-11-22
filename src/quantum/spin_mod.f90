@@ -4,7 +4,7 @@ module spin_mod
   use kinds_mod, only: wp
   implicit none
   private
-  public :: m_values, jy_matrix, expectation_j, coherent_state
+  public :: m_values, jx_matrix, expectation_j, coherent_state
 
 contains
 
@@ -27,23 +27,23 @@ contains
     a = sqrt(max(j*(j + 1.0_wp) - m*(m + 1.0_wp), 0.0_wp))
   end function ladder
 
-  ! J_y = (J_+ - J_-)/(2i) as a dense Hermitian matrix:
-  ! <j,m+1|J_y|j,m> = -i a(m)/2, the only non-zero elements besides their conjugates.
-  pure function jy_matrix(j, n) result(jy)
+  ! J_x = (J_+ + J_-)/2 as a dense Hermitian matrix:
+  ! <j,m+1|J_x|j,m> = a(m)/2, the only non-zero elements besides their conjugates.
+  pure function jx_matrix(j, n) result(jx)
     real(wp), intent(in) :: j
     integer, intent(in) :: n
-    complex(wp) :: jy(n, n)
+    complex(wp) :: jx(n, n)
     real(wp) :: m(n)
     integer :: i
 
     m = m_values(j, n)
-    jy = (0.0_wp, 0.0_wp)
+    jx = (0.0_wp, 0.0_wp)
     do i = 2, n
       ! index i holds m_i, index i-1 holds m_i + 1
-      jy(i - 1, i) = cmplx(0.0_wp, -0.5_wp*ladder(j, m(i)), wp)
-      jy(i, i - 1) = conjg(jy(i - 1, i))
+      jx(i - 1, i) = cmplx(0.5_wp*ladder(j, m(i)), 0.0_wp, wp)
+      jx(i, i - 1) = conjg(jx(i - 1, i))
     end do
-  end function jy_matrix
+  end function jx_matrix
 
   ! [<J_x>, <J_y>, <J_z>] in the normalised state psi, using
   ! <J_+> = <J_x> + i<J_y> = sum_m conj(psi_{m+1}) a(m) psi_m.

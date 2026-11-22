@@ -1,7 +1,7 @@
 """Plots the plot-ready data written by kicked_top_combined.
 
 All computation is done in Fortran (build/kicked_top_combined); this script only reads
-the ASCII files in the output directory and plots them, one column per value of p:
+the ASCII files in the output directory and plots them, one column per value of h:
 the classical Poincare sections, the Husimi snapshots of the qubit chain at t = 0,
 t_r/2, t_r, 3 t_r/2 and 2 t_r, the fidelity, the total spin and the single-qubit spins.
 """
@@ -26,7 +26,7 @@ class CombinedPostProcessor(SpinChainPostProcessor):
         """Classical Poincare sections in (phi, Z), with the orbit of the initial state in red."""
         runs = self._runs()
         fig, axes = plt.subplots(1, len(runs), figsize=(4.5 * len(runs), 4), squeeze=False)
-        for ax, (i, p, k) in zip(axes[0], runs):
+        for ax, (i, h, eps) in zip(axes[0], runs):
             s = self._load(i, "classical/section/phase_space.dat")
             o = self._load(i, "classical/orbit/phase_space.dat")
             ax.plot(s[:, 2], s[:, 3], ",", color="k", alpha=0.5, rasterized=True)
@@ -34,7 +34,7 @@ class CombinedPostProcessor(SpinChainPostProcessor):
             ax.set_xlim(-np.pi, np.pi)
             ax.set_ylim(-1, 1)
             ax.set_xlabel(r"$\phi$")
-            ax.set_title(f"$p = {p:g}$, $k = {k:g}$")
+            ax.set_title(f"$h = {h:g}$, $\\epsilon = {eps:g}$")
         axes[0, 0].set_ylabel(r"$Z = \cos\theta$")
         fig.suptitle("Classical kicked top, Poincare sections")
         fig.tight_layout()
