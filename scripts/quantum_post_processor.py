@@ -48,6 +48,19 @@ class QuantumPostProcessor:
         fig.savefig(self.out_dir / "expectation.png", dpi=200)
         return fig
 
+    def plot_overlap(self):
+        """Overlap |<psi_0|psi_n>|^2 between the state after kick n and the initial state."""
+        title, d = self._load("expectation.dat")
+        fig, ax = plt.subplots(figsize=(8, 3.5))
+        ax.plot(d[:, 0], d[:, 6], "k.-", lw=0.8, ms=3)
+        ax.set_xlabel("kick $n$")
+        ax.set_ylabel(r"$|\langle\psi_0|\psi_n\rangle|^2$")
+        ax.set_ylim(0, 1.05)
+        ax.set_title(f"Quantum kicked top, {title}")
+        fig.tight_layout()
+        fig.savefig(self.out_dir / "overlap.png", dpi=200)
+        return fig
+
     def plot_husimi(self):
         """Husimi distribution Q in the canonical coordinates (phi, Z), one panel per snapshot."""
         title, d = self._load("husimi.dat")
@@ -120,6 +133,7 @@ def main():
 
     qp = QuantumPostProcessor(args.out_dir)
     # qp.plot_expectation(args.classical)
+    qp.plot_overlap()
     if (qp.out_dir / "husimi.dat").exists():
         qp.plot_husimi()
         if args.sphere:

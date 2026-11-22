@@ -110,7 +110,7 @@ python scripts/quantum_post_processor.py --classical output/trajectory.dat --sph
 
 Output (ASCII, `# h = ..., eps = ..., j = ...` header):
 
-- `expectation.dat`: `n Jx/j Jy/j Jz/j norm spread`, spread $=(\langle J^2\rangle-|\langle J\rangle|^2)/j^2$
+- `expectation.dat`: `n Jx/j Jy/j Jz/j norm spread overlap`, spread $=(\langle J^2\rangle-|\langle J\rangle|^2)/j^2$, overlap $=|\langle\psi_0|\psi_n\rangle|^2$
 - `husimi.dat`: `n phi Z X Y Q`, one block per snapshot
 - `quasienergies.dat`: `sector omega`
 - `spacings.dat`: `s P(s) Poisson COE CUE`
