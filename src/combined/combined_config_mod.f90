@@ -15,6 +15,9 @@ module combined_config_mod
     integer :: n_q                 ! number of qubits, j = n_q/2
     real(wp) :: eps                ! coupling: coefficient of H_zz (eps = k/(2j))
     real(wp), allocatable :: h(:)  ! kick: rotation angles about x, one run per value
+    real(wp) :: deltaz             ! static impurity: width of the zz-coupling offsets xi_il
+    real(wp) :: deltax             ! static impurity: width of the kick offsets eta_k
+    integer :: imp_seed            ! static impurity: seed of the random offsets
     integer :: s0                  ! initial state: -1 all up, 0 all down (along pol)
     character(len=1) :: pol        ! axis of the initial polarisation: 'z', 'x', 'y'
     logical :: has_angles          ! theta0 and phi0 given: they replace s0 and pol
@@ -38,14 +41,14 @@ contains
     character(len=*), intent(in) :: path
     type(rconfig_t), intent(out) :: cfg
 
-    integer :: n_q, s0, n_kicks, n_theta, n_phi, t_r, i_flip
+    integer :: n_q, s0, n_kicks, n_theta, n_phi, t_r, i_flip, imp_seed
     logical :: butterfly_effect
-    real(wp) :: eps, h(max_h), flip_angle, theta0, phi0
+    real(wp) :: eps, h(max_h), deltaz, deltax, flip_angle, theta0, phi0
     character(len=1) :: pol, flip_axis
     character(len=str_len) :: out_dir
     integer :: u, ios
 
-    namelist /system/ n_q, eps, h
+    namelist /system/ n_q, eps, h, deltaz, deltax, imp_seed
     namelist /initial/ s0, pol, theta0, phi0
     namelist /classical/ n_kicks, n_theta, n_phi
     namelist /chain/ t_r, butterfly_effect, i_flip, flip_axis, flip_angle
@@ -55,6 +58,9 @@ contains
     n_q = 10
     eps = 2.0_wp
     h = huge(1.0_wp)
+    deltaz = 0.0_wp
+    deltax = 0.0_wp
+    imp_seed = 12345
     s0 = -1
     pol = 'z'
     theta0 = huge(1.0_wp)
@@ -102,6 +108,9 @@ contains
     cfg%eps = eps
     if (all(h >= huge(1.0_wp))) h(1:3) = [0.02_wp, 0.1_wp, 1.0_wp]
     cfg%h = pack(h, h < huge(1.0_wp))
+    cfg%deltaz = deltaz
+    cfg%deltax = deltax
+    cfg%imp_seed = imp_seed
     cfg%s0 = s0
     cfg%pol = pol
     cfg%has_angles = theta0 < huge(1.0_wp) .and. phi0 < huge(1.0_wp)
@@ -122,6 +131,8 @@ contains
 
     if (cfg%n_q < 1 .or. cfg%n_q > 26) error stop 'combined_config_mod: n_q must be in 1 .. 26'
     if (size(cfg%h) < 1) error stop 'combined_config_mod: give at least one value of h'
+    if (cfg%deltaz < 0.0_wp .or. cfg%deltax < 0.0_wp) &
+      error stop 'combined_config_mod: deltaz and deltax must be >= 0'
     if (cfg%n_kicks < 1) error stop 'combined_config_mod: n_kicks must be >= 1'
     if (cfg%n_theta < 1 .or. cfg%n_phi < 1) error stop 'combined_config_mod: n_theta and n_phi must be >= 1'
     if (cfg%t_r < 1) error stop 'combined_config_mod: t_r must be >= 1'

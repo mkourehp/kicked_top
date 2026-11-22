@@ -22,14 +22,14 @@ program kicked_top_combined
   use combined_config_mod, only: rconfig_t, read_combined_config, str_len
   use combined_io_mod, only: run_dir, write_regimes
   use chain_state_mod, only: ferromagnetic_direction
-  use chain_floquet_mod, only: uniform_coupling, zz_energies
+  use chain_floquet_mod, only: uniform_coupling, static_impurity, zz_energies
   use chain_run_mod, only: run_chain
   implicit none
 
   type(rconfig_t) :: cfg
   character(len=str_len) :: cfg_path
   real(wp) :: theta0, phi0
-  real(wp), allocatable :: hus_theta(:), hus_phi(:), e_zz(:)
+  real(wp), allocatable :: hus_theta(:), hus_phi(:), e_zz(:), e_imp(:), xi(:,:), eta(:)
   integer :: i
 
   cfg_path = 'config_combined.nml'
@@ -49,10 +49,14 @@ program kicked_top_combined
   call equal_area_grid(cfg%hus_n_theta, cfg%hus_n_phi, hus_theta, hus_phi)
 
   e_zz = zz_energies(cfg%n_q, uniform_coupling(cfg%n_q))
+  allocate(xi(cfg%n_q, cfg%n_q), eta(cfg%n_q))
+  call static_impurity(cfg%n_q, cfg%deltaz, cfg%deltax, cfg%imp_seed, xi, eta)
+  e_imp = zz_energies(cfg%n_q, xi)
 
   do i = 1, size(cfg%h)
     call run_classical(cfg%h(i), run_dir(cfg, i)//'/classical')
-    call run_chain(cfg, cfg%h(i), theta0, phi0, e_zz, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', 'kicked_top_combined')
+    call run_chain(cfg, cfg%h(i), theta0, phi0, e_zz, e_imp, eta, hus_theta, hus_phi, run_dir(cfg, i)//'/chain', &
+      'kicked_top_combined')
   end do
 
 contains

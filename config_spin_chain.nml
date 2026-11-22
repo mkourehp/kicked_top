@@ -8,6 +8,11 @@
   n_q = 10                 ! number of qubits, j = n_q/2
   eps = 2.0                ! coupling, k/n_q for the classical torsion strength k = 20
   h   = 0.02, 0.1, 1.0     ! kick angles about x, one run per value: regular, mixed, chaotic (for k = 20)
+  deltaz = 0.0             ! static impurity: coefficient of sigma^z_i sigma^z_l is eps V_il + xi_il,
+                           !   xi_il = xi_li uniform in [-deltaz/2, deltaz/2] (i < l)
+  deltax = 0.0             ! static impurity: qubit k is kicked by h + eta_k, eta_k uniform in [-deltax/2, deltax/2]
+                           !   drawn once, unchanged after t_r (not reversed); 0, 0 = clean chain
+  imp_seed = 12345         ! seed of the impurity offsets
 /
 
 &initial
