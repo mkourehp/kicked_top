@@ -12,16 +12,16 @@ module quantum_io_mod
 contains
 
   ! expectation.dat, one line per kick n:
-  !   n  <J_x>/j  <J_y>/j  <J_z>/j  norm  spread
-  ! obs(:, n) = [<J>/j (3), <psi|psi>, (<J^2> - |<J>|^2)/j^2].
+  !   n  <J_x>/j  <J_y>/j  <J_z>/j  norm  spread  overlap
+  ! obs(:, n) = [<J>/j (3), <psi|psi>, (<J^2> - |<J>|^2)/j^2, |<psi_0|psi_n>|^2].
   subroutine write_expectation(cfg, obs)
     type(qconfig_t), intent(in) :: cfg
     real(wp), intent(in) :: obs(:, 0:)
     integer :: u, n
 
-    call open_file(cfg, 'expectation.dat', 'n Jx/j Jy/j Jz/j norm spread', u)
+    call open_file(cfg, 'expectation.dat', 'n Jx/j Jy/j Jz/j norm spread overlap', u)
     do n = 0, ubound(obs, 2)
-      write(u, '(i0,5(1x,es23.15e3))') n, obs(:, n)
+      write(u, '(i0,6(1x,es23.15e3))') n, obs(:, n)
     end do
     close(u)
   end subroutine write_expectation

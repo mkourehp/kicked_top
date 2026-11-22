@@ -1,7 +1,7 @@
 ! Driver of the quantum kicked top.
 ! Usage: kicked_top_quantum [namelist file]   (default config_quantum.nml)
 ! read_qconfig -> Floquet operator U -> evolve a spin coherent state kick by kick
-! (expectation values, Husimi snapshots) -> quasienergies and spacing statistics
+! (expectation values, overlap |<psi0|psi_n>|^2, Husimi snapshots) -> quasienergies and spacing statistics
 ! -> summary of the correctness checks.
 program kicked_top_quantum
   use kinds_mod, only: wp, pi
@@ -18,7 +18,7 @@ program kicked_top_quantum
 
   type(qconfig_t) :: cfg
   character(len=256) :: cfg_path
-  complex(wp), allocatable :: v(:,:), u(:,:), psi(:)
+  complex(wp), allocatable :: v(:,:), u(:,:), psi(:), psi0(:)
   real(wp), allocatable :: mu(:), obs(:,:), theta(:), phi(:), q(:,:)
   real(wp), allocatable :: omega(:), s_centre(:), density(:)
   integer, allocatable :: sector(:)
@@ -47,13 +47,15 @@ program kicked_top_quantum
     call equal_area_grid(cfg%n_theta, cfg%n_phi, theta, phi)
   end if
 
-  psi = coherent_state(cfg%j, cfg%dim, cfg%theta0, cfg%phi0)
-  allocate(obs(5, 0:cfg%n_kicks))
+  psi0 = coherent_state(cfg%j, cfg%dim, cfg%theta0, cfg%phi0)
+  psi = psi0
+  allocate(obs(6, 0:cfg%n_kicks))
   do n = 0, cfg%n_kicks
     if (n > 0) psi = matmul(u, psi)
     obs(1:3, n) = expectation_j(psi, cfg%j)/cfg%j
     obs(4, n) = sum(abs(psi)**2)
     obs(5, n) = (cfg%j*(cfg%j + 1.0_wp) - cfg%j**2*sum(obs(1:3, n)**2))/cfg%j**2
+    obs(6, n) = abs(dot_product(psi0, psi))**2
     if (cfg%husimi) then
       do i = 1, size(cfg%husimi_kicks)
         if (cfg%husimi_kicks(i) == n) call husimi(psi, cfg%j, theta, phi, q(:, i))
