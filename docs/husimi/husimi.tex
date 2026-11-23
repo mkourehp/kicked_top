@@ -65,10 +65,10 @@ is the unit vector in that direction. A hat on a bold symbol always means a unit
 $\hat{\bm y}=(0,1,0)$, $\hat{\bm z}=(0,0,1)$, and $\vn,\vn',\vn_0$ are directions on the sphere. Quantum operators carry
 \emph{no} hat. The spin operators $\vJ = (J_x,J_y,J_z)$ satisfy
 \begin{equation}\label{eq:comm}
-  [J_a, J_b] = i\,\epsilon_{abc}\,J_c ,
+  [J_a, J_b] = i\,\varepsilon_{abc}\,J_c ,
 \end{equation}
-where $[A,B] = AB-BA$, $i$ is the imaginary unit, $a,b,c\in\{x,y,z\}$, $c$ is summed over, and $\epsilon_{abc}$ is the
-Levi-Civita symbol ($\epsilon_{xyz}=\epsilon_{yzx}=\epsilon_{zxy}=1$, $\epsilon_{xzy}=\epsilon_{zyx}=\epsilon_{yxz}=-1$,
+where $[A,B] = AB-BA$, $i$ is the imaginary unit, $a,b,c\in\{x,y,z\}$, $c$ is summed over, and $\varepsilon_{abc}$ is the
+Levi-Civita symbol ($\varepsilon_{xyz}=\varepsilon_{yzx}=\varepsilon_{zxy}=1$, $\varepsilon_{xzy}=\varepsilon_{zyx}=\varepsilon_{yxz}=-1$,
 zero if two indices are equal). For spin $j$ ($j = \frac12, 1, \frac32,\dots$) the basis states $|j,m\rangle$,
 $m = j, j-1,\dots,-j$, satisfy $\vJ^2|j,m\rangle = j(j+1)|j,m\rangle$, $J_z|j,m\rangle = m|j,m\rangle$, and with
 the ladder operators $J_\pm = J_x \pm iJ_y$
@@ -79,10 +79,10 @@ A state is $|\psi\rangle = \sum_m \psi_m|j,m\rangle$. In the code (\texttt{spin\
 index $i = 1,\dots,2j+1$ with $m = j-(i-1)$. $\binom{n}{r} = \frac{n!}{r!\,(n-r)!}$ is the binomial coefficient.
 The kicked top has the Hamiltonian and the one-period (Floquet) operator, sampled just before each kick,
 \begin{equation}\label{eq:H}
-  H(t) = \epsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
-  U = e^{-i\epsilon J_z^2}\,e^{-ihJ_x},
+  H(t) = \varepsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
+  U = e^{-i\varepsilon J_z^2}\,e^{-ihJ_x},
 \end{equation}
-with coupling $\epsilon$ (the classical torsion strength is $k = 2j\epsilon$) and kick angle $h$; $|\psi_n\rangle = U^n|\psi_0\rangle$ is the state after $n$ kicks.
+with coupling $\varepsilon$ (the classical torsion strength is $k = 2j\varepsilon$) and kick angle $h$; $|\psi_n\rangle = U^n|\psi_0\rangle$ is the state after $n$ kicks.
 The rotation matrices about $z$ and $y$ (counter-clockwise by the right-hand rule) are
 \begin{equation}\label{eq:rot}
   R_z(\alpha) = \begin{pmatrix} \cos\alpha & -\sin\alpha & 0\\ \sin\alpha & \cos\alpha & 0 \\ 0 & 0 & 1 \end{pmatrix},
@@ -141,7 +141,7 @@ Take $n = 2j$ spins $\frac12$ (qubits) with Pauli matrices $\sigma^a_i$ for qubi
   \qquad\text{e.g. } \sigma^y|\up\rangle = i|\dn\rangle,\ \sigma^y|\dn\rangle = -i|\up\rangle .
 \end{equation}
 The collective spin $\vJ = \frac12\sum_{i=1}^{n}\bm\sigma_i$ satisfies \eqref{eq:comm}, because operators of different
-qubits commute and $[\sigma^a_i/2,\sigma^b_i/2] = i\epsilon_{abc}\sigma^c_i/2$.
+qubits commute and $[\sigma^a_i/2,\sigma^b_i/2] = i\varepsilon_{abc}\sigma^c_i/2$.
 A product basis state with $u$ qubits up and $n-u$ down has $J_z = \frac12(u - (n-u)) = u - \frac n2$. Define the
 \emph{Dicke state} as the normalised equal-weight sum of all $\binom{n}{u}$ such product states,
 \begin{equation}\label{eq:dicke-abstract}
@@ -568,11 +568,11 @@ $n_q+1$ operations, the same as for the spin-$j$ top.
 %=====================================================================
 
 \paragraph{The dynamics keeps the symmetric subspace.} The kick $e^{-ihJ_x} = \prod_ie^{-ih\sigma^x_i/2}$ and the
-coupling $e^{-i\epsilon H_{zz}}$ with uniform $V_{il} = \frac14$ are unchanged when qubits are permuted. The
+coupling $e^{-i\varepsilon H_{zz}}$ with uniform $V_{il} = \frac14$ are unchanged when qubits are permuted. The
 symmetric subspace is the span of $|j,j\rangle$ and the states $J_-^r|j,j\rangle$, and these operators are functions of
 $\vJ$, which maps it into itself; so $UP = PUP$, and since $U^\dagger$ is also a function of $\vJ$, $PU = PUP$ too.
 Hence $[U,P] = 0$, and $w(t) = \langle\psi(t)|P|\psi(t)\rangle$ is conserved. The same holds for the backward step (time
-reversal with $\epsilon\to2\pi-\epsilon$, $h\to-h$). Starting from a product coherent state, $w = 1$ on the whole forward leg.
+reversal with $\varepsilon\to2\pi-\varepsilon$, $h\to-h$). Starting from a product coherent state, $w = 1$ on the whole forward leg.
 
 \paragraph{A single-qubit perturbation leaks weight.} With \texttt{butterfly\_effect}, \texttt{rotate\_qubit} applies
 $e^{-i\vartheta\sigma^a_{i_{\rm flip}}/2}$ at $t_r$: a rotation of qubit $i_{\rm flip}$ about $a$ = \texttt{flip\_axis}

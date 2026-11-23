@@ -66,24 +66,24 @@ evolves as
 \end{equation}
 
 Take a particle with position $\bm r$ and momentum $\bm p$ and its angular momentum $\vJ = \bm r \times \bm p$, i.e.
-$J_i = \epsilon_{ijk} r_j p_k$. Here the indices $i,j,k,m$ run over the three axes $x,y,z$ (they are unrelated to
-the parameters $j$ and $k$ introduced in \cref{sec:model}), repeated indices are summed over, and $\epsilon_{ijk}$ is the
-Levi-Civita symbol: $\epsilon_{xyz} = \epsilon_{yzx} = \epsilon_{zxy} = 1$, $\epsilon_{xzy} = \epsilon_{zyx} =
-\epsilon_{yxz} = -1$, and $\epsilon_{ijk} = 0$ if two indices are equal. With it the cross product reads $(\bm a\times
-\bm b)_i = \epsilon_{imk}\,a_m b_k$. A short calculation gives, for example,
+$J_i = \varepsilon_{ijk} r_j p_k$. Here the indices $i,j,k,m$ run over the three axes $x,y,z$ (they are unrelated to
+the parameters $j$ and $k$ introduced in \cref{sec:model}), repeated indices are summed over, and $\varepsilon_{ijk}$ is the
+Levi-Civita symbol: $\varepsilon_{xyz} = \varepsilon_{yzx} = \varepsilon_{zxy} = 1$, $\varepsilon_{xzy} = \varepsilon_{zyx} =
+\varepsilon_{yxz} = -1$, and $\varepsilon_{ijk} = 0$ if two indices are equal. With it the cross product reads $(\bm a\times
+\bm b)_i = \varepsilon_{imk}\,a_m b_k$. A short calculation gives, for example,
 \begin{equation*}
   \PB{J_x}{J_y} = \PB{y p_z - z p_y}{z p_x - x p_z}
   = y\,\PB{p_z}{z}\,p_x + p_y\,\PB{z}{p_z}\,x = -y p_x + x p_y = J_z ,
 \end{equation*}
 and in general
 \begin{equation}\label{eq:J-algebra}
-  \boxed{\PB{J_i}{J_j} = \epsilon_{ijk}\, J_k .}
+  \boxed{\PB{J_i}{J_j} = \varepsilon_{ijk}\, J_k .}
 \end{equation}
 The key idea of these notes is that \eqref{eq:J-algebra} is \emph{all} we need. We can forget $\bm r$ and $\bm p$
 and treat the three components $J_x, J_y, J_z$ themselves as the dynamical variables, with the bracket
 \eqref{eq:J-algebra}. This is how one describes the orientation of a rigid body's angular momentum, the total angular
 momentum of many atoms, or the classical limit of a \emph{spin}. A spin is an angular momentum that has no
-$\bm r \times \bm p$ behind it, but whose quantum operators satisfy $[\hat J_i,\hat J_j] = i\hbar\,\epsilon_{ijk}\hat
+$\bm r \times \bm p$ behind it, but whose quantum operators satisfy $[\hat J_i,\hat J_j] = i\hbar\,\varepsilon_{ijk}\hat
 J_k$, the quantum version of \eqref{eq:J-algebra} (the usual correspondence is $\PB{\cdot}{\cdot} \leftrightarrow
 [\cdot,\cdot]/i\hbar$). In this sentence only, a hat marks a quantum operator, $[\hat A,\hat B] = \hat A\hat B -
 \hat B\hat A$ is the commutator, $i$ the imaginary unit and $\hbar$ Planck's constant. Everywhere else in Part I a hat
@@ -91,16 +91,16 @@ on a bold symbol, such as $\hat{\bm y}$, denotes a unit vector.
 
 For any function $f(\vJ)$, the chain rule and \eqref{eq:J-algebra} give
 \begin{equation}\label{eq:J-f-bracket}
-  \PB{J_i}{f} = \frac{\partial f}{\partial J_m}\PB{J_i}{J_m} = \epsilon_{imk}\,\frac{\partial f}{\partial J_m}\, J_k .
+  \PB{J_i}{f} = \frac{\partial f}{\partial J_m}\PB{J_i}{J_m} = \varepsilon_{imk}\,\frac{\partial f}{\partial J_m}\, J_k .
 \end{equation}
 
 \subsection{The length of \texorpdfstring{$\vJ$}{J} is conserved: the phase space is a sphere}
 
 Let $J^2 = J_x^2 + J_y^2 + J_z^2$. Using \eqref{eq:J-f-bracket},
 \begin{equation}
-  \PB{J_i}{J^2} = \epsilon_{imk}\, 2 J_m J_k = 0 ,
+  \PB{J_i}{J^2} = \varepsilon_{imk}\, 2 J_m J_k = 0 ,
 \end{equation}
-because $\epsilon_{imk}$ is antisymmetric in $m,k$ while $J_m J_k$ is symmetric. Hence $J^2$ has a vanishing bracket
+because $\varepsilon_{imk}$ is antisymmetric in $m,k$ while $J_m J_k$ is symmetric. Hence $J^2$ has a vanishing bracket
 with every function of $\vJ$ (it is a \emph{Casimir} of the bracket), and in particular with every Hamiltonian
 $H(\vJ,t)$:
 \begin{equation}
@@ -173,7 +173,7 @@ and not $(\phi,\theta)$: equal areas in the plot are equal areas on the sphere.
 Take $H = \bm\omega\cdot\vJ$ with a constant vector $\bm\omega$. With \eqref{eq:eom-general} and
 \eqref{eq:J-f-bracket},
 \begin{equation}\label{eq:precession}
-  \frac{dJ_i}{dt} = \PB{J_i}{\omega_m J_m} = \epsilon_{imk}\,\omega_m J_k
+  \frac{dJ_i}{dt} = \PB{J_i}{\omega_m J_m} = \varepsilon_{imk}\,\omega_m J_k
   \quad\Longleftrightarrow\quad
   \frac{d\vJ}{dt} = \bm\omega \times \vJ .
 \end{equation}
@@ -260,15 +260,15 @@ Now derive $\dot{\vs}$ in three steps.
   \item $s_i = J_i/j$ has no explicit time dependence, so by \eqref{eq:eom-general}
   \[ \frac{ds_i}{dt} = \frac1j\,\frac{dJ_i}{dt} = \frac1j\,\PB{J_i}{H}. \]
   \item By \eqref{eq:J-f-bracket} with $f = H$,
-  \[ \PB{J_i}{H} = \epsilon_{imk}\,\frac{\partial H}{\partial J_m}\,J_k . \]
+  \[ \PB{J_i}{H} = \varepsilon_{imk}\,\frac{\partial H}{\partial J_m}\,J_k . \]
   \item $H(\vJ) = j\,\mathcal H(\vJ/j)$, so by the chain rule $\dfrac{\partial H}{\partial J_m} = j\,\dfrac{\partial \mathcal H}{\partial
   s_m}\,\dfrac{\partial s_m}{\partial J_m} = j\,\dfrac{\partial \mathcal H}{\partial s_m}\,\dfrac1j = \dfrac{\partial \mathcal H}{\partial
   s_m}$, and $J_k = j\,s_k$.
 \end{enumerate}
 Putting the three together,
 \begin{equation*}
-  \frac{ds_i}{dt} = \frac1j\,\epsilon_{imk}\,\frac{\partial \mathcal H}{\partial s_m}\, j\,s_k
-                 = \epsilon_{imk}\,\big(\nabla_{\!s} \mathcal H\big)_m\, s_k ,
+  \frac{ds_i}{dt} = \frac1j\,\varepsilon_{imk}\,\frac{\partial \mathcal H}{\partial s_m}\, j\,s_k
+                 = \varepsilon_{imk}\,\big(\nabla_{\!s} \mathcal H\big)_m\, s_k ,
 \end{equation*}
 and the right-hand side is the $i$-th component of the cross product (\cref{sec:angmom}). Hence
 \begin{equation}\label{eq:eom-s}
@@ -1009,7 +1009,7 @@ In quantum mechanics the three components of the angular momentum become Hermiti
 classical bracket \eqref{eq:J-algebra} is replaced by the commutator $[\hat A, \hat B] = \hat A\hat B - \hat B\hat A$
 with the rule $\PB{\cdot}{\cdot} \to -i[\cdot,\cdot]$:
 \begin{equation}\label{eq:q-algebra}
-  [\hat J_a, \hat J_b] = i\,\epsilon_{abc}\,\hat J_c .
+  [\hat J_a, \hat J_b] = i\,\varepsilon_{abc}\,\hat J_c .
 \end{equation}
 
 \paragraph{The basis $|j,m\rangle$.} $\hat J^2 = \hat J_x^2 + \hat J_y^2 + \hat J_z^2$ commutes with every $\hat J_a$
@@ -1039,23 +1039,23 @@ gives the two transverse expectation values ($^*$ is complex conjugation).
 \section{The Floquet operator}\label{sec:floquet}
 
 \paragraph{Derivation.} The state obeys the Schrödinger equation $i\,\frac{d}{dt}|\psi\rangle = \hat H(t)|\psi\rangle$
-with $\hat H(t) = \epsilon\hat J_z^2 + h\hat J_x\sum_n\delta(t-n)$ the operator version of \eqref{eq:H}, $\epsilon = k/(2j)$. We integrate it over one period exactly as in \cref{sec:map}.
+with $\hat H(t) = \varepsilon\hat J_z^2 + h\hat J_x\sum_n\delta(t-n)$ the operator version of \eqref{eq:H}, $\varepsilon = k/(2j)$. We integrate it over one period exactly as in \cref{sec:map}.
 \begin{enumerate}
   \item Across the kick only the $\delta$ term matters (the same argument as Step 1 of \cref{sec:map}):
   $i\frac{d}{dt}|\psi\rangle = h\hat J_x\,\delta(t-n)|\psi\rangle$. All operators involved commute
   with each other, so the solution is the exponential of the integral,
   $|\psi(n^+)\rangle = \hat R\,|\psi(n^-)\rangle$ with $\hat R = e^{-ih\hat J_x}$.
-  \item For $n < t < n+1$, $\hat H = \epsilon\hat J_z^2$ does not depend on time, so $|\psi(t)\rangle =
-  e^{-i(t-n)\epsilon\hat J_z^2}|\psi(n^+)\rangle$. After the unit time, $|\psi\rangle \to \hat T\,|\psi\rangle$
-  with $\hat T = e^{-i\epsilon\hat J_z^2}$.
+  \item For $n < t < n+1$, $\hat H = \varepsilon\hat J_z^2$ does not depend on time, so $|\psi(t)\rangle =
+  e^{-i(t-n)\varepsilon\hat J_z^2}|\psi(n^+)\rangle$. After the unit time, $|\psi\rangle \to \hat T\,|\psi\rangle$
+  with $\hat T = e^{-i\varepsilon\hat J_z^2}$.
 \end{enumerate}
 One period is therefore
 \begin{equation}\label{eq:floquet}
-  \boxed{\hat U = \hat T\hat R = \exp\!\big(-i\epsilon\hat J_z^2\big)\exp\!\big(-ih\hat J_x\big), \qquad
+  \boxed{\hat U = \hat T\hat R = \exp\!\big(-i\varepsilon\hat J_z^2\big)\exp\!\big(-ih\hat J_x\big), \qquad
   |\psi_{n+1}\rangle = \hat U|\psi_n\rangle ,}
 \end{equation}
 first the kick, then the torsion, as in \eqref{eq:map}. In the basis \eqref{eq:jm-basis} the torsion is diagonal,
-$\hat T|j,m\rangle = e^{-i\epsilon m^2}|j,m\rangle$. $\hat U$ is unitary ($\hat U^\dagger\hat U = 1$, $^\dagger$ the conjugate
+$\hat T|j,m\rangle = e^{-i\varepsilon m^2}|j,m\rangle$. $\hat U$ is unitary ($\hat U^\dagger\hat U = 1$, $^\dagger$ the conjugate
 transpose) because it is a product of exponentials of $-i$ times Hermitian operators; hence $\langle\psi_n|\psi_n\rangle$
 is conserved.
 
@@ -1069,16 +1069,16 @@ for any angle $\alpha$, because $(\hat V D\hat V^\dagger)^n = \hat V D^n\hat V^\
 series.
 
 \paragraph{The classical limit.} Write $\hat{\bm s} = \hat{\vJ}/j$. Then \eqref{eq:q-algebra} becomes $[\hat s_a, \hat
-s_b] = \frac{i}{j}\,\epsilon_{abc}\,\hat s_c$: the components of $\hat{\bm s}$ commute in the limit $j\to\infty$, and
+s_b] = \frac{i}{j}\,\varepsilon_{abc}\,\hat s_c$: the components of $\hat{\bm s}$ commute in the limit $j\to\infty$, and
 $1/j$ plays the role of an effective Planck constant. In the Heisenberg picture an operator evolves as $\hat A \to
 \hat U^\dagger\hat A\hat U$. For the rotation, $\hat R^\dagger\hat J_a\hat R = \sum_b R_x(h)_{ab}\hat J_b$ (the quantum
 rotation rotates the vector operator exactly as \eqref{eq:rotation-x}). For the torsion, $\hat J_z$ commutes with $\hat T$,
 and for $\hat J_+$, using $\hat J_+ f(\hat J_z) = f(\hat J_z - 1)\hat J_+$,
 \begin{equation*}
-  \hat T^\dagger\hat J_+\hat T = e^{i\epsilon\hat J_z^2}\,e^{-i\epsilon(\hat J_z-1)^2}\,\hat J_+
-  = e^{i\epsilon(2\hat J_z - 1)}\,\hat J_+ = e^{ik\hat s_z - i\epsilon}\,\hat J_+ , \qquad k = 2j\epsilon ,
+  \hat T^\dagger\hat J_+\hat T = e^{i\varepsilon\hat J_z^2}\,e^{-i\varepsilon(\hat J_z-1)^2}\,\hat J_+
+  = e^{i\varepsilon(2\hat J_z - 1)}\,\hat J_+ = e^{ik\hat s_z - i\varepsilon}\,\hat J_+ , \qquad k = 2j\varepsilon ,
 \end{equation*}
-i.e.\ $\hat J_x + i\hat J_y$ is rotated about $z$ by the angle $k\hat s_z - \epsilon$. For $j\to\infty$ this is the
+i.e.\ $\hat J_x + i\hat J_y$ is rotated about $z$ by the angle $k\hat s_z - \varepsilon$. For $j\to\infty$ this is the
 torsion \eqref{eq:torsion} with angle $kZ$. So the Heisenberg equations of $\hat{\bm s}$ reduce to the classical map
 \eqref{eq:map} when $j\to\infty$.
 
@@ -1411,7 +1411,7 @@ LAPACK: \texttt{zheev} diagonalises $\hat J_x$ and \texttt{zgeev} computes the e
 \toprule
 File & Role & Physics \\
 \midrule
-\texttt{quantum\_config\_mod.f90} & reads and checks \texttt{config\_quantum.nml} & $h, \epsilon, j$ \\
+\texttt{quantum\_config\_mod.f90} & reads and checks \texttt{config\_quantum.nml} & $h, \varepsilon, j$ \\
 \texttt{spin\_mod.f90} & $\hat J_x$ matrix, $\langle\hat{\vJ}\rangle$, coherent states & \eqref{eq:jx-elements}, \eqref{eq:coherent} \\
 \texttt{floquet\_mod.f90} & $\hat V, \mu_l$ (\texttt{zheev}), $e^{-i\alpha\hat J_x}$, $\hat U$ & \eqref{eq:exp-jx}, \eqref{eq:floquet} \\
 \texttt{husimi\_mod.f90} & $Q$ on the equal-area grid, its normalisation & \eqref{eq:husimi}, \eqref{eq:husimi-norm} \\
@@ -1439,20 +1439,20 @@ $N = 2j+1$: a few seconds for $j = 500$.
   5\times10^{-13}$; $|\langle\psi_n|\psi_n\rangle - 1| < 3\times10^{-13}$; every eigenvalue of $\hat U$ has modulus 1
   to $3\times10^{-14}$.
   \item The Husimi normalisation \eqref{eq:husimi-norm} is $1.0000$ on a $100\times200$ grid for $j = 50$.
-  \item $\epsilon = 0$, $h = \pi/2$: $\hat U^4$ is a rotation by $2\pi$, and $\langle\hat{\bm s}\rangle$ returns to its initial
+  \item $\varepsilon = 0$, $h = \pi/2$: $\hat U^4$ is a rotation by $2\pi$, and $\langle\hat{\bm s}\rangle$ returns to its initial
   value after 4 kicks to $10^{-14}$ with spread $1/j$, as for a coherent state.
-  \item Correspondence, $j = 500$, $\epsilon = 0.003$ ($k = 2j\epsilon = 3$), $h=\pi/2$: started in the island at $(\theta_0,\phi_0) = (2.25, -0.94)$,
+  \item Correspondence, $j = 500$, $\varepsilon = 0.003$ ($k = 2j\varepsilon = 3$), $h=\pi/2$: started in the island at $(\theta_0,\phi_0) = (2.25, -0.94)$,
   $|\langle\hat{\bm s}\rangle_n - \bm s_n| < 0.008$ for 50 kicks. Started in the chaotic sea at $(\pi/2, -0.17)$ the
   difference is $0.11$ at $n = 5$ and $0.50$ at $n = 10$, consistent with $n_E = \ln 500/(2\times0.33) \approx 9$
   from \eqref{eq:ehrenfest} (\cref{fig:quantum-expectation}).
-  \item Spectrum, $j = 500$, $h = 1.7$, $\epsilon = 0.01$ ($k = 10$): $\langle r\rangle = 0.537$ and $0.511$ in the two sectors,
+  \item Spectrum, $j = 500$, $h = 1.7$, $\varepsilon = 0.01$ ($k = 10$): $\langle r\rangle = 0.537$ and $0.511$ in the two sectors,
   against $0.531$ for the COE, and $P(s)$ follows the COE curve (\cref{fig:quantum-spacings}).
 \end{itemize}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/quantum_husimi.pdf}
-\caption{Husimi distribution \eqref{eq:husimi} of a coherent state, $j = 200$, $h = \pi/2$, $\epsilon = 0.0075$ ($k = 3$), after $n = 0, 5,
+\caption{Husimi distribution \eqref{eq:husimi} of a coherent state, $j = 200$, $h = \pi/2$, $\varepsilon = 0.0075$ ($k = 3$), after $n = 0, 5,
 10, 30$ kicks. Top: started in the regular island at $(\theta_0,\phi_0) = (2.25, -0.94)$, where it stays.
 Bottom: started in the chaotic sea at $(\pi/2, -0.17)$, where it spreads over the chaotic region of
 \cref{fig:portraits} and avoids the islands.}
@@ -1472,7 +1472,7 @@ initial states of \cref{fig:quantum-husimi}. The island start lies close to the 
 \centering
 \includegraphics[width=0.6\textwidth]{figures/quantum_spacings.pdf}
 \caption{Distribution of unfolded quasienergy spacings \eqref{eq:unfold}, both parity sectors, $j = 500$, $h = 1.7$,
-$\epsilon = 0.01$, compared with \eqref{eq:wigner}.}
+$\varepsilon = 0.01$, compared with \eqref{eq:wigner}.}
 \label{fig:quantum-spacings}
 \end{figure}
 

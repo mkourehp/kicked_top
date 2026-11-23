@@ -34,7 +34,7 @@ class CombinedPostProcessor(SpinChainPostProcessor):
             ax.set_xlim(-np.pi, np.pi)
             ax.set_ylim(-1, 1)
             ax.set_xlabel(r"$\phi$")
-            ax.set_title(f"$h = {h:g}$, $\\epsilon = {eps:g}$")
+            ax.set_title(f"$h = {h:g}$, $\\varepsilon = {eps:g}$")
         axes[0, 0].set_ylabel(r"$Z = \cos\theta$")
         fig.suptitle("Classical kicked top, Poincare sections")
         fig.tight_layout()
