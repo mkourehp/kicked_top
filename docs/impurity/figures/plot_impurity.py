@@ -138,6 +138,8 @@ def params(cs):
         if any(c[k] != cs[0][k] for c in cs):
             raise SystemExit(f"plot_impurity.py: {k} differs between the namelists in {CONFIG_DIR}")
     c0 = cs[0]
+    if any("theta0" in c or "phi0" in c for c in cs):
+        raise SystemExit("plot_impurity.py: impurity.tex assumes the initial state is given by s0 and pol, not theta0, phi0")
     if c0["butterfly_effect"]:
         raise SystemExit("plot_impurity.py: impurity.tex assumes butterfly_effect = .false.")
     macros = {
