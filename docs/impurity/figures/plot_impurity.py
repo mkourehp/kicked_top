@@ -54,6 +54,8 @@ def runs():
     cfgs = [read_namelist(p) for p in sorted(CONFIG_DIR.glob("*.nml"))]
     for c in cfgs:
         c["data"] = ROOT / c["out_dir"] / "h_1" / "chain"
+    if len({c["data"].resolve() for c in cfgs}) != len(cfgs):
+        raise SystemExit(f"plot_impurity.py: the namelists in {CONFIG_DIR} must have different out_dir")
     return sorted(cfgs, key=lambda c: (c["deltaz"] + c["deltax"], c["deltaz"]))
 
 
