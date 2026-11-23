@@ -1,0 +1,163 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{cleveref}
+\usepackage[section]{placeins}
+
+% All parameters and quoted numbers, written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml.
+\input{figures/params.tex}
+
+\title{The Qubit Chain with a Static Impurity\\[0.3em]
+  \large Time reversal with random couplings and kicks}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The kicked top of spin $j=n_q/2$ is realised by a chain of $n_q$ qubits with an all-to-all Ising coupling and a
+kick that rotates every qubit about $x$. A static impurity adds a random offset to every coupling and to every kick
+angle. It is drawn once and is the same before and after the time reversal at $t_r$, so the backward evolution no
+longer undoes the forward one. The echo is compared for \nruns{} impurity widths through the fidelity, the total
+spin and the Husimi distribution.
+\end{abstract}
+
+%=====================================================================
+\section{Model}\label{sec:model}
+%=====================================================================
+
+The clean chain has the Floquet operator
+\begin{equation}\label{eq:U0}
+  U_0 = e^{-i\epsilon H_{zz}}\prod_{k=1}^{n_q} e^{-i\frac{h}{2}\sigma^x_k},\qquad
+  H_{zz} = \sum_{i,l=1}^{n_q} V_{il}\,\sigma^z_i\sigma^z_l,\quad V_{il}=\tfrac14,
+\end{equation}
+so that $H_{zz}=J_z^2$ and $\prod_k e^{-i\frac h2\sigma^x_k}=e^{-ihJ_x}$ with $\bm J=\frac12\sum_k\bm\sigma_k$.
+The static impurity has two parts:
+\begin{equation}\label{eq:imp}
+  H_\xi = \sum_{i,l=1}^{n_q}\xi_{il}\,\sigma^z_i\sigma^z_l,\qquad
+  \xi_{il}=\xi_{li}\in\left[-\tfrac{\delta_z}{2},\tfrac{\delta_z}{2}\right]\ (i<l),\quad \xi_{ii}=0,
+\end{equation}
+an offset of every pair coupling, and an offset $\eta_k\in[-\frac{\delta_x}{2},\frac{\delta_x}{2}]$ of the kick
+angle of qubit $k$. All $\xi_{il}$ and $\eta_k$ are independent and uniformly distributed, drawn once from the seed
+\texttt{imp\_seed} and then kept fixed. One forward step is
+\begin{equation}\label{eq:U}
+  U = e^{-i(\epsilon H_{zz}+H_\xi)}\prod_{k=1}^{n_q} e^{-i\frac{h+\eta_k}{2}\sigma^x_k}.
+\end{equation}
+
+\paragraph{Time reversal.}
+After $t_r$ forward steps the controllable parameters are reversed, $\epsilon\to2\pi-\epsilon$ and $h\to-h$, but
+the impurity is not: it keeps its values and its sign. One backward step is
+\begin{equation}\label{eq:Ub}
+  \tilde U = \prod_{k=1}^{n_q} e^{-i\frac{-h+\eta_k}{2}\sigma^x_k}\,e^{-i((2\pi-\epsilon)H_{zz}+H_\xi)},
+  \qquad \psi(t) = \tilde U^{\,t-t_r}U^{t_r}\psi(0),\quad t_r<t\le2t_r .
+\end{equation}
+For $\delta_z=\delta_x=0$, $e^{-2\pi iH_{zz}}=e^{-2\pi iJ_z^2}$ is a global phase and $\tilde U=U^{-1}$, so
+$\psi(2t_r)=\psi(0)$ up to a phase. With the impurity, the clean parts still cancel in $\tilde UU$ but the impurity
+parts add up: the coupling term gives $e^{-2iH_\xi}$, and the kick angles $\pm h+\eta_k$ no longer cancel.
+The echo is measured by the fidelity
+\begin{equation}\label{eq:F}
+  F(t) = |\langle\psi(0)|\psi(t)\rangle|^2 .
+\end{equation}
+
+%=====================================================================
+\section{Parameters}\label{sec:parameters}
+%=====================================================================
+
+The chain has $n_q=\nq$ qubits ($j=\jval$), coupling $\epsilon=\epsval$ (classical torsion $k=n_q\epsilon=\kval$)
+and kick angle $h=\hval$. The initial state has all qubits polarised along $\initsign\initpol$. It is evolved for
+$t_r=\tr$ forward and $t_r$ backward steps, without a qubit flip at $t_r$. The impurity offsets are drawn with
+\texttt{imp\_seed} $=\impseed$; the widths of the \nruns{} runs and the resulting fidelities are listed in
+\cref{tab:runs}. The Husimi distribution is evaluated on $\ntheta\times\nphi$ points in $(Z,\phi)$.
+
+\begin{table}[ht]
+  \centering
+  \caption{Impurity widths of the runs, the fidelity at the reversal and after the echo, and the Husimi norm
+    $\mathcal N(t)$, \cref{eq:QN}, at the same times.}
+  \label{tab:runs}
+  \begin{tabular}{ccccccc}
+    \toprule
+    $\delta_z$ & $\delta_x$ & $F(t_r)$ & $F(2t_r)$ & $|1-F(2t_r)|$ & $\mathcal N(t_r)$ & $\mathcal N(2t_r)$ \\
+    \midrule
+    \runrows
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+%=====================================================================
+\section{Fidelity}\label{sec:fidelity}
+%=====================================================================
+
+\Cref{fig:fidelity} shows $F(t)$ for all runs. Without impurity the backward leg retraces the forward one,
+$F(t_r+s)=F(t_r-s)$, and the echo is exact to rounding, $|1-F(2t_r)|=\FdefA$. With the impurity the forward
+evolution itself changes, and the backward leg does not return to $\psi(0)$: $F(2t_r)=\FendB$ for
+$\delta_z=\deltazB$, $\delta_x=\deltaxB$ and $F(2t_r)=\FendC$ for $\delta_z=\deltazC$, $\delta_x=\deltaxC$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/impurity_fidelity.pdf}
+  \caption{Fidelity $F(t)$, \cref{eq:F}, for the impurity widths of \cref{tab:runs}. Dashed: the reversal
+    $t_r=\tr$.}
+  \label{fig:fidelity}
+\end{figure}
+
+%=====================================================================
+\section{Total spin}\label{sec:spin}
+%=====================================================================
+
+\Cref{fig:J_a,fig:J2_a} show the components $\langle J_a\rangle/j$ and $\langle J_a^2\rangle/j^2$, $a=x,y,z$, of the
+total spin, one figure per component. For $\delta_z=\delta_x=0$ each curve is symmetric about $t_r$ and returns to
+its initial value at $2t_r$; with the impurity it does not. The clean chain conserves $\bm J^2=j(j+1)$. The random
+couplings and kick angles differ from qubit to qubit and break the permutation symmetry, so with the impurity
+$\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/j^2$ is not fixed.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/impurity_Jx.pdf}\\[0.5em]
+  \includegraphics[width=0.75\textwidth]{figures/impurity_Jy.pdf}\\[0.5em]
+  \includegraphics[width=0.75\textwidth]{figures/impurity_Jz.pdf}
+  \caption{$\langle J_x\rangle/j$ (top), $\langle J_y\rangle/j$ (middle) and $\langle J_z\rangle/j$ (bottom) for the
+    impurity widths of \cref{tab:runs}. Dashed: $t_r$.}
+  \label{fig:J_a}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/impurity_J2x.pdf}\\[0.5em]
+  \includegraphics[width=0.75\textwidth]{figures/impurity_J2y.pdf}\\[0.5em]
+  \includegraphics[width=0.75\textwidth]{figures/impurity_J2z.pdf}
+  \caption{$\langle J_x^2\rangle/j^2$ (top), $\langle J_y^2\rangle/j^2$ (middle) and $\langle J_z^2\rangle/j^2$
+    (bottom) for the impurity widths of \cref{tab:runs}. Dashed: $t_r$.}
+  \label{fig:J2_a}
+\end{figure}
+
+%=====================================================================
+\section{Husimi distribution}\label{sec:husimi}
+%=====================================================================
+
+\Cref{fig:husimi} shows the Husimi distribution $Q(\theta,\phi)=|\langle\theta,\phi|\psi(t)\rangle|^2$ of the chain
+state, at $t=0$, $t_r$ and $2t_r$, one row per impurity width. Without impurity the distribution at $2t_r$ equals
+the initial one. The spin coherent states $|\theta,\phi\rangle$ lie in the symmetric (Dicke) subspace $j=n_q/2$, so
+$Q$ only sees the projection of $\psi(t)$ onto it. The clean chain never leaves this subspace; the impurity breaks
+the permutation symmetry and moves weight out of it. The Husimi norm
+\begin{equation}\label{eq:QN}
+  \mathcal N(t) = \frac{2j+1}{4\pi}\int Q\,dZ\,d\phi
+\end{equation}
+is the symmetric weight of $\psi(t)$, up to the quadrature error of the grid ($\mathcal N(0)=\Qzero$ for the
+normalised initial state), and is listed in \cref{tab:runs}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{figures/impurity_husimi.pdf}
+  \caption{Husimi distribution at $t=0$ (left), $t_r=\tr$ (middle) and $2t_r=\trtwo$ (right). Rows: the impurity
+    widths of \cref{tab:runs}. Each panel has its own colour scale.}
+  \label{fig:husimi}
+\end{figure}
+
+\end{document}
