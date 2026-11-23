@@ -37,13 +37,13 @@ and the entanglement of a single qubit.
 A spin $\bm J=(J_x,J_y,J_z)$ of length quantum number $j$ (so $\bm J^2=j(j+1)$, $\hbar=1$) undergoes a continuous
 torsion about the $z$ axis and is kicked once per unit time by a rotation about the $y$ axis:
 \begin{equation}\label{eq:H}
-  H(t) = \epsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n).
+  H(t) = \varepsilon\,J_z^2 + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n).
 \end{equation}
-Here $\epsilon$ is the coupling, $k = 2j\epsilon$ the classical torsion strength per period, $h$ the kick angle and $\delta$ the Dirac delta. Integrating the
+Here $\varepsilon$ is the coupling, $k = 2j\varepsilon$ the classical torsion strength per period, $h$ the kick angle and $\delta$ the Dirac delta. Integrating the
 Schr\"odinger equation over one period, starting just before a kick, the kick acts instantaneously and the free
 torsion then acts for unit time. One period is therefore the Floquet operator
 \begin{equation}\label{eq:U}
-  U = e^{-i\epsilon J_z^2}\,e^{-ihJ_x},\qquad \psi(t) = U^t\psi(0),\quad t=0,1,2,\dots
+  U = e^{-i\varepsilon J_z^2}\,e^{-ihJ_x},\qquad \psi(t) = U^t\psi(0),\quad t=0,1,2,\dots
 \end{equation}
 where $t$ now counts periods.
 
@@ -65,7 +65,7 @@ The free torsion then rotates it about $z$ by the angle $kZ'$, which leaves $Z$ 
 where $\phi'$ is the azimuth of $(X',Y')$. The classical map is \cref{eq:rot,eq:kick}. Its quantum counterpart is
 \cref{eq:U}, and $1/j$ plays the role of Planck's constant.
 
-Throughout, $k=20$ ($\epsilon = k/n_q = 2$ for the chain of $n_q = 10$ qubits) and only $h$ is varied:
+Throughout, $k=20$ ($\varepsilon = k/n_q = 2$ for the chain of $n_q = 10$ qubits) and only $h$ is varied:
 \begin{equation}
   h = 0.02\ \text{(regular)},\qquad h = 0.1\ \text{(mixed)},\qquad h = 1\ \text{(chaotic)}.
 \end{equation}
@@ -207,8 +207,8 @@ Take $n_q$ qubits with Pauli matrices $\sigma^a_i$ ($a=x,y,z$, qubit $i=1,\dots,
 \begin{equation}\label{eq:Jq}
   J_a = \frac12\sum_{i=1}^{n_q}\sigma^a_i .
 \end{equation}
-Pauli matrices of different qubits commute, and $[\sigma^a_i/2,\sigma^b_i/2]=i\epsilon_{abc}\sigma^c_i/2$, where
-$\epsilon_{abc}$ is the Levi-Civita symbol and $c$ is summed over. Hence $[J_a,J_b]=i\epsilon_{abc}J_c$: $\bm J$ is
+Pauli matrices of different qubits commute, and $[\sigma^a_i/2,\sigma^b_i/2]=i\varepsilon_{abc}\sigma^c_i/2$, where
+$\varepsilon_{abc}$ is the Levi-Civita symbol and $c$ is summed over. Hence $[J_a,J_b]=i\varepsilon_{abc}J_c$: $\bm J$ is
 an angular momentum. The all-up state $|{\uparrow\cdots\uparrow}\rangle$ has $J_z=n_q/2$, the largest possible value,
 so it is $|j,j\rangle$ with
 \begin{equation}
@@ -223,7 +223,7 @@ chain is therefore the quantum top of \cref{sec:quantum} with $j=5$ ($n_q=10$) o
 
 The chain has the Hamiltonian of \cref{eq:H}, with $J_z^2$ replaced by an Ising coupling between all pairs of qubits,
 \begin{equation}\label{eq:Hq}
-  H(t) = \epsilon\,H_{zz} + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
+  H(t) = \varepsilon\,H_{zz} + h\,J_x\sum_{n=-\infty}^{\infty}\delta(t-n),\qquad
   H_{zz} = \sum_{i,l=1}^{n_q} V_{il}\,\sigma^z_i\sigma^z_l ,
 \end{equation}
 where $i$ and $l$ run over all qubits ($i=l$ included) and $V_{il}$ is the coupling between qubits $i$ and $l$. Here
@@ -247,20 +247,20 @@ The kick is the same rotation by $h$ about $x$, applied to every qubit independe
 
 Between two kicks only the coupling acts, for unit time:
 \begin{equation}\label{eq:torq}
-  e^{-i\epsilon H_{zz}} ,\qquad \epsilon = \frac{k}{2j} = \frac{k}{n_q}.
+  e^{-i\varepsilon H_{zz}} ,\qquad \varepsilon = \frac{k}{2j} = \frac{k}{n_q}.
 \end{equation}
 $H_{zz}$ is diagonal in the basis $|b\rangle$ of up and down qubits, so this multiplies every basis state by the phase
-$e^{-i\epsilon\sum_{i,l}V_{il}z_iz_l}$. One period of the chain, starting just before a kick, is
+$e^{-i\varepsilon\sum_{i,l}V_{il}z_iz_l}$. One period of the chain, starting just before a kick, is
 \begin{equation}\label{eq:Uq}
-  U_{\rm chain} = e^{-i\epsilon H_{zz}}\prod_{i}e^{-i\frac h2\sigma^x_i} ,
+  U_{\rm chain} = e^{-i\varepsilon H_{zz}}\prod_{i}e^{-i\frac h2\sigma^x_i} ,
 \end{equation}
 which for $V_{il}=1/4$ equals $U$ of \cref{eq:U} exactly. Numerically, for $n_q=1,\dots,14$, several $h$ and $k$, and
 coherent initial states, the amplitudes of the chain on the symmetric states agree with those of the spin-$j$ top to
 $3\times10^{-13}$ over 50 periods.
 
 \paragraph{Mean-field picture.}
-In \cref{eq:torq}, the terms that contain qubit $i$ are $\epsilon\,2V_{il}\,\sigma^z_i\sigma^z_l$ with $l\ne i$, so qubit
-$i$ is rotated about $z$ by the angle $\epsilon\sum_{l\ne i}\sigma^z_l$. Replacing the other qubits by their mean,
+In \cref{eq:torq}, the terms that contain qubit $i$ are $\varepsilon\,2V_{il}\,\sigma^z_i\sigma^z_l$ with $l\ne i$, so qubit
+$i$ is rotated about $z$ by the angle $\varepsilon\sum_{l\ne i}\sigma^z_l$. Replacing the other qubits by their mean,
 $\sum_{l\ne i}\sigma^z_l\approx 2\langle J_z\rangle = n_qZ$, gives the angle $kZ$. This is the classical torsion of
 \cref{eq:kick}: each qubit precesses in the field of all the others.
 
@@ -270,35 +270,35 @@ $\sum_{l\ne i}\sigma^z_l\approx 2\langle J_z\rangle = n_qZ$, gives the angle $kZ
 
 To run the evolution backwards one needs
 \begin{equation}
-  U_{\rm chain}^{-1} = U_{\rm chain}^\dagger = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{+i\epsilon H_{zz}} .
+  U_{\rm chain}^{-1} = U_{\rm chain}^\dagger = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{+i\varepsilon H_{zz}} .
 \end{equation}
 The sign of the pulse is easily reversed, $h\to-h$. The coupling, however, is always on with a fixed sign, so
-$e^{+i\epsilon H_{zz}}$ cannot be obtained by flipping it. The spectrum of $H_{zz}$ avoids this. By \cref{eq:Hzz}
+$e^{+i\varepsilon H_{zz}}$ cannot be obtained by flipping it. The spectrum of $H_{zz}$ avoids this. By \cref{eq:Hzz}
 its eigenvalues are $m^2$ with $m=u-n_q/2$. For $n_q$ even all $m$ are integers, so $e^{-i2\pi m^2}=1$. For $n_q$ odd
 all $m$ are half-integers, $m=l+\frac12$, so $m^2=l^2+l+\frac14$ and $e^{-i2\pi m^2}=e^{-i\pi/2}$ for every basis
 state. Hence
 \begin{equation}\label{eq:2pi}
   e^{-i2\pi H_{zz}} = \gamma,\qquad \gamma = \begin{cases} 1 & n_q \text{ even},\\ -i & n_q\text{ odd},\end{cases}
 \end{equation}
-a global phase, and letting the coupling act with $2\pi-\epsilon$ instead of $\epsilon$ gives
+a global phase, and letting the coupling act with $2\pi-\varepsilon$ instead of $\varepsilon$ gives
 \begin{equation}
-  e^{-i(2\pi-\epsilon)H_{zz}} = \gamma\,e^{+i\epsilon H_{zz}} .
+  e^{-i(2\pi-\varepsilon)H_{zz}} = \gamma\,e^{+i\varepsilon H_{zz}} .
 \end{equation}
-As in the spin chain, the backward period therefore changes $\epsilon\to2\pi-\epsilon$, i.e.\
+As in the spin chain, the backward period therefore changes $\varepsilon\to2\pi-\varepsilon$, i.e.\
 $k\to2\pi n_q-k$ of the top, changes the sign of $h$, and swaps the order of the two factors:
 \begin{equation}\label{eq:Ub}
-  U_b = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{-i(2\pi-\epsilon)H_{zz}} = \gamma\,U_{\rm chain}^\dagger .
+  U_b = \prod_{i}e^{+i\frac h2\sigma^x_i}\;e^{-i(2\pi-\varepsilon)H_{zz}} = \gamma\,U_{\rm chain}^\dagger .
 \end{equation}
 Then
 \begin{equation}
-  U_bU_{\rm chain} = e^{+ihJ_x}\,e^{-i(2\pi-\epsilon)H_{zz}}\,e^{-i\epsilon H_{zz}}\,e^{-ihJ_x}
+  U_bU_{\rm chain} = e^{+ihJ_x}\,e^{-i(2\pi-\varepsilon)H_{zz}}\,e^{-i\varepsilon H_{zz}}\,e^{-ihJ_x}
   = e^{+ihJ_x}\,e^{-i2\pi H_{zz}}\,e^{-ihJ_x} = \gamma ,
 \end{equation}
-in every regime. In the language of the top, the backward period is $\epsilon\to-\epsilon$ and $h\to-h$, achieved without changing
+in every regime. In the language of the top, the backward period is $\varepsilon\to-\varepsilon$ and $h\to-h$, achieved without changing
 the sign of the coupling. At the turning point, the coupling of the last forward period and that of the first backward
 period combine into $e^{-i2\pi H_{zz}}=\gamma$: the coupling simply stays on, and the following pulses have the
-opposite sign. With the coupling strength fixed, a backward period lasts $(2\pi-\epsilon)/\epsilon$ forward
-periods, about $2.14$ for $n_q=10$, $\epsilon=2$ ($k=20$). This needs $\epsilon<2\pi$. The construction relies on
+opposite sign. With the coupling strength fixed, a backward period lasts $(2\pi-\varepsilon)/\varepsilon$ forward
+periods, about $2.14$ for $n_q=10$, $\varepsilon=2$ ($k=20$). This needs $\varepsilon<2\pi$. The construction relies on
 \cref{eq:2pi}, which holds for $V_{il}=1/4$; for general couplings it requires the eigenvalues of $H_{zz}$ to differ by
 integers.
 
@@ -359,7 +359,7 @@ entanglement created by the coupling. The total spin $\langle\bm J^2\rangle = j(
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/three_regimes_echo.pdf}
-  \caption{Fidelity $F(t)$ (top) and single-qubit Bloch-vector length $r(t)$ (bottom) for $n_q=10$, $\epsilon=2$ ($k=20$),
+  \caption{Fidelity $F(t)$ (top) and single-qubit Bloch-vector length $r(t)$ (bottom) for $n_q=10$, $\varepsilon=2$ ($k=20$),
   reversal at $t_r=30$ (dashed), followed by $t_r$ backward periods. Dotted: $1/(2j+1)$.}
   \label{fig:echo}
 \end{figure}
