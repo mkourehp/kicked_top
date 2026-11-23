@@ -35,7 +35,7 @@ spin and the Husimi distribution.
 
 The clean chain has the Floquet operator
 \begin{equation}\label{eq:U0}
-  U_0 = e^{-i\epsilon H_{zz}}\prod_{k=1}^{n_q} e^{-i\frac{h}{2}\sigma^x_k},\qquad
+  U_0 = e^{-i\varepsilon H_{zz}}\prod_{k=1}^{n_q} e^{-i\frac{h}{2}\sigma^x_k},\qquad
   H_{zz} = \sum_{i,l=1}^{n_q} V_{il}\,\sigma^z_i\sigma^z_l,\quad V_{il}=\tfrac14,
 \end{equation}
 so that $H_{zz}=J_z^2$ and $\prod_k e^{-i\frac h2\sigma^x_k}=e^{-ihJ_x}$ with $\bm J=\frac12\sum_k\bm\sigma_k$.
@@ -48,14 +48,14 @@ an offset of every pair coupling, and an offset $\eta_k\in[-\frac{\delta_x}{2},\
 angle of qubit $k$. All $\xi_{il}$ and $\eta_k$ are independent and uniformly distributed, drawn once from the seed
 \texttt{imp\_seed} and then kept fixed. One forward step is
 \begin{equation}\label{eq:U}
-  U = e^{-i(\epsilon H_{zz}+H_\xi)}\prod_{k=1}^{n_q} e^{-i\frac{h+\eta_k}{2}\sigma^x_k}.
+  U = e^{-i(\varepsilon H_{zz}+H_\xi)}\prod_{k=1}^{n_q} e^{-i\frac{h+\eta_k}{2}\sigma^x_k}.
 \end{equation}
 
 \paragraph{Time reversal.}
-After $t_r$ forward steps the controllable parameters are reversed, $\epsilon\to2\pi-\epsilon$ and $h\to-h$, but
+After $t_r$ forward steps the controllable parameters are reversed, $\varepsilon\to2\pi-\varepsilon$ and $h\to-h$, but
 the impurity is not: it keeps its values and its sign. One backward step is
 \begin{equation}\label{eq:Ub}
-  \tilde U = \prod_{k=1}^{n_q} e^{-i\frac{-h+\eta_k}{2}\sigma^x_k}\,e^{-i((2\pi-\epsilon)H_{zz}+H_\xi)},
+  \tilde U = \prod_{k=1}^{n_q} e^{-i\frac{-h+\eta_k}{2}\sigma^x_k}\,e^{-i((2\pi-\varepsilon)H_{zz}+H_\xi)},
   \qquad \psi(t) = \tilde U^{\,t-t_r}U^{t_r}\psi(0),\quad t_r<t\le2t_r .
 \end{equation}
 For $\delta_z=\delta_x=0$, $e^{-2\pi iH_{zz}}=e^{-2\pi iJ_z^2}$ is a global phase and $\tilde U=U^{-1}$, so
@@ -70,7 +70,7 @@ The echo is measured by the fidelity
 \section{Parameters}\label{sec:parameters}
 %=====================================================================
 
-The chain has $n_q=\nq$ qubits ($j=\jval$), coupling $\epsilon=\epsval$ (classical torsion $k=n_q\epsilon=\kval$)
+The chain has $n_q=\nq$ qubits ($j=\jval$), coupling $\varepsilon=\epsval$ (classical torsion $k=n_q\varepsilon=\kval$)
 and kick angle $h=\hval$. The initial state has all qubits polarised along $\initsign\initpol$. It is evolved for
 $t_r=\tr$ forward and $t_r$ backward steps, without a qubit flip at $t_r$. The impurity offsets are drawn with
 \texttt{imp\_seed} $=\impseed$; the widths of the \nruns{} runs and the resulting fidelities are listed in
