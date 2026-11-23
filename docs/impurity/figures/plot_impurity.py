@@ -135,7 +135,7 @@ def params(cs):
     """params.tex: common parameters (must agree in all namelists) and per-run values A, B, C, ..."""
     common = ["n_q", "eps", "h", "t_r", "imp_seed", "s0", "pol", "butterfly_effect", "n_theta", "n_phi"]
     for k in common:
-        if len({str(c[k]) for c in cs}) != 1:
+        if any(c[k] != cs[0][k] for c in cs):
             raise SystemExit(f"plot_impurity.py: {k} differs between the namelists in {CONFIG_DIR}")
     c0 = cs[0]
     if c0["butterfly_effect"]:
