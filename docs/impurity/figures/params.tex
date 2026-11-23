@@ -7,35 +7,56 @@
 \newcommand{\tr}{30}
 \newcommand{\trtwo}{60}
 \newcommand{\impseed}{12345}
-\newcommand{\initpol}{z}
-\newcommand{\initsign}{+}
 \newcommand{\ntheta}{100}
 \newcommand{\nphi}{200}
 \newcommand{\nruns}{3}
 \newcommand{\deltazA}{0}
 \newcommand{\deltaxA}{0}
-\newcommand{\FtrA}{0.885}
-\newcommand{\FendA}{1}
-\newcommand{\FdefA}{4.3\times10^{-14}}
-\newcommand{\Qzero}{0.9995}
-\newcommand{\QtrA}{1}
-\newcommand{\QendA}{1}
 \newcommand{\deltazB}{0.05}
 \newcommand{\deltaxB}{0.05}
-\newcommand{\FtrB}{0.925}
-\newcommand{\FendB}{0.933}
-\newcommand{\FdefB}{6.7\times10^{-2}}
-\newcommand{\QtrB}{0.964}
-\newcommand{\QendB}{0.954}
 \newcommand{\deltazC}{0.5}
 \newcommand{\deltaxC}{0.5}
-\newcommand{\FtrC}{0.309}
-\newcommand{\FendC}{0.159}
-\newcommand{\FdefC}{8.4\times10^{-1}}
-\newcommand{\QtrC}{0.416}
-\newcommand{\QendC}{0.282}
+\newcommand{\thetaOne}{\pi/2}
+\newcommand{\phiOne}{\pi/2}
+\newcommand{\FtrAOne}{0.162}
+\newcommand{\FendAOne}{1}
+\newcommand{\FdefAOne}{1.6\times10^{-14}}
+\newcommand{\Qzero}{1}
+\newcommand{\QtrAOne}{1}
+\newcommand{\QendAOne}{1}
+\newcommand{\FtrBOne}{3.1\times10^{-3}}
+\newcommand{\FendBOne}{2.0\times10^{-3}}
+\newcommand{\FdefBOne}{1.0\times10^{0}}
+\newcommand{\QtrBOne}{0.0261}
+\newcommand{\QendBOne}{0.0165}
+\newcommand{\FtrCOne}{1.3\times10^{-3}}
+\newcommand{\FendCOne}{1.3\times10^{-4}}
+\newcommand{\FdefCOne}{1.0\times10^{0}}
+\newcommand{\QtrCOne}{0.0135}
+\newcommand{\QendCOne}{9.7\times10^{-3}}
+\newcommand{\thetaTwo}{\pi/2}
+\newcommand{\phiTwo}{\pi/4}
+\newcommand{\FtrATwo}{0.163}
+\newcommand{\FendATwo}{1}
+\newcommand{\FdefATwo}{1.2\times10^{-14}}
+\newcommand{\QtrATwo}{1}
+\newcommand{\QendATwo}{1}
+\newcommand{\FtrBTwo}{4.1\times10^{-3}}
+\newcommand{\FendBTwo}{9.5\times10^{-4}}
+\newcommand{\FdefBTwo}{1.0\times10^{0}}
+\newcommand{\QtrBTwo}{0.0187}
+\newcommand{\QendBTwo}{0.0131}
+\newcommand{\FtrCTwo}{1.1\times10^{-3}}
+\newcommand{\FendCTwo}{3.2\times10^{-5}}
+\newcommand{\FdefCTwo}{1.0\times10^{0}}
+\newcommand{\QtrCTwo}{9.4\times10^{-3}}
+\newcommand{\QendCTwo}{9.8\times10^{-3}}
 \newcommand{\runrows}{%
-  \deltazA & \deltaxA & \FtrA & \FendA & $\FdefA$ & \QtrA & \QendA \\
-  \deltazB & \deltaxB & \FtrB & \FendB & $\FdefB$ & \QtrB & \QendB \\
-  \deltazC & \deltaxC & \FtrC & \FendC & $\FdefC$ & \QtrC & \QendC \\
+  $(\thetaOne,\phiOne)$ & \deltazA & \deltaxA & $\FtrAOne$ & $\FendAOne$ & $\FdefAOne$ & $\QtrAOne$ & $\QendAOne$ \\
+  $(\thetaOne,\phiOne)$ & \deltazB & \deltaxB & $\FtrBOne$ & $\FendBOne$ & $\FdefBOne$ & $\QtrBOne$ & $\QendBOne$ \\
+  $(\thetaOne,\phiOne)$ & \deltazC & \deltaxC & $\FtrCOne$ & $\FendCOne$ & $\FdefCOne$ & $\QtrCOne$ & $\QendCOne$ \\
+  \midrule
+  $(\thetaTwo,\phiTwo)$ & \deltazA & \deltaxA & $\FtrATwo$ & $\FendATwo$ & $\FdefATwo$ & $\QtrATwo$ & $\QendATwo$ \\
+  $(\thetaTwo,\phiTwo)$ & \deltazB & \deltaxB & $\FtrBTwo$ & $\FendBTwo$ & $\FdefBTwo$ & $\QtrBTwo$ & $\QendBTwo$ \\
+  $(\thetaTwo,\phiTwo)$ & \deltazC & \deltaxC & $\FtrCTwo$ & $\FendCTwo$ & $\FdefCTwo$ & $\QtrCTwo$ & $\QendCTwo$ \\
 }

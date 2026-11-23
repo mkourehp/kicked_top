@@ -1,9 +1,11 @@
 """Plots the figures of docs/impurity/impurity.tex from the data written by `make doc impurity compute`
 (kicked_top_spin_chain with every namelist in docs/impurity/figures/configs_spin_chain/), and writes
 params.tex: the parameters of these namelists and the numbers quoted in the text, as LaTeX macros,
-so that impurity.tex has no hard-coded values. One run per namelist, ordered by delta = deltaz (+ deltax)."""
+so that impurity.tex has no hard-coded values. One run per namelist. The runs are grouped by the initial state
+(theta0, phi0), in the order of the namelist file names, and every group has the same impurity widths, ordered by deltaz (+ deltax)."""
 
 import re
+from fractions import Fraction
 from pathlib import Path
 
 import matplotlib
@@ -15,8 +17,9 @@ import numpy as np
 FIG_DIR = Path(__file__).resolve().parent
 ROOT = FIG_DIR.parents[2]
 CONFIG_DIR = FIG_DIR / "configs_spin_chain"
-LABELS = ["A", "B", "C"]  # macro suffixes of the runs (delta = 0, small, large), LaTeX names have no digits
-DEFAULTS = {"deltaz": 0.0, "deltax": 0.0, "imp_seed": 12345, "butterfly_effect": False, "s0": -1, "pol": "z"}
+LABELS = ["A", "B", "C"]  # macro suffixes of the impurity widths (delta = 0, small, large), LaTeX names have no digits
+STATES = ["One", "Two"]  # macro suffixes of the initial states
+DEFAULTS = {"deltaz": 0.0, "deltax": 0.0, "imp_seed": 12345, "butterfly_effect": False}
 
 plt.rcParams.update({"font.size": 10, "axes.labelsize": 11, "savefig.bbox": "tight"})
 
@@ -50,13 +53,18 @@ def read_namelist(path):
 
 
 def runs():
-    """Config of every namelist, with its data directory, ordered by impurity width."""
+    """Configs of all namelists, with their data directory, as one list per initial state (in the order of the first
+    namelist file name of each state), each ordered by impurity width."""
     cfgs = [read_namelist(p) for p in sorted(CONFIG_DIR.glob("*.nml"))]
     for c in cfgs:
+        if "theta0" not in c or "phi0" not in c:
+            raise SystemExit(f"plot_impurity.py: every namelist in {CONFIG_DIR} must set theta0 and phi0")
         c["data"] = ROOT / c["out_dir"] / "h_1" / "chain"
     if len({c["data"].resolve() for c in cfgs}) != len(cfgs):
         raise SystemExit(f"plot_impurity.py: the namelists in {CONFIG_DIR} must have different out_dir")
-    return sorted(cfgs, key=lambda c: (c["deltaz"] + c["deltax"], c["deltaz"]))
+    states = list(dict.fromkeys((c["theta0"], c["phi0"]) for c in cfgs))
+    return [sorted([c for c in cfgs if (c["theta0"], c["phi0"]) == s], key=lambda c: (c["deltaz"] + c["deltax"], c["deltaz"]))
+            for s in states]
 
 
 def load(c, name):
@@ -69,38 +77,55 @@ def label(c):
     return rf"$\delta_z = {c['deltaz']:g}$, $\delta_x = {c['deltax']:g}$"
 
 
-def fidelity(cs):
-    """Fig. [fig:fidelity]: F(t) of all runs."""
-    fig, ax = plt.subplots(figsize=(7, 3.5))
+def angle(x):
+    """x in LaTeX math as a rational multiple of pi if it is one (e.g. \\pi/4), else as a number."""
+    f = Fraction(x / np.pi).limit_denominator(12)
+    if abs(float(f) * np.pi - x) > 1e-12:
+        return f"{x:g}"
+    if f == 0:
+        return "0"
+    num = {1: "", -1: "-"}.get(f.numerator, str(f.numerator))
+    return rf"{num}\pi" + (f"/{f.denominator}" if f.denominator != 1 else "")
+
+
+def state_label(c):
+    return rf"$(\theta_0,\phi_0) = ({angle(c['theta0'])}, {angle(c['phi0'])})$"
+
+
+def fidelity(cs, S):
+    """Fig. [fig:fidelity]: F(t) of all runs of one initial state."""
+    fig, ax = plt.subplots(figsize=(4.6, 3))
     for c in cs:
         f = load(c, "fidelity.dat")
-        ax.plot(f[:, 0], f[:, 1], "o-", ms=2.5, lw=1, label=label(c))
+        ax.plot(f[:, 0], f[:, 1], "o-", ms=2, lw=1, label=label(c))
     ax.axvline(cs[0]["t_r"], color="0.5", ls="--", lw=0.8)
     ax.set_ylim(-0.02, 1.02)
     ax.set_xlabel(r"$t$")
     ax.set_ylabel(r"$F(t)$")
+    ax.set_title(state_label(cs[0]), fontsize=10)
     ax.legend(fontsize=8)
-    fig.savefig(FIG_DIR / "impurity_fidelity.pdf")
+    fig.savefig(FIG_DIR / f"impurity_fidelity_{S}.pdf")
     plt.close(fig)
 
 
-def spin(cs):
-    """Figs. [fig:J_a], [fig:J2_a]: <J_a>/j and <J_a^2>/j^2, a = x, y, z, one figure each."""
+def spin(cs, S):
+    """Figs. [fig:J_a], [fig:J2_a]: <J_a>/j and <J_a^2>/j^2, a = x, y, z, one figure each, for one initial state."""
     for col, (a, power) in enumerate([(a, p) for p in (1, 2) for a in "xyz"], start=1):
-        fig, ax = plt.subplots(figsize=(7, 3))
+        fig, ax = plt.subplots(figsize=(4.6, 2.6))
         for c in cs:
             s = load(c, "total_spin.dat")
-            ax.plot(s[:, 0], s[:, col] / (c["n_q"] / 2) ** power, "o-", ms=2.5, lw=1, label=label(c))
+            ax.plot(s[:, 0], s[:, col] / (c["n_q"] / 2) ** power, "o-", ms=2, lw=1, label=label(c))
         ax.axvline(cs[0]["t_r"], color="0.5", ls="--", lw=0.8)
         ax.set_xlabel(r"$t$")
         ax.set_ylabel(rf"$\langle J_{a}\rangle/j$" if power == 1 else rf"$\langle J_{a}^2\rangle/j^2$")
-        ax.legend(fontsize=8)
-        fig.savefig(FIG_DIR / f"impurity_J{'2' if power == 2 else ''}{a}.pdf")
+        ax.set_title(state_label(cs[0]), fontsize=10)
+        ax.legend(fontsize=7)
+        fig.savefig(FIG_DIR / f"impurity_J{'2' if power == 2 else ''}{a}_{S}.pdf")
         plt.close(fig)
 
 
-def husimi(cs):
-    """Fig. [fig:husimi]: Husimi distribution at t = 0, t_r, 2 t_r, one row per run."""
+def husimi(cs, S):
+    """Fig. [fig:husimi]: Husimi distribution at t = 0, t_r, 2 t_r, one row per run of one initial state."""
     t_r = cs[0]["t_r"]
     steps = [0, t_r, 2 * t_r]
     fig, axes = plt.subplots(len(cs), len(steps), figsize=(3.4 * len(steps), 2.9 * len(cs)),
@@ -121,7 +146,8 @@ def husimi(cs):
         row[0].set_ylabel(r"$Z=\cos\theta$")
     for ax in axes[-1]:
         ax.set_xlabel(r"$\phi$")
-    fig.savefig(FIG_DIR / "impurity_husimi.pdf", dpi=200)
+    fig.suptitle(state_label(cs[0]), fontsize=11)
+    fig.savefig(FIG_DIR / f"impurity_husimi_{S}.pdf", dpi=200)
     plt.close(fig)
 
 
@@ -131,47 +157,63 @@ def sci(x):
     return rf"{m}\times10^{{{int(e)}}}"
 
 
-def params(cs):
-    """params.tex: common parameters (must agree in all namelists) and per-run values A, B, C, ..."""
-    common = ["n_q", "eps", "h", "t_r", "imp_seed", "s0", "pol", "butterfly_effect", "n_theta", "n_phi"]
+def num(x):
+    """x in LaTeX math with 3 digits, in scientific notation below 10^-2."""
+    return sci(x) if 0 < abs(x) < 1e-2 else f"{x:.3g}"
+
+
+def params(groups):
+    """params.tex: common parameters (must agree in all namelists), the impurity widths A, B, C (must agree for
+    all initial states) and the per-run values, e.g. \\FendBTwo for width B and initial state Two."""
+    cs = [c for g in groups for c in g]
+    common = ["n_q", "eps", "h", "t_r", "imp_seed", "butterfly_effect", "n_theta", "n_phi"]
     for k in common:
         if any(c[k] != cs[0][k] for c in cs):
             raise SystemExit(f"plot_impurity.py: {k} differs between the namelists in {CONFIG_DIR}")
+    for g in groups:
+        if [(c["deltaz"], c["deltax"]) for c in g] != [(c["deltaz"], c["deltax"]) for c in groups[0]]:
+            raise SystemExit(f"plot_impurity.py: the initial states in {CONFIG_DIR} must have the same deltaz, deltax")
     c0 = cs[0]
-    if any("theta0" in c or "phi0" in c for c in cs):
-        raise SystemExit("plot_impurity.py: impurity.tex assumes the initial state is given by s0 and pol, not theta0, phi0")
     if c0["butterfly_effect"]:
         raise SystemExit("plot_impurity.py: impurity.tex assumes butterfly_effect = .false.")
     macros = {
         "nq": c0["n_q"], "jval": f"{c0['n_q'] / 2:g}", "epsval": f"{c0['eps']:g}", "hval": f"{c0['h']:g}",
         "kval": f"{c0['n_q'] * c0['eps']:g}", "tr": c0["t_r"], "trtwo": 2 * c0["t_r"], "impseed": c0["imp_seed"],
-        "initpol": c0["pol"], "initsign": "+" if c0["s0"] == -1 else "-",
-        "ntheta": c0["n_theta"], "nphi": c0["n_phi"], "nruns": len(cs),
+        "ntheta": c0["n_theta"], "nphi": c0["n_phi"], "nruns": len(groups[0]),
     }
-    for L, c in zip(LABELS, cs):
-        f = load(c, "fidelity.dat")[:, 1]
+    for L, c in zip(LABELS, groups[0]):
         macros[f"deltaz{L}"] = f"{c['deltaz']:g}"
         macros[f"deltax{L}"] = f"{c['deltax']:g}"
-        macros[f"Ftr{L}"] = f"{f[c['t_r']]:.3g}"
-        macros[f"Fend{L}"] = f"{f[-1]:.3g}"
-        macros[f"Fdef{L}"] = sci(abs(1 - f[-1]))
-        summary = dict(line.split() for line in (c["data"] / "summary.dat").read_text().splitlines()
-                       if not line.startswith("#"))
-        macros.setdefault("Qzero", f"{float(summary['husimi_norm(0)']):.4g}")
-        macros[f"Qtr{L}"] = f"{float(summary['husimi_norm(t_r)']):.3g}"
-        macros[f"Qend{L}"] = f"{float(summary['husimi_norm(2t_r)']):.3g}"
+    rows = []
+    for S, g in zip(STATES, groups):
+        macros[f"theta{S}"] = angle(g[0]["theta0"])
+        macros[f"phi{S}"] = angle(g[0]["phi0"])
+        for L, c in zip(LABELS, g):
+            f = load(c, "fidelity.dat")[:, 1]
+            macros[f"Ftr{L}{S}"] = num(f[c['t_r']])
+            macros[f"Fend{L}{S}"] = num(f[-1])
+            macros[f"Fdef{L}{S}"] = sci(abs(1 - f[-1]))
+            summary = dict(line.split() for line in (c["data"] / "summary.dat").read_text().splitlines()
+                           if not line.startswith("#"))
+            macros.setdefault("Qzero", f"{float(summary['husimi_norm(0)']):.4g}")
+            macros[f"Qtr{L}{S}"] = num(float(summary['husimi_norm(t_r)']))
+            macros[f"Qend{L}{S}"] = num(float(summary['husimi_norm(2t_r)']))
+            rows.append(rf"  $(\theta{S},\phi{S})$ & \deltaz{L} & \deltax{L} & $\Ftr{L}{S}$ & $\Fend{L}{S}$ & $\Fdef{L}{S}$"
+                        rf" & $\Qtr{L}{S}$ & $\Qend{L}{S}$ \\")
+        rows.append(r"  \midrule")
     lines = ["% Written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml; do not edit."]
     lines += [rf"\newcommand{{\{k}}}{{{v}}}" for k, v in macros.items()]
-    rows = [rf"  \deltaz{L} & \deltax{L} & \Ftr{L} & \Fend{L} & $\Fdef{L}$ & \Qtr{L} & \Qend{L} \\" for L in LABELS[:len(cs)]]
-    lines += [r"\newcommand{\runrows}{%"] + rows + ["}"]
+    lines += [r"\newcommand{\runrows}{%"] + rows[:-1] + ["}"]
     (FIG_DIR / "params.tex").write_text("\n".join(lines) + "\n")
 
 
 if __name__ == "__main__":
-    cs = runs()
-    if len(cs) != 3 or cs[0]["deltaz"] != 0 or cs[0]["deltax"] != 0:
-        raise SystemExit("plot_impurity.py: impurity.tex expects 3 namelists, the first with deltaz = deltax = 0")
-    params(cs)
-    fidelity(cs)
-    spin(cs)
-    husimi(cs)
+    groups = runs()
+    if len(groups) != 2 or any(len(g) != 3 or g[0]["deltaz"] != 0 or g[0]["deltax"] != 0 for g in groups):
+        raise SystemExit("plot_impurity.py: impurity.tex expects 2 initial states (theta0, phi0) with 3 namelists each,"
+                         " the first with deltaz = deltax = 0")
+    params(groups)
+    for S, g in zip(STATES, groups):
+        fidelity(g, S)
+        spin(g, S)
+        husimi(g, S)

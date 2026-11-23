@@ -1,5 +1,6 @@
 ! Figures of docs/impurity/impurity.tex: qubit chain with a static impurity of width delta = deltaz = deltax.
-! The three configs differ only in deltaz, deltax and out_dir; impurity.tex reads all values from them.
+! Two initial states (theta0, phi0), three impurity widths each: the configs differ only in phi0, deltaz, deltax
+! and out_dir; impurity.tex reads all values from them.
 
 &system
   n_q = 10                 ! number of qubits, j = n_q/2
@@ -11,8 +12,8 @@
 /
 
 &initial
-  s0  = -1                 ! -1: all qubits up, 0: all down (only ferromagnetic states)
-  pol = 'z'                ! axis of the polarisation: 'z', 'x' or 'y'
+  theta0 = 1.5707963267948966   ! pi/2, initial spin coherent state |theta0, phi0> of every qubit
+  phi0   = 0.7853981633974483   ! pi/4
 /
 
 &chain
@@ -26,5 +27,5 @@
 /
 
 &output
-  out_dir = 'docs/impurity/figures/data/delta_large'
+  out_dir = 'docs/impurity/figures/data/phi_pi4_delta_large'
 /
