@@ -3,11 +3,11 @@
 ! and out_dir; impurity.tex reads all values from them.
 
 &system
-  n_q = 10                 ! number of qubits, j = n_q/2
-  eps = 2.0                ! coupling, k/n_q for the classical torsion strength k = 20
+  n_q = 16                 ! number of qubits, j = n_q/2
+  eps = 1.25               ! coupling, k/n_q for the classical torsion strength k = 20
   h   = 0.1                ! kick angle about x (mixed regime for k = 20)
-  deltaz = 0.5             ! static impurity of the zz couplings, xi_il uniform in [-deltaz/2, deltaz/2]
-  deltax = 0.5             ! static impurity of the kicks, eta_k uniform in [-deltax/2, deltax/2]
+  deltaz = 0.01            ! static impurity of the zz couplings, xi_il uniform in [-deltaz/2, deltaz/2]
+  deltax = 0.01            ! static impurity of the kicks, eta_k uniform in [-deltax/2, deltax/2]
   imp_seed = 12345         ! seed of the impurity offsets
 /
 
