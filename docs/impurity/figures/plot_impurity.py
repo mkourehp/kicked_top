@@ -121,6 +121,8 @@ def classical(groups):
     section = [c for c in cfgs if c["mode"] == "grid"]
     single = {(c["theta0"], c["phi0"]): c for c in cfgs if c["mode"] == "single"}
     states = [(g[0]["theta0"], g[0]["phi0"]) for g in groups]
+    if any(not c.get("enabled", False) for c in single.values()):
+        raise SystemExit(f"plot_impurity.py: every mode = 'single' namelist in {CLASSICAL_DIR} needs &lyapunov enabled = .true.")
     if len(section) != 1 or any(s not in single for s in states):
         raise SystemExit(f"plot_impurity.py: {CLASSICAL_DIR} needs one namelist with mode = 'grid' and one with"
                          " mode = 'single' for every initial state (theta0, phi0) of the chain")
@@ -133,7 +135,8 @@ def phase_space(section, orbits):
     s = np.loadtxt(section["data"] / "phase_space.dat", ndmin=2)
     ax.plot(s[:, 2], s[:, 3], ",", color="k", alpha=0.4, rasterized=True)
     for c, color in zip(orbits, ["C0", "C3"]):
-        o = np.loadtxt(c["data"] / "phase_space.dat", ndmin=2)[: section["n_kicks"] + 1]
+        o = np.loadtxt(c["data"] / "phase_space.dat", ndmin=2)
+        o = o[o[:, 1] <= section["n_kicks"]]
         lam = np.loadtxt(c["data"] / "lyapunov.dat", ndmin=2)[0, 3]
         ax.plot(o[:, 2], o[:, 3], ".", color=color, ms=1.5, rasterized=True)
         ax.plot(o[0, 2], o[0, 3], "*", color=color, mec="k", ms=13, clip_on=False, label=rf"{state_label(c)}, $\Lambda = {num(lam)}$")
