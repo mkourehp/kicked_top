@@ -59,6 +59,9 @@ contains
 
     write(t, '(a,i0,a,f0.4,a,f0.4,a,i0)') 'n_q = ', cfg%n_q, ', h = ', h, &
       ', eps = ', cfg%eps, ', t_r = ', cfg%t_r
+    if (cfg%deltaz > 0.0_wp .or. cfg%deltax > 0.0_wp) &
+      write(t, '(a,a,f0.4,a,f0.4,a,i0)') trim(t), ', deltaz = ', cfg%deltaz, ', deltax = ', cfg%deltax, &
+        ', imp_seed = ', cfg%imp_seed
   end function title
 
   ! obs(:, t): F, norm, <J_a>, <J_a^2>, <J^2>, site spins (3*n_q), t = 0 .. 2 t_r.

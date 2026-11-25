@@ -2,7 +2,7 @@
 ! kicked_top_combined (make combined) and kicked_top_spin_chain (make spin_chain):
 ! t_r forward steps U, then (with butterfly_effect) a rotation of qubit i_flip
 ! about a = flip_axis by flip_angle (pi = flip sigma^a), then t_r backward
-! steps (coupling 2 pi - eps, kick -h).
+! steps (coupling 2 pi - eps, kick -h). The static impurity e_imp, eta is the same in both legs.
 ! Writes the files of combined_io_mod in dir.
 module chain_run_mod
   use kinds_mod, only: wp
@@ -21,11 +21,13 @@ contains
 
   ! Forward evolution for t_r steps, then (after the optional flip) backward evolution for t_r steps.
   ! obs(:, t_r) and the Husimi snapshot at t_r are taken before the flip.
-  subroutine run_chain(cfg, h, theta0, phi0, e_zz, hus_theta, hus_phi, dir, prog)
+  subroutine run_chain(cfg, h, theta0, phi0, e_zz, e_imp, eta, hus_theta, hus_phi, dir, prog)
     type(rconfig_t), intent(in) :: cfg
     real(wp), intent(in) :: h
     real(wp), intent(in) :: theta0, phi0      ! direction of the initial polarisation
     real(wp), intent(in) :: e_zz(0:)          ! diagonal of H_zz
+    real(wp), intent(in) :: e_imp(0:)         ! diagonal of the static zz impurity H_xi
+    real(wp), intent(in) :: eta(:)            ! static kick impurity per qubit
     real(wp), intent(in) :: hus_theta(:), hus_phi(:)
     character(len=*), intent(in) :: dir
     character(len=*), intent(in) :: prog      ! program name for the progress line
@@ -42,9 +44,9 @@ contains
     sym_dev = 0.0_wp
 
     do t = 0, 2*cfg%t_r
-      if (t >= 1 .and. t <= cfg%t_r) call forward_step(psi, cfg%n_q, h, cfg%eps, e_zz)
+      if (t >= 1 .and. t <= cfg%t_r) call forward_step(psi, cfg%n_q, h, cfg%eps, e_zz, e_imp, eta)
       if (t == cfg%t_r + 1 .and. cfg%butterfly_effect) call rotate_qubit(psi, cfg%i_flip, cfg%flip_axis, cfg%flip_angle)
-      if (t > cfg%t_r) call backward_step(psi, cfg%n_q, h, cfg%eps, e_zz)
+      if (t > cfg%t_r) call backward_step(psi, cfg%n_q, h, cfg%eps, e_zz, e_imp, eta)
 
       sig = site_spins(psi, cfg%n_q)
       obs(1, t) = fidelity(psi0, psi)

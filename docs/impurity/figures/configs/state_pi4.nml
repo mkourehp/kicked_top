@@ -1,0 +1,28 @@
+! Classical kicked top of docs/impurity/impurity.tex at the parameters of the chain: h and k = n_q*eps of
+! configs_spin_chain/*.nml (plot_impurity.py checks that they agree). Orbit and Lyapunov exponent of the initial state (theta0, phi0) = (pi/2, pi/4) of the chain.
+
+&system
+  h = 0.1                  ! kick angle about x, h of the chain
+  k = 20.0                 ! torsion, k = n_q*eps of the chain
+/
+
+&simulation
+  n_kicks = 20000
+  n_transient = 0
+  save_every = 1
+/
+
+&initial
+  mode = 'single'
+  theta0 = 1.5707963267948966   ! pi/2
+  phi0 = 0.7853981633974483     ! pi/4
+/
+
+&output
+  out_dir = 'docs/impurity/figures/data/classical_state_pi4'
+/
+
+&lyapunov
+  enabled = .true.         ! largest Lyapunov exponent of every initial condition
+  n_renorm = 1
+/
