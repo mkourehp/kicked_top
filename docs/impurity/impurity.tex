@@ -10,7 +10,8 @@
 \usepackage{cleveref}
 \usepackage[section]{placeins}
 
-% All parameters and quoted numbers, written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml.
+% All parameters and quoted numbers, written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml and
+% figures/configs/*.nml.
 \input{figures/params.tex}
 \newcommand{\widths}{$(\delta_z,\delta_x)=(\deltazA,\deltaxA)$, $(\deltazB,\deltaxB)$ and $(\deltazC,\deltaxC)$}
 
@@ -26,7 +27,8 @@
 The kicked top of spin $j=n_q/2$ is realised by a chain of $n_q$ qubits with an all-to-all Ising coupling and a
 kick that rotates every qubit about $x$. A static impurity adds a random offset to every coupling and to every kick
 angle. It is drawn once and is the same before and after the time reversal at $t_r$, so the backward evolution no
-longer undoes the forward one. The echo is compared for \nruns{} impurity widths and two initial spin coherent states through the fidelity,
+longer undoes the forward one. The echo is compared for \nruns{} impurity widths and two initial spin coherent states, one in the chaotic sea and one at the centre of a regular island
+of the classical top, through the fidelity,
 the total spin and the Husimi distribution. Without impurity, the butterfly effect is shown by rotating one qubit at
 $t_r$ by \nalpha{} angles about $x$, $y$ and $z$.
 \end{abstract}
@@ -87,6 +89,30 @@ centred at $(\theta_0,\phi_0)$. Two initial states are compared, $(\theta_0,\phi
 $(\thetaTwo,\phiTwo)$; every figure is shown for both. Each is evolved for
 $t_r=\tr$ forward and $t_r$ backward steps. The butterfly runs are in \cref{sec:butterfly}; the impurity runs
 have no qubit rotation at $t_r$. The Husimi distribution is evaluated on $\ntheta\times\nphi$ points in $(Z,\phi)$.
+
+%=====================================================================
+\section{Classical phase space}\label{sec:classical}
+%=====================================================================
+
+\Cref{fig:classical} shows the classical kicked top at the parameters of the chain, $h=\hval$ and $k=\kval$: the
+orbits of \norbits{} initial points on an equal-area grid, \nkicksSection{} kicks each, together with the orbits of
+the two initial directions $(\theta_0,\phi_0)$ and their largest Lyapunov exponent $\Lambda$ after \nkicksState{}
+kicks. The two initial states differ in their classical dynamics:
+\begin{itemize}
+  \item $(\thetaOne,\phiOne)$, the $+y$ direction, lies in the chaotic sea at the edge of an island, with
+    $\Lambda=\LambdaOne$.
+  \item $(\thetaTwo,\phiTwo)$, the $-x$ direction, is a fixed point of the classical map: the kick rotates about $x$,
+    and the torsion vanishes at $Z=0$. It is the centre of a regular island, and $\Lambda=\LambdaTwo$ is zero up to
+    the finite-time error.
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/impurity_classical.pdf}
+  \caption{Classical phase space for $h=\hval$, $k=\kval$ (grey), and the orbits of the two initial directions (stars,
+    first \nkicksSection{} kicks), with their Lyapunov exponent $\Lambda$.}
+  \label{fig:classical}
+\end{figure}
 
 %=====================================================================
 \section{Butterfly effect}\label{sec:butterfly}
@@ -224,6 +250,7 @@ normalised initial state).
   \item $\langle\cdot\rangle$: expectation value in $\psi(t)$.
   \item $H_{zz}$: all-to-all Ising coupling, \cref{eq:U0}.
   \item $\varepsilon$: coupling strength; $k=n_q\varepsilon$: classical torsion.
+  \item $\Lambda$: largest Lyapunov exponent of the classical orbit, \cref{sec:classical}.
   \item $h$: kick angle about $x$.
   \item $U_0$, $U$: clean and impure forward Floquet operators, \cref{eq:U0,eq:U}; $U_r$: backward Floquet
     operator, \cref{eq:Ub}.

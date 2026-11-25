@@ -1,0 +1,28 @@
+! Classical kicked top of docs/impurity/impurity.tex at the parameters of the chain: h and k = n_q*eps of
+! configs_spin_chain/*.nml (plot_impurity.py checks that they agree). Poincare section: orbits from an equal-area grid of initial points.
+
+&system
+  h = 0.1                  ! kick angle about x, h of the chain
+  k = 20.0                 ! torsion, k = n_q*eps of the chain
+/
+
+&simulation
+  n_kicks = 1000
+  n_transient = 0
+  save_every = 1
+/
+
+&initial
+  mode = 'grid'
+  n_theta = 30             ! grid points in Z
+  n_phi = 30               ! grid points in phi
+/
+
+&output
+  out_dir = 'docs/impurity/figures/data/classical_section'
+/
+
+&lyapunov
+  enabled = .true.         ! largest Lyapunov exponent of every initial condition
+  n_renorm = 1
+/

@@ -4,7 +4,9 @@ params.tex: the parameters of these namelists and the numbers quoted in the text
 so that impurity.tex has no hard-coded values. One run per namelist. The runs are grouped by the initial state
 (theta0, phi0), in the order of the namelist file names, and every group has the same impurity widths, ordered by deltaz (+ deltax).
 The namelists with butterfly_effect = .true. are the butterfly runs (no impurity, one qubit rotated at t_r): one figure
-of F(t) per initial state and rotation axis, one line per rotation angle."""
+of F(t) per initial state and rotation axis, one line per rotation angle. The classical kicked top (kicked_top with every
+namelist in docs/impurity/figures/configs/) gives the phase space at the chain's h and k = n_q*eps: one 'grid' namelist
+for the Poincare section and one 'single' namelist per initial state for its orbit and Lyapunov exponent."""
 
 import re
 from fractions import Fraction
@@ -19,6 +21,7 @@ import numpy as np
 FIG_DIR = Path(__file__).resolve().parent
 ROOT = FIG_DIR.parents[2]
 CONFIG_DIR = FIG_DIR / "configs_spin_chain"
+CLASSICAL_DIR = FIG_DIR / "configs"
 LABELS = ["A", "B", "C"]  # macro suffixes of the impurity widths (delta = 0, small, large), LaTeX names have no digits
 STATES = ["One", "Two"]  # macro suffixes of the initial states
 ALPHAS = ["A", "B", "C", "D", "E", "F", "G", "H"]  # macro suffixes of the rotation angles of the butterfly runs
@@ -104,6 +107,44 @@ def angle(x):
 
 def state_label(c):
     return rf"$(\theta_0,\phi_0) = ({angle(c['theta0'])}, {angle(c['phi0'])})$"
+
+
+def classical(groups):
+    """Configs of the classical runs: the Poincare section and one orbit per initial state (in the order of groups).
+    h and k must be those of the chain, k = n_q*eps."""
+    cfgs = [read_namelist(p) for p in sorted(CLASSICAL_DIR.glob("*.nml"))]
+    for c in cfgs:
+        c["data"] = ROOT / c["out_dir"]
+    c0 = groups[0][0]
+    if any(abs(c["h"] - c0["h"]) > 1e-12 or abs(c["k"] - c0["n_q"] * c0["eps"]) > 1e-12 for c in cfgs):
+        raise SystemExit(f"plot_impurity.py: every namelist in {CLASSICAL_DIR} must have h and k = n_q*eps of the chain")
+    section = [c for c in cfgs if c["mode"] == "grid"]
+    single = {(c["theta0"], c["phi0"]): c for c in cfgs if c["mode"] == "single"}
+    states = [(g[0]["theta0"], g[0]["phi0"]) for g in groups]
+    if len(section) != 1 or any(s not in single for s in states):
+        raise SystemExit(f"plot_impurity.py: {CLASSICAL_DIR} needs one namelist with mode = 'grid' and one with"
+                         " mode = 'single' for every initial state (theta0, phi0) of the chain")
+    return section[0], [single[s] for s in states]
+
+
+def phase_space(section, orbits):
+    """Fig. [fig:classical]: Poincare section of the classical kicked top and the orbits of the two initial states."""
+    fig, ax = plt.subplots(figsize=(6.5, 4.2))
+    s = np.loadtxt(section["data"] / "phase_space.dat", ndmin=2)
+    ax.plot(s[:, 2], s[:, 3], ",", color="k", alpha=0.4, rasterized=True)
+    for c, color in zip(orbits, ["C0", "C3"]):
+        o = np.loadtxt(c["data"] / "phase_space.dat", ndmin=2)[: section["n_kicks"] + 1]
+        lam = np.loadtxt(c["data"] / "lyapunov.dat", ndmin=2)[0, 3]
+        ax.plot(o[:, 2], o[:, 3], ".", color=color, ms=1.5, rasterized=True)
+        ax.plot(o[0, 2], o[0, 3], "*", color=color, mec="k", ms=13, clip_on=False, label=rf"{state_label(c)}, $\Lambda = {num(lam)}$")
+    ax.set_xlim(-np.pi, np.pi)
+    ax.set_ylim(-1, 1)
+    ax.set_xticks([-np.pi, -np.pi / 2, 0, np.pi / 2, np.pi], [r"$-\pi$", r"$-\pi/2$", "0", r"$\pi/2$", r"$\pi$"])
+    ax.set_xlabel(r"$\phi$")
+    ax.set_ylabel(r"$Z=\cos\theta$")
+    ax.legend(loc="upper right", fontsize=8, framealpha=0.9)
+    fig.savefig(FIG_DIR / "impurity_classical.pdf", dpi=200)
+    plt.close(fig)
 
 
 def fidelity(cs, S):
@@ -192,7 +233,7 @@ def num(x):
     return sci(x) if 0 < abs(x) < 1e-2 else f"{x:.3g}"
 
 
-def params(groups, butterfly):
+def params(groups, butterfly, section, orbits):
     """params.tex: common parameters (must agree in all namelists), the impurity widths A, B, C (must agree for
     all initial states), the rotation angles A, B, ... of the butterfly runs (must agree for all initial states and
     axes) and the per-run values, e.g. \\FendBTwo for width B and initial state Two."""
@@ -221,7 +262,11 @@ def params(groups, butterfly):
         "kval": f"{c0['n_q'] * c0['eps']:g}", "tr": c0["t_r"], "trtwo": 2 * c0["t_r"], "impseed": c0["imp_seed"],
         "ntheta": c0["n_theta"], "nphi": c0["n_phi"], "nruns": len(groups[0]),
         "iflip": bfs[0]["i_flip"], "nalpha": len(alphas),
+        "norbits": section["n_theta"] * section["n_phi"], "nkicksSection": section["n_kicks"],
+        "nkicksState": orbits[0]["n_kicks"],
     }
+    if any(c["n_kicks"] != orbits[0]["n_kicks"] for c in orbits):
+        raise SystemExit(f"plot_impurity.py: the 'single' namelists in {CLASSICAL_DIR} must have the same n_kicks")
     for L, x in zip(ALPHAS, alphas):
         macros[f"alpha{L}"] = angle(x)
     for L, c in zip(LABELS, groups[0]):
@@ -230,6 +275,7 @@ def params(groups, butterfly):
     for S, g in zip(STATES, groups):
         macros[f"theta{S}"] = angle(g[0]["theta0"])
         macros[f"phi{S}"] = angle(g[0]["phi0"])
+        macros[f"Lambda{S}"] = num(np.loadtxt(orbits[STATES.index(S)]["data"] / "lyapunov.dat", ndmin=2)[0, 3])
         for L, c in zip(LABELS, g):
             f = load(c, "fidelity.dat")[:, 1]
             macros[f"Ftr{L}{S}"] = num(f[c['t_r']])
@@ -238,7 +284,8 @@ def params(groups, butterfly):
             summary = dict(line.split() for line in (c["data"] / "summary.dat").read_text().splitlines()
                            if not line.startswith("#"))
             macros.setdefault("Qzero", f"{float(summary['husimi_norm(0)']):.4g}")
-    lines = ["% Written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml; do not edit."]
+    lines = ["% Written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml and figures/configs/*.nml;"
+             " do not edit."]
     lines += [rf"\newcommand{{\{k}}}{{{v}}}" for k, v in macros.items()]
     (FIG_DIR / "params.tex").write_text("\n".join(lines) + "\n")
 
@@ -248,7 +295,9 @@ if __name__ == "__main__":
     if len(groups) != 2 or any(len(g) != 3 or g[0]["deltaz"] != 0 or g[0]["deltax"] != 0 for g in groups):
         raise SystemExit("plot_impurity.py: impurity.tex expects 2 initial states (theta0, phi0) with 3 namelists each,"
                          " the first with deltaz = deltax = 0")
-    params(groups, butterfly)
+    section, orbits = classical(groups)
+    params(groups, butterfly, section, orbits)
+    phase_space(section, orbits)
     for S, g in zip(STATES, groups):
         for a in AXES:
             butterfly_fidelity(butterfly[(g[0]["theta0"], g[0]["phi0"]), a], S, a)

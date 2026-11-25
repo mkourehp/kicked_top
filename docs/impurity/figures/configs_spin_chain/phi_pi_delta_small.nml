@@ -13,7 +13,7 @@
 
 &initial
   theta0 = 1.5707963267948966   ! pi/2, initial spin coherent state |theta0, phi0> of every qubit
-  phi0   = 0.7853981633974483   ! pi/4
+  phi0   = 3.141592653589793    ! pi
 /
 
 &chain
@@ -27,5 +27,5 @@
 /
 
 &output
-  out_dir = 'docs/impurity/figures/data/phi_pi4_delta_small'
+  out_dir = 'docs/impurity/figures/data/phi_pi_delta_small'
 /
