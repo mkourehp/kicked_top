@@ -37,32 +37,32 @@ $t_r$ by \nalpha{} angles about $x$, $y$ and $z$.
 
 The clean chain has the Floquet operator
 \begin{equation}\label{eq:U0}
-  U_0 = e^{-i\varepsilon H_{zz}}\prod_{k=1}^{n_q} e^{-i\frac{h}{2}\sigma^x_k},\qquad
-  H_{zz} = \sum_{i,l=1}^{n_q} V_{il}\,\sigma^z_i\sigma^z_l,\quad V_{il}=\tfrac14,
+  U_0 = e^{-i\varepsilon H_{zz}}\prod_{i=1}^{n_q} e^{-i\frac{h}{2}\sigma^x_i},\qquad
+  H_{zz} = \frac14\sum_{i,l=1}^{n_q}\sigma^z_i\sigma^z_l,
 \end{equation}
-so that $H_{zz}=J_z^2$ and $\prod_k e^{-i\frac h2\sigma^x_k}=e^{-ihJ_x}$ with $\bm J=\frac12\sum_k\bm\sigma_k$.
+so that $H_{zz}=S_z^2$ and $\prod_i e^{-i\frac h2\sigma^x_i}=e^{-ihS_x}$ with $\bm S=\frac12\sum_i\bm\sigma_i$.
 The static impurity has two parts:
 \begin{equation}\label{eq:imp}
   H_\xi = \sum_{i,l=1}^{n_q}\xi_{il}\,\sigma^z_i\sigma^z_l,\qquad
   \xi_{il}=\xi_{li}\in\left[-\tfrac{\delta_z}{2},\tfrac{\delta_z}{2}\right]\ (i<l),\quad \xi_{ii}=0,
 \end{equation}
-an offset of every pair coupling, and an offset $\eta_k\in[-\frac{\delta_x}{2},\frac{\delta_x}{2}]$ of the kick
-angle of qubit $k$. All $\xi_{il}$ and $\eta_k$ are independent and uniformly distributed, drawn once from the seed
+an offset of every pair coupling, and an offset $\mu_i\in[-\frac{\delta_x}{2},\frac{\delta_x}{2}]$ of the kick
+angle of qubit $i$. All $\xi_{il}$ and $\mu_i$ are independent and uniformly distributed, drawn once from the seed
 \texttt{imp\_seed} and then kept fixed. One forward step is
 \begin{equation}\label{eq:U}
-  U = e^{-i(\varepsilon H_{zz}+H_\xi)}\prod_{k=1}^{n_q} e^{-i\frac{h+\eta_k}{2}\sigma^x_k}.
+  U = e^{-i(\varepsilon H_{zz}+H_\xi)}\prod_{i=1}^{n_q} e^{-i\frac{h+\mu_i}{2}\sigma^x_i}.
 \end{equation}
 
 \paragraph{Time reversal.}
 After $t_r$ forward steps the controllable parameters are reversed, $\varepsilon\to2\pi-\varepsilon$ and $h\to-h$, but
 the impurity is not: it keeps its values and its sign. One backward step is
 \begin{equation}\label{eq:Ub}
-  \tilde U = \prod_{k=1}^{n_q} e^{-i\frac{-h+\eta_k}{2}\sigma^x_k}\,e^{-i((2\pi-\varepsilon)H_{zz}+H_\xi)},
-  \qquad \psi(t) = \tilde U^{\,t-t_r}U^{t_r}\psi(0),\quad t_r<t\le2t_r .
+  U_r = \prod_{i=1}^{n_q} e^{-i\frac{-h+\mu_i}{2}\sigma^x_i}\,e^{-i((2\pi-\varepsilon)H_{zz}+H_\xi)},
+  \qquad \psi(t) = U_r^{\,t-t_r}U^{t_r}\psi(0),\quad t_r<t\le2t_r .
 \end{equation}
-For $\delta_z=\delta_x=0$, $e^{-2\pi iH_{zz}}=e^{-2\pi iJ_z^2}$ is a global phase and $\tilde U=U^{-1}$, so
-$\psi(2t_r)=\psi(0)$ up to a phase. With the impurity, the clean parts still cancel in $\tilde UU$ but the impurity
-parts add up: the coupling term gives $e^{-2iH_\xi}$, and the kick angles $\pm h+\eta_k$ no longer cancel.
+For $\delta_z=\delta_x=0$, $e^{-2\pi iH_{zz}}=e^{-2\pi iS_z^2}$ is a global phase and $U_r=U^{-1}$, so
+$\psi(2t_r)=\psi(0)$ up to a phase. With the impurity, the clean parts still cancel in $U_rU$ but the impurity
+parts add up: the coupling term gives $e^{-2iH_\xi}$, and the kick angles $\pm h+\mu_i$ no longer cancel.
 The echo is measured by the fidelity
 \begin{equation}\label{eq:F}
   F(t) = |\langle\psi(0)|\psi(t)\rangle|^2 .
@@ -82,7 +82,7 @@ $t_r$, before the backward leg:
 The chain has $n_q=\nq$ qubits ($j=\jval$), coupling $\varepsilon=\epsval$ (classical torsion $k=n_q\varepsilon=\kval$)
 and kick angle $h=\hval$. Every qubit starts in the same spin-$\frac12$ coherent state $|\theta_0,\phi_0\rangle$, so
 $\psi(0)=|\theta_0,\phi_0\rangle^{\otimes n_q}$ is the spin coherent state $|\theta_0,\phi_0\rangle$ of the top, with
-$\langle\bm J\rangle/j=(\sin\theta_0\cos\phi_0,\sin\theta_0\sin\phi_0,\cos\theta_0)$ and its Husimi distribution
+$\langle\bm S\rangle/j=(\sin\theta_0\cos\phi_0,\sin\theta_0\sin\phi_0,\cos\theta_0)$ and its Husimi distribution
 centred at $(\theta_0,\phi_0)$. Two initial states are compared, $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$ and
 $(\thetaTwo,\phiTwo)$; every figure is shown for both. Each is evolved for
 $t_r=\tr$ forward and $t_r$ backward steps. The butterfly runs are in \cref{sec:butterfly}; the impurity runs
@@ -147,11 +147,11 @@ $(\thetaTwo,\phiTwo)$ the same impurities give $F(2t_r)=\FendBTwo$ and $\FendCTw
 \section{Total spin}\label{sec:spin}
 %=====================================================================
 
-\Cref{fig:J_a,fig:J2_a} show the components $\langle J_a\rangle/j$ and $\langle J_a^2\rangle/j^2$, $a=x,y,z$, of the
+\Cref{fig:S_a,fig:J2_a} show the components $\langle S_a\rangle/j$ and $\langle S_a^2\rangle/j^2$, $a=x,y,z$, of the
 total spin, one figure per component. For $\delta_z=\delta_x=0$ each curve is symmetric about $t_r$ and returns to
-its initial value at $2t_r$; with the impurity it does not. The clean chain conserves $\bm J^2=j(j+1)$. The random
+its initial value at $2t_r$; with the impurity it does not. The clean chain conserves $\bm S^2=j(j+1)$. The random
 couplings and kick angles differ from qubit to qubit and break the permutation symmetry, so with the impurity
-$\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/j^2$ is not fixed.
+$\langle\bm S^2\rangle$ is no longer conserved, and $\sum_a\langle S_a^2\rangle/j^2$ is not fixed.
 
 \begin{figure}[p]
   \centering
@@ -161,10 +161,10 @@ $\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/
   \includegraphics[width=0.49\textwidth]{figures/impurity_Jy_Two.pdf}\\[0.5em]
   \includegraphics[width=0.49\textwidth]{figures/impurity_Jz_One.pdf}\hfill
   \includegraphics[width=0.49\textwidth]{figures/impurity_Jz_Two.pdf}
-  \caption{$\langle J_x\rangle/j$ (top), $\langle J_y\rangle/j$ (middle) and $\langle J_z\rangle/j$ (bottom) for the
+  \caption{$\langle S_x\rangle/j$ (top), $\langle S_y\rangle/j$ (middle) and $\langle S_z\rangle/j$ (bottom) for the
     impurity widths \widths. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.
     Dashed: $t_r$.}
-  \label{fig:J_a}
+  \label{fig:S_a}
 \end{figure}
 
 \begin{figure}[p]
@@ -175,7 +175,7 @@ $\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/
   \includegraphics[width=0.49\textwidth]{figures/impurity_J2y_Two.pdf}\\[0.5em]
   \includegraphics[width=0.49\textwidth]{figures/impurity_J2z_One.pdf}\hfill
   \includegraphics[width=0.49\textwidth]{figures/impurity_J2z_Two.pdf}
-  \caption{$\langle J_x^2\rangle/j^2$ (top), $\langle J_y^2\rangle/j^2$ (middle) and $\langle J_z^2\rangle/j^2$
+  \caption{$\langle S_x^2\rangle/j^2$ (top), $\langle S_y^2\rangle/j^2$ (middle) and $\langle S_z^2\rangle/j^2$
     (bottom) for the impurity widths \widths. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right:
     $(\thetaTwo,\phiTwo)$. Dashed: $t_r$.}
   \label{fig:J2_a}
@@ -218,18 +218,18 @@ normalised initial state).
 
 \begin{itemize}
   \item $n_q$: number of qubits; $j=n_q/2$: spin of the top.
-  \item $i,k,l=1,\dots,n_q$: qubit indices.
-  \item $\sigma^a_k$, $a=x,y,z$: Pauli matrix $a$ of qubit $k$; $\bm\sigma_k=(\sigma^x_k,\sigma^y_k,\sigma^z_k)$.
-  \item $\bm J=\frac12\sum_k\bm\sigma_k$, $J_a$: total spin and its component $a$; $\bm J^2$: its square.
+  \item $i,l=1,\dots,n_q$: qubit indices.
+  \item $\sigma^a_i$, $a=x,y,z$: Pauli matrix $a$ of qubit $i$; $\bm\sigma_i=(\sigma^x_i,\sigma^y_i,\sigma^z_i)$.
+  \item $\bm S=\frac12\sum_i\bm\sigma_i$, $S_a$: total spin and its component $a$; $\bm S^2$: its square.
   \item $\langle\cdot\rangle$: expectation value in $\psi(t)$.
-  \item $H_{zz}$, $V_{il}$: all-to-all Ising coupling, \cref{eq:U0}, and its pair coefficients.
+  \item $H_{zz}$: all-to-all Ising coupling, \cref{eq:U0}.
   \item $\varepsilon$: coupling strength; $k=n_q\varepsilon$: classical torsion.
   \item $h$: kick angle about $x$.
-  \item $U_0$, $U$: clean and impure forward Floquet operators, \cref{eq:U0,eq:U}; $\tilde U$: backward Floquet
+  \item $U_0$, $U$: clean and impure forward Floquet operators, \cref{eq:U0,eq:U}; $U_r$: backward Floquet
     operator, \cref{eq:Ub}.
   \item $H_\xi$, $\xi_{il}$: impurity of the couplings, \cref{eq:imp}; $\delta_z$: width of the $\xi_{il}$.
-  \item $\eta_k$: impurity of the kick angle of qubit $k$; $\delta_x$: width of the $\eta_k$.
-  \item \texttt{imp\_seed}: seed of the random numbers $\xi_{il}$, $\eta_k$.
+  \item $\mu_i$: impurity of the kick angle of qubit $i$; $\delta_x$: width of the $\mu_i$.
+  \item \texttt{imp\_seed}: seed of the random numbers $\xi_{il}$, $\mu_i$.
   \item $t$: number of kicks (time); $t_r$: time of the reversal; $2t_r$: end of the echo.
   \item $\psi(t)$: state of the chain at time $t$.
   \item $(\theta,\phi)$: polar and azimuthal angle on the unit sphere; $Z=\cos\theta$.

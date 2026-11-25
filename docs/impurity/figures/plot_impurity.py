@@ -139,7 +139,7 @@ def butterfly_fidelity(cs, S, a):
 
 
 def spin(cs, S):
-    """Figs. [fig:J_a], [fig:J2_a]: <J_a>/j and <J_a^2>/j^2, a = x, y, z, one figure each, for one initial state."""
+    """Figs. [fig:S_a], [fig:J2_a]: <S_a>/j and <S_a^2>/j^2, a = x, y, z, one figure each, for one initial state."""
     for col, (a, power) in enumerate([(a, p) for p in (1, 2) for a in "xyz"], start=1):
         fig, ax = plt.subplots(figsize=(4.6, 2.6))
         for c in cs:
@@ -147,7 +147,7 @@ def spin(cs, S):
             ax.plot(s[:, 0], s[:, col] / (c["n_q"] / 2) ** power, "o-", ms=2, lw=1, label=label(c))
         ax.axvline(cs[0]["t_r"], color="0.5", ls="--", lw=0.8)
         ax.set_xlabel(r"$t$")
-        ax.set_ylabel(rf"$\langle J_{a}\rangle/j$" if power == 1 else rf"$\langle J_{a}^2\rangle/j^2$")
+        ax.set_ylabel(rf"$\langle S_{a}\rangle/j$" if power == 1 else rf"$\langle S_{a}^2\rangle/j^2$")
         ax.set_title(state_label(cs[0]), fontsize=10)
         ax.legend(fontsize=7)
         fig.savefig(FIG_DIR / f"impurity_J{'2' if power == 2 else ''}{a}_{S}.pdf")
