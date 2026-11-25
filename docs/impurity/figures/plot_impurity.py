@@ -2,7 +2,9 @@
 (kicked_top_spin_chain with every namelist in docs/impurity/figures/configs_spin_chain/), and writes
 params.tex: the parameters of these namelists and the numbers quoted in the text, as LaTeX macros,
 so that impurity.tex has no hard-coded values. One run per namelist. The runs are grouped by the initial state
-(theta0, phi0), in the order of the namelist file names, and every group has the same impurity widths, ordered by deltaz (+ deltax)."""
+(theta0, phi0), in the order of the namelist file names, and every group has the same impurity widths, ordered by deltaz (+ deltax).
+The namelists with butterfly_effect = .true. are the butterfly runs (no impurity, one qubit rotated at t_r): one figure
+of F(t) per initial state and rotation axis, one line per rotation angle."""
 
 import re
 from fractions import Fraction
@@ -19,7 +21,10 @@ ROOT = FIG_DIR.parents[2]
 CONFIG_DIR = FIG_DIR / "configs_spin_chain"
 LABELS = ["A", "B", "C"]  # macro suffixes of the impurity widths (delta = 0, small, large), LaTeX names have no digits
 STATES = ["One", "Two"]  # macro suffixes of the initial states
-DEFAULTS = {"deltaz": 0.0, "deltax": 0.0, "imp_seed": 12345, "butterfly_effect": False}
+ALPHAS = ["A", "B", "C", "D", "E", "F", "G", "H"]  # macro suffixes of the rotation angles of the butterfly runs
+AXES = "xyz"
+DEFAULTS = {"deltaz": 0.0, "deltax": 0.0, "imp_seed": 12345, "butterfly_effect": False, "i_flip": 1, "flip_axis": "x",
+            "flip_angle": np.pi}
 
 plt.rcParams.update({"font.size": 10, "axes.labelsize": 11, "savefig.bbox": "tight"})
 
@@ -53,8 +58,9 @@ def read_namelist(path):
 
 
 def runs():
-    """Configs of all namelists, with their data directory, as one list per initial state (in the order of the first
-    namelist file name of each state), each ordered by impurity width."""
+    """Configs of all namelists, with their data directory: the impurity runs as one list per initial state (in the
+    order of the first namelist file name of each state), each ordered by impurity width, and the butterfly runs as
+    a dict {(state, axis): runs ordered by flip_angle}."""
     cfgs = [read_namelist(p) for p in sorted(CONFIG_DIR.glob("*.nml"))]
     for c in cfgs:
         if "theta0" not in c or "phi0" not in c:
@@ -62,9 +68,17 @@ def runs():
         c["data"] = ROOT / c["out_dir"] / "h_1" / "chain"
     if len({c["data"].resolve() for c in cfgs}) != len(cfgs):
         raise SystemExit(f"plot_impurity.py: the namelists in {CONFIG_DIR} must have different out_dir")
-    states = list(dict.fromkeys((c["theta0"], c["phi0"]) for c in cfgs))
-    return [sorted([c for c in cfgs if (c["theta0"], c["phi0"]) == s], key=lambda c: (c["deltaz"] + c["deltax"], c["deltaz"]))
-            for s in states]
+    imp = [c for c in cfgs if not c["butterfly_effect"]]
+    bf = [c for c in cfgs if c["butterfly_effect"]]
+    states = list(dict.fromkeys((c["theta0"], c["phi0"]) for c in imp))
+    groups = [sorted([c for c in imp if (c["theta0"], c["phi0"]) == s], key=lambda c: (c["deltaz"] + c["deltax"], c["deltaz"]))
+              for s in states]
+    if any((c["theta0"], c["phi0"]) not in states or c["flip_axis"] not in AXES for c in bf):
+        raise SystemExit(f"plot_impurity.py: every butterfly namelist in {CONFIG_DIR} must use an initial state of the"
+                         " impurity runs and flip_axis 'x', 'y' or 'z'")
+    butterfly = {(s, a): sorted([c for c in bf if (c["theta0"], c["phi0"]) == s and c["flip_axis"] == a],
+                                key=lambda c: c["flip_angle"]) for s in states for a in AXES}
+    return groups, butterfly
 
 
 def load(c, name):
@@ -79,7 +93,7 @@ def label(c):
 
 def angle(x):
     """x in LaTeX math as a rational multiple of pi if it is one (e.g. \\pi/4), else as a number."""
-    f = Fraction(x / np.pi).limit_denominator(12)
+    f = Fraction(x / np.pi).limit_denominator(64)
     if abs(float(f) * np.pi - x) > 1e-12:
         return f"{x:g}"
     if f == 0:
@@ -105,6 +119,22 @@ def fidelity(cs, S):
     ax.set_title(state_label(cs[0]), fontsize=10)
     ax.legend(fontsize=8)
     fig.savefig(FIG_DIR / f"impurity_fidelity_{S}.pdf")
+    plt.close(fig)
+
+
+def butterfly_fidelity(cs, S, a):
+    """Fig. [fig:butterfly_a]: F(t) of the butterfly runs of one initial state and rotation axis a."""
+    fig, ax = plt.subplots(figsize=(4.6, 3))
+    for c in cs:
+        f = load(c, "fidelity.dat")
+        ax.plot(f[:, 0], f[:, 1], "o-", ms=2, lw=1, label=rf"$\alpha = {angle(c['flip_angle'])}$")
+    ax.axvline(cs[0]["t_r"], color="0.5", ls="--", lw=0.8)
+    ax.set_ylim(-0.02, 1.02)
+    ax.set_xlabel(r"$t$")
+    ax.set_ylabel(r"$F(t)$")
+    ax.set_title(rf"{state_label(cs[0])}, rotation about ${a}$", fontsize=10)
+    ax.legend(fontsize=7)
+    fig.savefig(FIG_DIR / f"impurity_butterfly_{a}_{S}.pdf")
     plt.close(fig)
 
 
@@ -162,10 +192,21 @@ def num(x):
     return sci(x) if 0 < abs(x) < 1e-2 else f"{x:.3g}"
 
 
-def params(groups):
+def params(groups, butterfly):
     """params.tex: common parameters (must agree in all namelists), the impurity widths A, B, C (must agree for
-    all initial states) and the per-run values, e.g. \\FendBTwo for width B and initial state Two."""
+    all initial states), the rotation angles A, B, ... of the butterfly runs (must agree for all initial states and
+    axes) and the per-run values, e.g. \\FendBTwo for width B and initial state Two, \\FbfyCOne for the rotation
+    about y by angle C of initial state One."""
     cs = [c for g in groups for c in g]
+    bfs = [c for g in butterfly.values() for c in g]
+    for k in ["n_q", "eps", "h", "t_r", "n_theta", "n_phi"]:
+        if any(c[k] != cs[0][k] for c in bfs):
+            raise SystemExit(f"plot_impurity.py: {k} differs between the namelists in {CONFIG_DIR}")
+    if any(c["deltaz"] != 0 or c["deltax"] != 0 or c["i_flip"] != bfs[0]["i_flip"] for c in bfs):
+        raise SystemExit("plot_impurity.py: the butterfly runs must have deltaz = deltax = 0 and the same i_flip")
+    alphas = [c["flip_angle"] for c in next(iter(butterfly.values()))]
+    if not alphas or len(alphas) > len(ALPHAS) or any([c["flip_angle"] for c in g] != alphas for g in butterfly.values()):
+        raise SystemExit(f"plot_impurity.py: every initial state and axis needs the same 1 .. {len(ALPHAS)} flip_angle values")
     common = ["n_q", "eps", "h", "t_r", "imp_seed", "butterfly_effect", "n_theta", "n_phi"]
     for k in common:
         if any(c[k] != cs[0][k] for c in cs):
@@ -180,7 +221,18 @@ def params(groups):
         "nq": c0["n_q"], "jval": f"{c0['n_q'] / 2:g}", "epsval": f"{c0['eps']:g}", "hval": f"{c0['h']:g}",
         "kval": f"{c0['n_q'] * c0['eps']:g}", "tr": c0["t_r"], "trtwo": 2 * c0["t_r"], "impseed": c0["imp_seed"],
         "ntheta": c0["n_theta"], "nphi": c0["n_phi"], "nruns": len(groups[0]),
+        "iflip": bfs[0]["i_flip"], "nalpha": len(alphas),
     }
+    for L, x in zip(ALPHAS, alphas):
+        macros[f"alpha{L}"] = angle(x)
+    bfrows = []
+    for S, g in zip(STATES, groups):
+        for a in AXES:
+            for L, c in zip(ALPHAS, butterfly[(g[0]["theta0"], g[0]["phi0"]), a]):
+                macros[f"Fbf{a}{L}{S}"] = num(load(c, "fidelity.dat")[-1, 1])
+            bfrows.append(rf"  $(\theta{S},\phi{S})$ & ${a}$ & "
+                          + " & ".join(rf"$\Fbf{a}{L}{S}$" for L in ALPHAS[:len(alphas)]) + r" \\")
+        bfrows.append(r"  \midrule")
     for L, c in zip(LABELS, groups[0]):
         macros[f"deltaz{L}"] = f"{c['deltaz']:g}"
         macros[f"deltax{L}"] = f"{c['deltax']:g}"
@@ -204,16 +256,21 @@ def params(groups):
     lines = ["% Written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml; do not edit."]
     lines += [rf"\newcommand{{\{k}}}{{{v}}}" for k, v in macros.items()]
     lines += [r"\newcommand{\runrows}{%"] + rows[:-1] + ["}"]
+    lines += [r"\newcommand{\alphacols}{" + "c" * len(alphas) + "}"]
+    lines += [r"\newcommand{\alphahead}{" + " & ".join(rf"$\alpha=\alpha{L}$" for L in ALPHAS[:len(alphas)]) + "}"]
+    lines += [r"\newcommand{\bfrows}{%"] + bfrows[:-1] + ["}"]
     (FIG_DIR / "params.tex").write_text("\n".join(lines) + "\n")
 
 
 if __name__ == "__main__":
-    groups = runs()
+    groups, butterfly = runs()
     if len(groups) != 2 or any(len(g) != 3 or g[0]["deltaz"] != 0 or g[0]["deltax"] != 0 for g in groups):
         raise SystemExit("plot_impurity.py: impurity.tex expects 2 initial states (theta0, phi0) with 3 namelists each,"
                          " the first with deltaz = deltax = 0")
-    params(groups)
+    params(groups, butterfly)
     for S, g in zip(STATES, groups):
+        for a in AXES:
+            butterfly_fidelity(butterfly[(g[0]["theta0"], g[0]["phi0"]), a], S, a)
         fidelity(g, S)
         spin(g, S)
         husimi(g, S)

@@ -1,5 +1,5 @@
 ! Figures of docs/impurity/impurity.tex: qubit chain with a static impurity of width delta = deltaz = deltax.
-! Two initial states (theta0, phi0), three impurity widths each: the configs differ only in phi0, deltaz, deltax
+! Impurity runs (phi_*): two initial states (theta0, phi0), three impurity widths each, no qubit flip; they differ only in phi0, deltaz, deltax
 ! and out_dir; impurity.tex reads all values from them.
 
 &system

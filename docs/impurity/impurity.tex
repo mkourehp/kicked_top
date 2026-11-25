@@ -26,7 +26,8 @@ The kicked top of spin $j=n_q/2$ is realised by a chain of $n_q$ qubits with an 
 kick that rotates every qubit about $x$. A static impurity adds a random offset to every coupling and to every kick
 angle. It is drawn once and is the same before and after the time reversal at $t_r$, so the backward evolution no
 longer undoes the forward one. The echo is compared for \nruns{} impurity widths and two initial spin coherent states through the fidelity,
-the total spin and the Husimi distribution.
+the total spin and the Husimi distribution. Without impurity, the butterfly effect is shown by rotating one qubit at
+$t_r$ by \nalpha{} angles about $x$, $y$ and $z$.
 \end{abstract}
 
 %=====================================================================
@@ -66,6 +67,20 @@ The echo is measured by the fidelity
   F(t) = |\langle\psi(0)|\psi(t)\rangle|^2 .
 \end{equation}
 
+\paragraph{Butterfly effect.}
+In the butterfly runs there is no impurity, and qubit $i=\iflip$ is rotated about $a=x,y,z$ by an angle $\alpha$ at
+$t_r$, before the backward leg:
+\begin{equation}\label{eq:bf}
+  \psi(t) = U^{-(t-t_r)}R\,U^{t_r}\psi(0),\qquad R=e^{-i\frac\alpha2\sigma^a_i},\quad t_r<t\le2t_r .
+\end{equation}
+At the end of the echo, $F(2t_r)=|\langle\psi(t_r)|R|\psi(t_r)\rangle|^2$. Since $\psi(t_r)$ is permutation symmetric,
+$\langle\sigma^a_i\rangle=\langle J_a\rangle/j$, and
+\begin{equation}\label{eq:Fbf}
+  F(2t_r) = \cos^2\tfrac\alpha2+\sin^2\tfrac\alpha2\,\frac{\langle J_a\rangle_{t_r}^2}{j^2},
+\end{equation}
+with $\langle J_a\rangle_{t_r}$ the expectation value just before the rotation. For $\alpha=\pi$ the echo is lost
+unless the spin at $t_r$ points along $\pm a$.
+
 %=====================================================================
 \section{Parameters}\label{sec:parameters}
 %=====================================================================
@@ -76,7 +91,8 @@ $\psi(0)=|\theta_0,\phi_0\rangle^{\otimes n_q}$ is the spin coherent state $|\th
 $\langle\bm J\rangle/j=(\sin\theta_0\cos\phi_0,\sin\theta_0\sin\phi_0,\cos\theta_0)$ and its Husimi distribution
 centred at $(\theta_0,\phi_0)$. Two initial states are compared, $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$ and
 $(\thetaTwo,\phiTwo)$; every figure is shown for both. Each is evolved for
-$t_r=\tr$ forward and $t_r$ backward steps, without a qubit flip at $t_r$. The impurity offsets are drawn with
+$t_r=\tr$ forward and $t_r$ backward steps. The butterfly runs are in \cref{sec:butterfly}; the impurity runs
+have no qubit rotation at $t_r$. The impurity offsets are drawn with
 \texttt{imp\_seed} $=\impseed$, the same for both initial states; the \nruns{} widths and the resulting fidelities are listed in
 \cref{tab:runs}. The Husimi distribution is evaluated on $\ntheta\times\nphi$ points in $(Z,\phi)$.
 
@@ -93,6 +109,55 @@ $t_r=\tr$ forward and $t_r$ backward steps, without a qubit flip at $t_r$. The i
     \bottomrule
   \end{tabular}
 \end{table}
+
+%=====================================================================
+\section{Butterfly effect}\label{sec:butterfly}
+%=====================================================================
+
+\Cref{fig:butterfly_x,fig:butterfly_y,fig:butterfly_z} show $F(t)$ without impurity when qubit \iflip{} is rotated at
+$t_r$ by $\alpha$ about $x$, $y$ and $z$, \cref{eq:bf}, one line per angle. For $t\le t_r$ all curves are those of the
+clean chain. The fidelity after the echo is listed in \cref{tab:butterfly}; it agrees with \cref{eq:Fbf}.
+
+\begin{table}[ht]
+  \centering
+  \caption{Fidelity $F(2t_r)$ after the echo, without impurity, for the rotation of qubit \iflip{} by $\alpha$
+    about $a$ at $t_r$.}
+  \label{tab:butterfly}
+  \begin{tabular}{cc\alphacols}
+    \toprule
+    $(\theta_0,\phi_0)$ & $a$ & \alphahead \\
+    \midrule
+    \bfrows
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_x_One.pdf}\hfill
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_x_Two.pdf}
+  \caption{Fidelity $F(t)$ without impurity, qubit \iflip{} rotated about $x$ by $\alpha$ at $t_r=\tr$ (dashed).
+    Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.}
+  \label{fig:butterfly_x}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_y_One.pdf}\hfill
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_y_Two.pdf}
+  \caption{Fidelity $F(t)$ without impurity, qubit \iflip{} rotated about $y$ by $\alpha$ at $t_r=\tr$ (dashed).
+    Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.}
+  \label{fig:butterfly_y}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_z_One.pdf}\hfill
+  \includegraphics[width=0.49\textwidth]{figures/impurity_butterfly_z_Two.pdf}
+  \caption{Fidelity $F(t)$ without impurity, qubit \iflip{} rotated about $z$ by $\alpha$ at $t_r=\tr$ (dashed).
+    Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.}
+  \label{fig:butterfly_z}
+\end{figure}
 
 %=====================================================================
 \section{Fidelity}\label{sec:fidelity}
