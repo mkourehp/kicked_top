@@ -238,32 +238,5 @@ normalised initial state).
   \label{fig:husimiTwo}
 \end{figure}
 
-%=====================================================================
-\section{Notation}\label{sec:notation}
-%=====================================================================
-
-\begin{itemize}
-  \item $n_q$: number of qubits; $j=n_q/2$: spin of the top.
-  \item $i,l=1,\dots,n_q$: qubit indices.
-  \item $\sigma^a_i$, $a=x,y,z$: Pauli matrix $a$ of qubit $i$; $\bm\sigma_i=(\sigma^x_i,\sigma^y_i,\sigma^z_i)$.
-  \item $\bm S=\frac12\sum_i\bm\sigma_i$, $S_a$: total spin and its component $a$; $\bm S^2$: its square.
-  \item $\langle\cdot\rangle$: expectation value in $\psi(t)$.
-  \item $H_{zz}$: all-to-all Ising coupling, \cref{eq:U0}.
-  \item $\varepsilon$: coupling strength; $k=n_q\varepsilon$: classical torsion.
-  \item $\Lambda$: largest Lyapunov exponent of the classical orbit, \cref{sec:classical}.
-  \item $h$: kick angle about $x$.
-  \item $U_0$, $U$: clean and impure forward Floquet operators, \cref{eq:U0,eq:U}; $U_r$: backward Floquet
-    operator, \cref{eq:Ub}.
-  \item $H_\xi$, $\xi_{il}$: impurity of the couplings, \cref{eq:imp}; $\delta_z$: width of the $\xi_{il}$.
-  \item $\mu_i$: impurity of the kick angle of qubit $i$; $\delta_x$: width of the $\mu_i$.
-  \item \texttt{imp\_seed}: seed of the random numbers $\xi_{il}$, $\mu_i$.
-  \item $t$: number of kicks (time); $t_r$: time of the reversal; $2t_r$: end of the echo.
-  \item $\psi(t)$: state of the chain at time $t$.
-  \item $(\theta,\phi)$: polar and azimuthal angle on the unit sphere; $Z=\cos\theta$.
-  \item $|\theta,\phi\rangle$: spin coherent state; $(\theta_0,\phi_0)$: direction of the initial state.
-  \item $F(t)$: fidelity, \cref{eq:F}.
-  \item $R$: rotation of qubit $i$ at $t_r$ in the butterfly runs, \cref{eq:bf}; $a$: its axis; $\alpha$: its angle.
-  \item $Q(\theta,\phi)$: Husimi distribution; $\mathcal N(t)$: Husimi norm, \cref{eq:QN}.
-\end{itemize}
 
 \end{document}
