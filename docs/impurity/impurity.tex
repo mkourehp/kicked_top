@@ -12,6 +12,7 @@
 
 % All parameters and quoted numbers, written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml.
 \input{figures/params.tex}
+\newcommand{\widths}{$(\delta_z,\delta_x)=(\deltazA,\deltaxA)$, $(\deltazB,\deltaxB)$ and $(\deltazC,\deltaxC)$}
 
 \title{The Qubit Chain with a Static Impurity\\[0.3em]
   \large Time reversal with random couplings and kicks}
@@ -73,13 +74,6 @@ $t_r$, before the backward leg:
 \begin{equation}\label{eq:bf}
   \psi(t) = U^{-(t-t_r)}R\,U^{t_r}\psi(0),\qquad R=e^{-i\frac\alpha2\sigma^a_i},\quad t_r<t\le2t_r .
 \end{equation}
-At the end of the echo, $F(2t_r)=|\langle\psi(t_r)|R|\psi(t_r)\rangle|^2$. Since $\psi(t_r)$ is permutation symmetric,
-$\langle\sigma^a_i\rangle=\langle J_a\rangle/j$, and
-\begin{equation}\label{eq:Fbf}
-  F(2t_r) = \cos^2\tfrac\alpha2+\sin^2\tfrac\alpha2\,\frac{\langle J_a\rangle_{t_r}^2}{j^2},
-\end{equation}
-with $\langle J_a\rangle_{t_r}$ the expectation value just before the rotation. For $\alpha=\pi$ the echo is lost
-unless the spin at $t_r$ points along $\pm a$.
 
 %=====================================================================
 \section{Parameters}\label{sec:parameters}
@@ -92,45 +86,15 @@ $\langle\bm J\rangle/j=(\sin\theta_0\cos\phi_0,\sin\theta_0\sin\phi_0,\cos\theta
 centred at $(\theta_0,\phi_0)$. Two initial states are compared, $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$ and
 $(\thetaTwo,\phiTwo)$; every figure is shown for both. Each is evolved for
 $t_r=\tr$ forward and $t_r$ backward steps. The butterfly runs are in \cref{sec:butterfly}; the impurity runs
-have no qubit rotation at $t_r$. The impurity offsets are drawn with
-\texttt{imp\_seed} $=\impseed$, the same for both initial states; the \nruns{} widths and the resulting fidelities are listed in
-\cref{tab:runs}. The Husimi distribution is evaluated on $\ntheta\times\nphi$ points in $(Z,\phi)$.
-
-\begin{table}[ht]
-  \centering
-  \caption{Initial state and impurity widths of the runs, the fidelity at the reversal and after the echo, and the Husimi norm
-    $\mathcal N(t)$, \cref{eq:QN}, at the same times.}
-  \label{tab:runs}
-  \begin{tabular}{cccccccc}
-    \toprule
-    $(\theta_0,\phi_0)$ & $\delta_z$ & $\delta_x$ & $F(t_r)$ & $F(2t_r)$ & $|1-F(2t_r)|$ & $\mathcal N(t_r)$ & $\mathcal N(2t_r)$ \\
-    \midrule
-    \runrows
-    \bottomrule
-  \end{tabular}
-\end{table}
+have no qubit rotation at $t_r$. The Husimi distribution is evaluated on $\ntheta\times\nphi$ points in $(Z,\phi)$.
 
 %=====================================================================
 \section{Butterfly effect}\label{sec:butterfly}
 %=====================================================================
 
 \Cref{fig:butterfly_x,fig:butterfly_y,fig:butterfly_z} show $F(t)$ without impurity when qubit \iflip{} is rotated at
-$t_r$ by $\alpha$ about $x$, $y$ and $z$, \cref{eq:bf}, one line per angle. For $t\le t_r$ all curves are those of the
-clean chain. The fidelity after the echo is listed in \cref{tab:butterfly}; it agrees with \cref{eq:Fbf}.
-
-\begin{table}[ht]
-  \centering
-  \caption{Fidelity $F(2t_r)$ after the echo, without impurity, for the rotation of qubit \iflip{} by $\alpha$
-    about $a$ at $t_r$.}
-  \label{tab:butterfly}
-  \begin{tabular}{cc\alphacols}
-    \toprule
-    $(\theta_0,\phi_0)$ & $a$ & \alphahead \\
-    \midrule
-    \bfrows
-    \bottomrule
-  \end{tabular}
-\end{table}
+$t_r$ by $\alpha=\alphaA,\alphaB,\alphaC,\alphaD,\alphaE$ about $x$, $y$ and $z$, \cref{eq:bf}, one line per
+angle. For $t\le t_r$ all curves are those of the clean chain.
 
 \begin{figure}[ht]
   \centering
@@ -174,7 +138,7 @@ $(\thetaTwo,\phiTwo)$ the same impurities give $F(2t_r)=\FendBTwo$ and $\FendCTw
   \centering
   \includegraphics[width=0.49\textwidth]{figures/impurity_fidelity_One.pdf}\hfill
   \includegraphics[width=0.49\textwidth]{figures/impurity_fidelity_Two.pdf}
-  \caption{Fidelity $F(t)$, \cref{eq:F}, for the impurity widths of \cref{tab:runs}. Left:
+  \caption{Fidelity $F(t)$, \cref{eq:F}, for the impurity widths \widths. Left:
     $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$. Dashed: the reversal $t_r=\tr$.}
   \label{fig:fidelity}
 \end{figure}
@@ -198,7 +162,7 @@ $\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/
   \includegraphics[width=0.49\textwidth]{figures/impurity_Jz_One.pdf}\hfill
   \includegraphics[width=0.49\textwidth]{figures/impurity_Jz_Two.pdf}
   \caption{$\langle J_x\rangle/j$ (top), $\langle J_y\rangle/j$ (middle) and $\langle J_z\rangle/j$ (bottom) for the
-    impurity widths of \cref{tab:runs}. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.
+    impurity widths \widths. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right: $(\thetaTwo,\phiTwo)$.
     Dashed: $t_r$.}
   \label{fig:J_a}
 \end{figure}
@@ -212,7 +176,7 @@ $\langle\bm J^2\rangle$ is no longer conserved, and $\sum_a\langle J_a^2\rangle/
   \includegraphics[width=0.49\textwidth]{figures/impurity_J2z_One.pdf}\hfill
   \includegraphics[width=0.49\textwidth]{figures/impurity_J2z_Two.pdf}
   \caption{$\langle J_x^2\rangle/j^2$ (top), $\langle J_y^2\rangle/j^2$ (middle) and $\langle J_z^2\rangle/j^2$
-    (bottom) for the impurity widths of \cref{tab:runs}. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right:
+    (bottom) for the impurity widths \widths. Left: $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$, right:
     $(\thetaTwo,\phiTwo)$. Dashed: $t_r$.}
   \label{fig:J2_a}
 \end{figure}
@@ -231,13 +195,13 @@ the permutation symmetry and moves weight out of it. The Husimi norm
   \mathcal N(t) = \frac{2j+1}{4\pi}\int Q\,dZ\,d\phi
 \end{equation}
 is the symmetric weight of $\psi(t)$, up to the quadrature error of the grid ($\mathcal N(0)=\Qzero$ for the
-normalised initial state), and is listed in \cref{tab:runs}.
+normalised initial state).
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/impurity_husimi_One.pdf}
   \caption{Husimi distribution for $(\theta_0,\phi_0)=(\thetaOne,\phiOne)$ at $t=0$ (left), $t_r=\tr$ (middle) and
-    $2t_r=\trtwo$ (right). Rows: the impurity widths of \cref{tab:runs}. Each panel has its own colour scale.}
+    $2t_r=\trtwo$ (right). Rows: the impurity widths \widths. Each panel has its own colour scale.}
   \label{fig:husimiOne}
 \end{figure}
 
@@ -247,5 +211,32 @@ normalised initial state), and is listed in \cref{tab:runs}.
   \caption{As \cref{fig:husimiOne}, for $(\theta_0,\phi_0)=(\thetaTwo,\phiTwo)$.}
   \label{fig:husimiTwo}
 \end{figure}
+
+%=====================================================================
+\section{Notation}\label{sec:notation}
+%=====================================================================
+
+\begin{itemize}
+  \item $n_q$: number of qubits; $j=n_q/2$: spin of the top.
+  \item $i,k,l=1,\dots,n_q$: qubit indices.
+  \item $\sigma^a_k$, $a=x,y,z$: Pauli matrix $a$ of qubit $k$; $\bm\sigma_k=(\sigma^x_k,\sigma^y_k,\sigma^z_k)$.
+  \item $\bm J=\frac12\sum_k\bm\sigma_k$, $J_a$: total spin and its component $a$; $\bm J^2$: its square.
+  \item $\langle\cdot\rangle$: expectation value in $\psi(t)$.
+  \item $H_{zz}$, $V_{il}$: all-to-all Ising coupling, \cref{eq:U0}, and its pair coefficients.
+  \item $\varepsilon$: coupling strength; $k=n_q\varepsilon$: classical torsion.
+  \item $h$: kick angle about $x$.
+  \item $U_0$, $U$: clean and impure forward Floquet operators, \cref{eq:U0,eq:U}; $\tilde U$: backward Floquet
+    operator, \cref{eq:Ub}.
+  \item $H_\xi$, $\xi_{il}$: impurity of the couplings, \cref{eq:imp}; $\delta_z$: width of the $\xi_{il}$.
+  \item $\eta_k$: impurity of the kick angle of qubit $k$; $\delta_x$: width of the $\eta_k$.
+  \item \texttt{imp\_seed}: seed of the random numbers $\xi_{il}$, $\eta_k$.
+  \item $t$: number of kicks (time); $t_r$: time of the reversal; $2t_r$: end of the echo.
+  \item $\psi(t)$: state of the chain at time $t$.
+  \item $(\theta,\phi)$: polar and azimuthal angle on the unit sphere; $Z=\cos\theta$.
+  \item $|\theta,\phi\rangle$: spin coherent state; $(\theta_0,\phi_0)$: direction of the initial state.
+  \item $F(t)$: fidelity, \cref{eq:F}.
+  \item $R$: rotation of qubit $i$ at $t_r$ in the butterfly runs, \cref{eq:bf}; $a$: its axis; $\alpha$: its angle.
+  \item $Q(\theta,\phi)$: Husimi distribution; $\mathcal N(t)$: Husimi norm, \cref{eq:QN}.
+\end{itemize}
 
 \end{document}

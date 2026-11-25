@@ -195,8 +195,7 @@ def num(x):
 def params(groups, butterfly):
     """params.tex: common parameters (must agree in all namelists), the impurity widths A, B, C (must agree for
     all initial states), the rotation angles A, B, ... of the butterfly runs (must agree for all initial states and
-    axes) and the per-run values, e.g. \\FendBTwo for width B and initial state Two, \\FbfyCOne for the rotation
-    about y by angle C of initial state One."""
+    axes) and the per-run values, e.g. \\FendBTwo for width B and initial state Two."""
     cs = [c for g in groups for c in g]
     bfs = [c for g in butterfly.values() for c in g]
     for k in ["n_q", "eps", "h", "t_r", "n_theta", "n_phi"]:
@@ -225,18 +224,9 @@ def params(groups, butterfly):
     }
     for L, x in zip(ALPHAS, alphas):
         macros[f"alpha{L}"] = angle(x)
-    bfrows = []
-    for S, g in zip(STATES, groups):
-        for a in AXES:
-            for L, c in zip(ALPHAS, butterfly[(g[0]["theta0"], g[0]["phi0"]), a]):
-                macros[f"Fbf{a}{L}{S}"] = num(load(c, "fidelity.dat")[-1, 1])
-            bfrows.append(rf"  $(\theta{S},\phi{S})$ & ${a}$ & "
-                          + " & ".join(rf"$\Fbf{a}{L}{S}$" for L in ALPHAS[:len(alphas)]) + r" \\")
-        bfrows.append(r"  \midrule")
     for L, c in zip(LABELS, groups[0]):
         macros[f"deltaz{L}"] = f"{c['deltaz']:g}"
         macros[f"deltax{L}"] = f"{c['deltax']:g}"
-    rows = []
     for S, g in zip(STATES, groups):
         macros[f"theta{S}"] = angle(g[0]["theta0"])
         macros[f"phi{S}"] = angle(g[0]["phi0"])
@@ -248,17 +238,8 @@ def params(groups, butterfly):
             summary = dict(line.split() for line in (c["data"] / "summary.dat").read_text().splitlines()
                            if not line.startswith("#"))
             macros.setdefault("Qzero", f"{float(summary['husimi_norm(0)']):.4g}")
-            macros[f"Qtr{L}{S}"] = num(float(summary['husimi_norm(t_r)']))
-            macros[f"Qend{L}{S}"] = num(float(summary['husimi_norm(2t_r)']))
-            rows.append(rf"  $(\theta{S},\phi{S})$ & \deltaz{L} & \deltax{L} & $\Ftr{L}{S}$ & $\Fend{L}{S}$ & $\Fdef{L}{S}$"
-                        rf" & $\Qtr{L}{S}$ & $\Qend{L}{S}$ \\")
-        rows.append(r"  \midrule")
     lines = ["% Written by figures/plot_impurity.py from figures/configs_spin_chain/*.nml; do not edit."]
     lines += [rf"\newcommand{{\{k}}}{{{v}}}" for k, v in macros.items()]
-    lines += [r"\newcommand{\runrows}{%"] + rows[:-1] + ["}"]
-    lines += [r"\newcommand{\alphacols}{" + "c" * len(alphas) + "}"]
-    lines += [r"\newcommand{\alphahead}{" + " & ".join(rf"$\alpha=\alpha{L}$" for L in ALPHAS[:len(alphas)]) + "}"]
-    lines += [r"\newcommand{\bfrows}{%"] + bfrows[:-1] + ["}"]
     (FIG_DIR / "params.tex").write_text("\n".join(lines) + "\n")
 
 
