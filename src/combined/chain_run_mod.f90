@@ -7,7 +7,7 @@
 module chain_run_mod
   use kinds_mod, only: wp
   use io_utils_mod, only: make_dir
-  use husimi_mod, only: husimi, husimi_norm
+  use husimi_mod, only: husimi, husimi_norm, participation_ratio
   use combined_config_mod, only: rconfig_t
   use combined_io_mod, only: write_chain, write_husimi, write_summary
   use chain_state_mod, only: product_coherent_state, dicke_amplitudes
@@ -31,8 +31,8 @@ contains
     character(len=*), intent(in) :: prog      ! program name for the progress line
     complex(wp), allocatable :: psi0(:), psi(:)
     real(wp), allocatable :: obs(:,:), q(:,:)
-    real(wp) :: sig(3, cfg%n_q), j, sym_dev
-    integer :: steps(5), t, l
+    real(wp) :: sig(3, cfg%n_q), j, sym_dev, sym_end, c2, s2, sig_a
+    integer :: steps(5), t, l, a
 
     j = 0.5_wp*cfg%n_q
     steps = [0, cfg%t_r/2, cfg%t_r, 3*cfg%t_r/2, 2*cfg%t_r]
@@ -60,16 +60,32 @@ contains
       end do
     end do
 
+    ! With R = exp(-i flip_angle sigma^a_i/2) = cos(flip_angle/2) - i sin(flip_angle/2) sigma^a_i and exact
+    ! time reversal, F(2t_r) = |<psi(t_r)|R|psi(t_r)>|**2 = c2 + s2 <sigma^a_i>**2 at t_r (any state), and
+    ! for a symmetric psi(t_r) the symmetric weight after the flip is c2 + s2 <J_a**2>/j**2.
+    sym_end = sum(abs(dicke_amplitudes(psi, cfg%n_q))**2)
+    a = index('xyz', cfg%flip_axis)
+    c2 = cos(0.5_wp*cfg%flip_angle)**2
+    s2 = sin(0.5_wp*cfg%flip_angle)**2
+    if (.not. cfg%butterfly_effect) then
+      c2 = 1.0_wp
+      s2 = 0.0_wp
+    end if
+    sig_a = obs(9 + (a - 1)*cfg%n_q + cfg%i_flip, cfg%t_r)
+
     call make_dir(dir)
     call write_chain(cfg, h, dir, obs)
     call write_husimi(cfg, h, dir, steps, hus_theta, hus_phi, q)
     call write_summary(cfg, h, dir, &
       [character(len=24) :: 'F(t_r)', 'F(2t_r)', 'max|norm-1|', 'max|J^2-j(j+1)|', &
        'max(1-symmetric_weight)', 'husimi_norm(0)', 'husimi_norm(t_r/2)', 'husimi_norm(t_r)', &
-       'husimi_norm(3t_r/2)', 'husimi_norm(2t_r)'], &
+       'husimi_norm(3t_r/2)', 'husimi_norm(2t_r)', 'symmetric_weight(2t_r)', &
+       'F(2t_r)_predicted', 'sym_weight_predicted', 'participation(0)', 'participation(t_r/2)', &
+       'participation(t_r)', 'participation(3t_r/2)', 'participation(2t_r)'], &
       [obs(1, cfg%t_r), obs(1, 2*cfg%t_r), maxval(abs(obs(2, :) - 1.0_wp)), &
        maxval(abs(obs(9, :) - j*(j + 1.0_wp))), sym_dev, &
-       (husimi_norm(q(:, l), j), l = 1, size(steps))])
+       (husimi_norm(q(:, l), j), l = 1, size(steps)), sym_end, c2 + s2*sig_a**2, &
+       c2 + s2*obs(5 + a, cfg%t_r)/j**2, (participation_ratio(q(:, l), j), l = 1, size(steps))])
 
     write(*, '(a,f0.4,a,f0.4,a,es10.3,a)') prog//': h = ', h, ', eps = ', cfg%eps, &
       ', F(2t_r) - 1 = ', obs(1, 2*cfg%t_r) - 1.0_wp, ' -> '//dir
