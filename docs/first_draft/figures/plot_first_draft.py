@@ -34,7 +34,16 @@ def namelist(path):
     return groups
 
 
-NML = namelist(CONFIG)
+# Defaults of src/scan/scan_config_mod.f90 for entries the namelist omits.
+DEFAULTS = {
+    "system": {"h": str(np.pi / 2), "k": "2.4", "n_q": "12"},
+    "scan": {"n_theta": "40", "n_phi": "80", "n_lyap": "2000", "n_renorm": "10", "t_scan": "200",
+             "lam_regular": "0.01", "lam_chaotic": "0.1", "sat_tol": "0.05"},
+    "classical": {"n_kicks": "1000", "n_theta": "12", "n_phi": "12"},
+    "chain": {"t_r": "30", "i_flip": "1", "flip_axis": "y", "flip_angle": str(np.pi),
+              "n_angle": "0", "tr_step": "0", "tr_max": "0"},
+}
+NML = {g: {**d, **namelist(CONFIG).get(g, {})} for g, d in DEFAULTS.items()}
 CFG = {**NML["system"], **NML["scan"], **NML["chain"]}
 H, K, NQ = float(CFG["h"]), float(CFG["k"]), int(CFG["n_q"])
 J = NQ / 2
@@ -200,16 +209,17 @@ def echo_scans():
     fig, axes = plt.subplots(1, 2, figsize=(9, 3.3))
     markers = {"x": "o", "y": "s", "z": "^"}
     for run, label, color in STATES:
+        # Only scans enabled in the config (stale files of disabled scans are ignored).
         path = DATA_DIR / run / "flip_scan.dat"
-        if path.exists():
+        if int(CFG["n_angle"]) >= 2 and path.exists():
             rows = [l.split() for l in path.read_text().splitlines() if l.strip() and not l.startswith("#")]
             for a in "xyz":
                 v = np.array([[float(x) for x in r[1:]] for r in rows if r[0] == a])
                 axes[0].plot(v[:, 0], v[:, 1], markers[a], color=color, mfc="none", ms=5, label=f"{label}, $a={a}$")
                 axes[0].plot(v[:, 0], v[:, 2], "-", color=color, lw=0.6)
         path = DATA_DIR / run / "tr_scan.dat"
-        if path.exists():
-            v = load(f"{run}/tr_scan.dat")
+        v = load(f"{run}/tr_scan.dat") if int(CFG["tr_step"]) > 0 and path.exists() else np.empty((0, 0))
+        if v.size:
             axes[1].semilogy(v[:, 0], v[:, 2], "o-", color=color, ms=3, lw=1, label=f"{label}, $F(2t_r)$")
             axes[1].semilogy(v[:, 0], v[:, 4], "s--", color=color, mfc="none", ms=3, lw=0.8,
                              label=f"{label}, symmetric weight")
