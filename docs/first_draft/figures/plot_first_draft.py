@@ -27,10 +27,10 @@ def namelist(path):
     for line in path.read_text().splitlines():
         line = line.split("!")[0].strip()
         if line.startswith("&"):
-            group = groups.setdefault(line[1:].split()[0], {})
+            group = groups.setdefault(line[1:].split()[0].lower(), {})
             line = line[1 + len(line[1:].split()[0]):]
         for name, value in re.findall(r"(\w+)\s*=\s*('[^']*'|[^,\s/]+)", line):
-            group[name] = value.strip("'")
+            group[name.lower()] = value.strip("'")
     return groups
 
 
