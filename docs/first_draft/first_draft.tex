@@ -43,8 +43,8 @@
 \newcommand{\Pl}{\overline{P}_{\rm late}}  % late-window mean participation ratio
 \newcommand{\wS}{w_S}                      % weight in the symmetric subspace
 \newcommand{\NQ}{\mathcal N_Q}             % husimi_norm
-\newcommand{\Ub}{U_b}                      % backward step
-\newcommand{\Uc}{U_{\rm chain}}            % forward step of the chain
+\newcommand{\Ub}{U_r}                      % time-reversal (backward) step
+\newcommand{\Uc}{U}                        % forward step (spin j and chain)
 \newcommand{\Rf}{R}                        % butterfly rotation
 
 \begin{document}
@@ -109,7 +109,7 @@ on the unit sphere, with polar angle $\theta\in[0,\pi]$ and azimuth $\phi\in(-\p
 canonical, so phase space is the rectangle $-\pi<\phi\le\pi$, $-1\le Z\le1$ of area $4\pi$. One period of the map
 (\texttt{src/classical/map\_mod.f90}) is a kick, a rotation about the $x$ axis by the kick angle $h$,
 \begin{equation}\label{eq:rot}
-  X' = X,\quad Y' = Y\cos h - Z\sin h,\quad Z' = Y\sin h + Z\cos h,
+  X' = X,\ \ Y' = Y\cos h - Z\sin h,\ \ Z' = Y\sin h + Z\cos h,
 \end{equation}
 followed by a torsion, a rotation about $z$ by an angle proportional to the new height $Z'$,
 \begin{equation}\label{eq:tor}
@@ -129,21 +129,25 @@ $\Lambda>0$.
 
 \subsection{Quantum kicked top}\label{sec:quantum}
 
-The quantum top is a spin $\bm J=(J_x,J_y,J_z)$ with $\bm J^2=j(j+1)$, $\hbar=1$, where $j$ is the spin quantum
+The quantum top is a spin $\bm S=(S_x,S_y,S_z)$ with $\bm S^2=j(j+1)$, $\hbar=1$, where $j$ is the spin quantum
 number. One period is the Floquet operator (\texttt{src/quantum/floquet\_mod.f90})
 \begin{equation}\label{eq:U}
-  U = e^{-i\epsilon J_z^2}\,e^{-ihJ_x},\qquad \psi(t) = U^t\psi(0),
+  \begin{gathered}
+  U = U_H(\varepsilon)\,U_K(h),\qquad \psi(t) = U^t\psi(0),\\
+  U_H(\varepsilon)=e^{-i\varepsilon S_z^2},\qquad U_K(h)=e^{-ihS_x},
+  \end{gathered}
 \end{equation}
-with the coupling $\epsilon$ related to the classical torsion by
+where $U_K(h)$ is the kick and $U_H(\varepsilon)$ the free evolution between kicks, with the coupling phase
+$\varepsilon$ related to the classical torsion by
 \begin{equation}\label{eq:eps}
-  k = 2j\epsilon .
+  k = 2j\varepsilon .
 \end{equation}
-With $\bm s=\bm J/j$, $1/j$ plays the role of $\hbar$ and \cref{eq:U} reduces to the map \cref{eq:rot,eq:tor} for
-$j\to\infty$. The kick acts first and the torsion second in both, so the $x$-kick convention is the same classically
-and quantum mechanically.
+With $\bm s=\bm S/j$, the effective Planck constant is $\hbar_{\rm eff}=1/j$ and \cref{eq:U} reduces to the map
+\cref{eq:rot,eq:tor} for $j\to\infty$. The kick acts first and the torsion second in both, so the $x$-kick convention
+is the same classically and quantum mechanically.
 
 A phase-space point $(\theta,\phi)$ corresponds to the spin coherent state
-$|\theta,\phi\rangle = e^{-i\phi J_z}e^{-i\theta J_y}|j,j\rangle$, a spot of angular width $\sim1/\sqrt j$. The
+$|\theta,\phi\rangle = e^{-i\phi S_z}e^{-i\theta S_y}|j,j\rangle$, a spot of angular width $\sim1/\sqrt j$. The
 Husimi distribution of a state $\psi$ is
 \begin{equation}\label{eq:Q}
   Q(\theta,\phi) = |\langle\theta,\phi|\psi\rangle|^2,\qquad
@@ -156,30 +160,37 @@ with $d\Omega = d\phi\,dZ$ the area element of the sphere; it is normalized to o
 The spin $j$ is realized by $\nq=2j$ qubits with Pauli matrices $\sigma^a_i$, $a\in\{x,y,z\}$, $i=1,\dots,\nq$, as
 the collective spin
 \begin{equation}\label{eq:Jq}
-  J_a = \frac12\sum_{i=1}^{\nq}\sigma^a_i ,\qquad j=\frac{\nq}{2}.
+  S_a = \frac12\sum_{i=1}^{\nq}\sigma^a_i ,\qquad j=\frac{\nq}{2}.
 \end{equation}
-The kick factorizes into single-qubit pulses, $e^{-ihJ_x}=\prod_i e^{-ih\sigma^x_i/2}$, and the torsion is an
-all-to-all Ising coupling,
+The kick factorizes into single-qubit pulses, $U_K(h)=e^{-ihS_x}=\prod_i e^{-ih\sigma^x_i/2}$, so $h$ is the
+rotation angle of every qubit about $x$ \PH{the TIRKI model of the reference paper writes
+$U_K(h)=\exp(-ih\sum_i\sigma^x_i)$, i.e.\ with half this angle; decide which convention to state}. The torsion is the
+time-reversible kicked Ising (TIRKI) form of the reference paper with all-to-all couplings $J_{il}$,
 \begin{equation}\label{eq:Hzz}
-  H_{zz} = \sum_{i,l=1}^{\nq}V_{il}\,\sigma^z_i\sigma^z_l ,\qquad V_{il}=\frac14
-  \quad\Rightarrow\quad H_{zz}=J_z^2 .
+  H_0 = \sum_{i,l=1}^{\nq}J_{il}\,\sigma^z_i\sigma^z_l ,\qquad J_{il}=\frac14
+  \quad\Rightarrow\quad H_0=S_z^2 ,
 \end{equation}
-One period of the chain (\texttt{src/chain/chain\_floquet\_mod.f90}) is
+where the sum includes $i=l$ (a constant $\nq/4$). One period of the chain (\texttt{src/chain/chain\_floquet\_mod.f90};
+$J_{il}$ is \texttt{V\_il} in the code) is
 \begin{equation}\label{eq:Uc}
-  \Uc = e^{-i\epsilon H_{zz}}\prod_{i=1}^{\nq}e^{-i\frac h2\sigma^x_i},\qquad \epsilon=\frac{k}{2j}=\frac{k}{\nq},
+  \begin{gathered}
+  U = U_H(\varepsilon)\,U_K(h) = e^{-i\varepsilon H_0}\prod_{i=1}^{\nq}e^{-i\frac h2\sigma^x_i},\\
+  \varepsilon=\frac{k}{2j}=\frac{k}{\nq},
+  \end{gathered}
 \end{equation}
 which equals $U$ of \cref{eq:U} on the symmetric (Dicke) subspace of dimension $2j+1=\nq+1$, i.e.\ the
 subspace of states invariant under permutations of the qubits. The coherent state $|\theta,\phi\rangle$ is the
 product state with every qubit polarized along $\bm s(\theta,\phi)$.
 
 \paragraph{Time reversal.}
-The eigenvalues of $H_{zz}$ are $m^2$ with $m=-j,\dots,j$, which differ by integers when $V_{il}=1/4$. Hence
-$e^{-i(2\pi-\epsilon)H_{zz}} = \gamma_0\,e^{+i\epsilon H_{zz}}$ with a global phase $\gamma_0$, and the backward step
+The eigenvalues of $H_0$ are $m^2$ with $m=-j,\dots,j$, which differ by integers when $J_{il}=1/4$. Hence
+$U_H(2\pi-\varepsilon) = \gamma_0\,U_H(\varepsilon)^{\dagger}$ with a global phase $\gamma_0$, and the time-reversal
+operator
 \begin{equation}\label{eq:Ub}
-  \Ub = \prod_{i=1}^{\nq}e^{+i\frac h2\sigma^x_i}\;e^{-i(2\pi-\epsilon)H_{zz}} = \gamma\,\Uc^{\dagger}
+  U_r = U_K(-h)\,U_H(2\pi-\varepsilon) = \gamma\,U^{\dagger}
 \end{equation}
-inverts one forward step up to a global phase $\gamma$, using only a coupling of the same sign and pulses of the
-opposite sign.
+inverts one forward step up to a global phase $\gamma$, using only a coupling of the same sign ($\varepsilon\to
+2\pi-\varepsilon$) and pulses of the opposite sign ($h\to-h$).
 
 %=====================================================================
 \section{Methods}\label{sec:methods}
@@ -214,7 +225,7 @@ coherent state, so $\int Q^2\,d\Omega = 4\pi|\chi|^2/(4j+1)$ with $\chi$ the pro
 spin $2j$ \PH{short derivation in an appendix?}. For a chaotic state the quantum--classical correspondence holds up
 to the Ehrenfest time
 \begin{equation}\label{eq:tE}
-  \tE \simeq \frac{\ln j}{2\Lambda},
+  \tE \simeq \frac{|\ln\hbar_{\rm eff}|}{2\Lambda} = \frac{\ln j}{2\Lambda},
 \end{equation}
 the time for the exponential stretching $e^{\Lambda t}$ to blow the initial width $1/\sqrt j$ up to the size of the
 sphere. We take $\tscan=\num{Tscan}\gg\tE$ (for the selected chaotic state $\tscan/\tE=\num{SeaTscanOverTe}$), and
@@ -263,16 +274,16 @@ so after it part of the state leaves the symmetric subspace. Its weight there,
 with $|j,m\rangle$ the Dicke states, equals the Husimi norm $\NQ=\frac{2j+1}{4\pi}\int Q\,d\Omega$ of the projected
 state (\texttt{husimi\_norm} in the code), so $\NQ<1$ after the flip. Since $\Ub$ and $\Uc$ commute with qubit
 permutations, $\wS$ is constant on the backward leg. For a symmetric $\psi(\tr)$ the projector $P_S$ onto the symmetric subspace gives
-$P_S\sigma^a_{\iflip}\psi(\tr)=\nq^{-1}\sum_iP_S\sigma^a_i\psi(\tr)=(J_a/j)\,\psi(\tr)$, so
-$P_S\Rf\psi(\tr)=[\cos(\fa/2)-i\sin(\fa/2)J_a/j]\,\psi(\tr)$ and
+$P_S\sigma^a_{\iflip}\psi(\tr)=\nq^{-1}\sum_iP_S\sigma^a_i\psi(\tr)=(S_a/j)\,\psi(\tr)$, so
+$P_S\Rf\psi(\tr)=[\cos(\fa/2)-i\sin(\fa/2)S_a/j]\,\psi(\tr)$ and
 \begin{equation}\label{eq:wSpred}
-  \wS(t>\tr) = \cos^2\frac{\fa}{2} + \sin^2\frac{\fa}{2}\,\frac{\langle J_a^2\rangle_{\tr}}{j^2}.
+  \wS(t>\tr) = \cos^2\frac{\fa}{2} + \sin^2\frac{\fa}{2}\,\frac{\langle S_a^2\rangle_{\tr}}{j^2}.
 \end{equation}
 Optionally, the flip angle is scanned over $\fa=0,\pi/8,\dots,\pi$ for $a=x,y,z$ at fixed $\tr$, and $\tr$ is scanned
 at fixed $(\fa,a)$.
 
 \paragraph{Parameters.}
-Throughout, $h=\num{Hval}$, $k=\num{Kval}$, $\nq=\num{NqVal}$ ($j=\num{Jval}$, $\epsilon=k/\nq=\num{EpsVal}$),
+Throughout, $h=\num{Hval}$, $k=\num{Kval}$, $\nq=\num{NqVal}$ ($j=\num{Jval}$, $\varepsilon=k/\nq=\num{EpsVal}$),
 $\tr=\num{Tr}$, $\iflip=\num{Iflip}$, $a=\num{FlipAxis}$ and $\fa=\pi$ unless stated otherwise.
 \PH{justify the parameter choice: at $h=\pi/2$, $k=2.4$ no grid state stays localized at this $j$; at $h=1.2$ the
 islands hold a coherent state and the chaotic sea covers a fraction \num{ChaoticFraction} of the sphere.}
@@ -287,7 +298,7 @@ islands hold a coherent state and the chaotic sea covers a fraction \num{Chaotic
   \centering
   \figorph[0.9\textwidth]{figures/scan.pdf}
   \caption{Initial-condition scan of the kicked top with kick angle $h=\num{Hval}$ rad about $x$, torsion strength
-  $k=\num{Kval}$, spin $j=\num{Jval}$ (coupling $\epsilon=k/(2j)=\num{EpsVal}$), on an equal-area grid of
+  $k=\num{Kval}$, spin $j=\num{Jval}$ (coupling $\varepsilon=k/(2j)=\num{EpsVal}$), on an equal-area grid of
   $\num{Ngrid}$ initial coherent states $|\theta_0,\phi_0\rangle$, plotted at their initial azimuth $\phi_0$ (rad,
   horizontal) and height $Z_0=\cos\theta_0$ (vertical). (a)~Classical finite-time Lyapunov exponent $\Lambda$ (per
   kick) over $N_\Lambda=\num{Nlyap}$ kicks. (b)~Quantum fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$ averaged
@@ -322,8 +333,8 @@ saturated, $\Pl/\Pe=\num{SeaPRratio}$, and its Ehrenfest time \cref{eq:tE} is $\
 \begin{figure*}
   \centering
   \figorph[0.9\textwidth]{figures/scan_series.pdf}
-  \caption{Spin-$j$ evolution $\psi(t)=U^t|\theta_0,\phi_0\rangle$, $U=e^{-i\epsilon J_z^2}e^{-ihJ_x}$, of the two
-  selected initial states for $h=\num{Hval}$ rad, $k=\num{Kval}$, $j=\num{Jval}$ ($\epsilon=\num{EpsVal}$). Blue: island
+  \caption{Spin-$j$ evolution $\psi(t)=U^t|\theta_0,\phi_0\rangle$, $U=e^{-i\varepsilon S_z^2}e^{-ihS_x}$, of the two
+  selected initial states for $h=\num{Hval}$ rad, $k=\num{Kval}$, $j=\num{Jval}$ ($\varepsilon=\num{EpsVal}$). Blue: island
   state $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$; red: chaotic-sea state
   $(\num{SeaThetaZero},\num{SeaPhiZero})$. (a)~Fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$; dotted: random-state
   value $1/(2j+1)$. (b)~Husimi participation ratio $P(t)$ (number of Planck cells); dotted: random-state value $j+1$.
@@ -344,7 +355,7 @@ $j+1$ within a few $\tE$, with no slow drift.}
   \centering
   \figorph[0.9\textwidth]{figures/echo_fidelity.pdf}
   \caption{Butterfly echo on the chain of $n_q=\num{NqVal}$ qubits ($j=n_q/2$), $h=\num{Hval}$ rad,
-  $\epsilon=k/n_q=\num{EpsVal}$ ($k=\num{Kval}$), $V_{il}=1/4$: fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$ versus
+  $\varepsilon=k/n_q=\num{EpsVal}$ ($k=\num{Kval}$), $J_{il}=1/4$: fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$ versus
   time $t$ (kicks). Forward evolution for $t_r=\num{Tr}$ kicks (dotted vertical line), rotation
   $e^{-i\vartheta\sigma^a_{i_{\rm flip}}/2}$ of qubit $i_{\rm flip}=\num{Iflip}$ about $a=\num{FlipAxis}$ by
   $\vartheta=\pi$, then $t_r$ backward kicks. Circles: with the rotation; dashed: without it ($\vartheta=0$). Blue:
@@ -358,7 +369,7 @@ $j+1$ within a few $\tE$, with no slow drift.}
   \figorph[\textwidth]{figures/echo_husimi.pdf}
   \caption{Husimi distribution $Q(\theta,\phi)=|\langle\theta,\phi|\psi_S(t)\rangle|^2$ of the projection $\psi_S$ of
   the chain state onto the symmetric subspace, at $t=0,\ t_r/2,\ t_r,\ 3t_r/2,\ 2t_r$ with $t_r=\num{Tr}$ kicks, for the
-  echo of \cref{fig:echo} ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\epsilon=\num{EpsVal}$, rotation of qubit
+  echo of \cref{fig:echo} ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\varepsilon=\num{EpsVal}$, rotation of qubit
   $i_{\rm flip}=\num{Iflip}$ about $a=\num{FlipAxis}$ by $\vartheta=\pi$ at $t_r$). Top row: island state
   $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$; bottom row: chaotic-sea state
   $(\num{SeaThetaZero},\num{SeaPhiZero})$; white crosses mark $(\phi_0,Z_0)$. Horizontal axis: azimuth $\phi$ (rad);
@@ -383,7 +394,7 @@ and $\num{SeaSymWeight}$ (sea), compared with \cref{eq:wSpred}: \num{IslandSymWe
 \begin{figure*}
   \centering
   \figorph[0.9\textwidth]{figures/echo_scans.pdf}
-  \caption{Echo fidelity $F(2t_r)$ on the chain ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\epsilon=\num{EpsVal}$,
+  \caption{Echo fidelity $F(2t_r)$ on the chain ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\varepsilon=\num{EpsVal}$,
   rotated qubit $i_{\rm flip}=\num{Iflip}$). Blue: island state $(\theta_0,\phi_0)=(\num{IslandThetaZero},
   \num{IslandPhiZero})$; red: chaotic-sea state $(\num{SeaThetaZero},\num{SeaPhiZero})$. (a)~Versus flip angle
   $\vartheta$ (rad) for the axes $a=x$ (circles), $y$ (squares), $z$ (triangles) at $t_r=\num{Tr}$ kicks; lines:
@@ -413,11 +424,11 @@ The forward leg stays in the $(2j+1)$-dimensional symmetric subspace, where the 
 one qubit moves weight $1-\wS$ out of it, \cref{eq:wS,eq:wSpred}, and the Husimi norm of the projected state drops
 below one, $\NQ=\num{IslandHusimiNormEnd}$ (island) and $\NQ=\num{SeaHusimiNormEnd}$ (sea) at $2\tr$. The backward
 leg conserves this weight, so the leaked part never returns to the collective-spin description: \PH{interpretation;
-which state leaks more and why ($\langle J_a^2\rangle_{\tr}/j^2$ close to one for a polarized state, smaller for a
+which state leaks more and why ($\langle S_a^2\rangle_{\tr}/j^2$ close to one for a polarized state, smaller for a
 spread state); implications for experiments that measure only collective observables.}
 
 \paragraph{Outlook.}
-\PH{larger $\nq$; imperfect reversal (e.g.\ $\epsilon\to\epsilon+\delta\epsilon$ on the backward leg); comparison
+\PH{larger $\nq$; static imperfections of amplitudes $\delta_x$ (kick) and $\delta_z$ (coupling) as in the reference paper; comparison
 with the reference experiment; notation alignment with the reference paper.}
 
 %=====================================================================
