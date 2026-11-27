@@ -10,6 +10,7 @@ QUANTUM   = quantum_config_mod spin_mod floquet_mod husimi_mod spectrum_mod quan
 CHAIN     = chain_state_mod chain_floquet_mod chain_observables_mod
 COMBINED  = combined_config_mod combined_io_mod chain_run_mod combined_main
 SPIN_CHAIN = spin_chain_main
+SCAN      = scan_config_mod scan_mod scan_main
 
 objs = $(addprefix $(BUILD)/, $(addsuffix .o, $(1)))
 COMMON_OBJS    = $(call objs, $(COMMON))
@@ -18,20 +19,25 @@ QUANTUM_OBJS   = $(call objs, $(QUANTUM))
 CHAIN_OBJS     = $(call objs, $(CHAIN))
 COMBINED_OBJS   = $(call objs, $(COMBINED))
 SPIN_CHAIN_OBJS = $(call objs, $(SPIN_CHAIN))
+SCAN_OBJS       = $(call objs, $(SCAN))
 # kicked_top_spin_chain shares everything of kicked_top_combined except its driver and the classical part
 SPIN_CHAIN_DEPS = $(call objs, spin_mod husimi_mod combined_config_mod combined_io_mod chain_run_mod)
 # kicked_top_combined reuses the classical modules and the spin-j Husimi code
 COMBINED_DEPS   = $(call objs, config_mod map_mod energy_mod init_mod evolve_mod io_mod spin_mod husimi_mod)
+# kicked_top_scan: classical map and Lyapunov exponent, spin-j Floquet matrix, and the chain echo
+SCAN_DEPS       = $(call objs, config_mod map_mod energy_mod evolve_mod lyapunov_mod io_mod spin_mod floquet_mod \
+                  husimi_mod combined_config_mod combined_io_mod chain_run_mod)
 
 EXE  = $(BUILD)/kicked_top
 QEXE = $(BUILD)/kicked_top_quantum
 CEXE = $(BUILD)/kicked_top_combined
 SEXE = $(BUILD)/kicked_top_spin_chain
+SCEXE = $(BUILD)/kicked_top_scan
 
-# make: builds all programs. make classical | quantum | spin_chain | combined: builds and runs one.
-.PHONY: all classical quantum spin_chain combined clean doc
+# make: builds all programs. make classical | quantum | spin_chain | combined | scan: builds and runs one.
+.PHONY: all classical quantum spin_chain combined scan clean doc
 
-all: $(EXE) $(QEXE) $(SEXE) $(CEXE)
+all: $(EXE) $(QEXE) $(SEXE) $(CEXE) $(SCEXE)
 
 classical: $(EXE)
 	./$(EXE) config_classical.nml
@@ -45,6 +51,9 @@ spin_chain: $(SEXE)
 combined: $(CEXE)
 	./$(CEXE) config_combined.nml
 
+scan: $(SCEXE)
+	./$(SCEXE) config_scan.nml
+
 $(EXE): $(COMMON_OBJS) $(CLASSICAL_OBJS)
 	$(FC) $(FFLAGS) -o $@ $^
 
@@ -56,6 +65,9 @@ $(CEXE): $(COMMON_OBJS) $(COMBINED_DEPS) $(CHAIN_OBJS) $(COMBINED_OBJS)
 
 $(SEXE): $(COMMON_OBJS) $(SPIN_CHAIN_DEPS) $(CHAIN_OBJS) $(SPIN_CHAIN_OBJS)
 	$(FC) $(FFLAGS) -o $@ $^
+
+$(SCEXE): $(COMMON_OBJS) $(SCAN_DEPS) $(CHAIN_OBJS) $(SCAN_OBJS)
+	$(FC) $(FFLAGS) -o $@ $^ $(LAPACK)
 
 $(BUILD)/%.o: $(SRC)/common/%.f90 | $(BUILD)
 	$(FC) $(FFLAGS) -c $< -o $@
@@ -75,12 +87,15 @@ $(BUILD)/%.o: $(SRC)/combined/%.f90 | $(BUILD)
 $(BUILD)/%.o: $(SRC)/spin_chain/%.f90 | $(BUILD)
 	$(FC) $(FFLAGS) -c $< -o $@
 
+$(BUILD)/%.o: $(SRC)/scan/%.f90 | $(BUILD)
+	$(FC) $(FFLAGS) -c $< -o $@
+
 $(BUILD):
 	mkdir -p $@
 
 # module dependencies
 $(BUILD)/sphere_mod.o: $(BUILD)/kinds_mod.o
-$(CLASSICAL_OBJS) $(QUANTUM_OBJS) $(CHAIN_OBJS) $(COMBINED_OBJS) $(SPIN_CHAIN_OBJS): $(COMMON_OBJS)
+$(CLASSICAL_OBJS) $(QUANTUM_OBJS) $(CHAIN_OBJS) $(COMBINED_OBJS) $(SPIN_CHAIN_OBJS) $(SCAN_OBJS): $(COMMON_OBJS)
 
 $(BUILD)/map_mod.o $(BUILD)/energy_mod.o: $(BUILD)/config_mod.o
 $(BUILD)/init_mod.o:     $(BUILD)/config_mod.o
@@ -98,10 +113,13 @@ $(BUILD)/chain_run_mod.o:  $(BUILD)/husimi_mod.o $(BUILD)/combined_io_mod.o $(CH
 $(BUILD)/combined_main.o:   $(COMBINED_DEPS) $(CHAIN_OBJS) $(filter-out $(BUILD)/combined_main.o, $(COMBINED_OBJS))
 $(BUILD)/spin_chain_main.o: $(SPIN_CHAIN_DEPS) $(CHAIN_OBJS)
 
+$(BUILD)/scan_mod.o:  $(BUILD)/spin_mod.o $(BUILD)/husimi_mod.o
+$(BUILD)/scan_main.o: $(SCAN_DEPS) $(CHAIN_OBJS) $(BUILD)/scan_config_mod.o $(BUILD)/scan_mod.o
+
 # reports: make doc <dir> [compute], <dir> a directory in docs/.
 # Without compute, compiles every .tex in docs/<dir>, assuming its figures exist.
-# With compute, first runs every namelist in docs/<dir>/figures/configs{,_quantum,_spin_chain,_combined}/
-# with kicked_top, kicked_top_quantum, kicked_top_spin_chain and kicked_top_combined,
+# With compute, first runs every namelist in docs/<dir>/figures/configs{,_quantum,_spin_chain,_combined,_scan}/
+# with kicked_top, kicked_top_quantum, kicked_top_spin_chain, kicked_top_combined and kicked_top_scan,
 # then every docs/<dir>/figures/plot_*.py.
 DOCS = docs
 ifeq (doc,$(firstword $(MAKECMDGOALS)))
@@ -114,13 +132,14 @@ endif
 REPORT_DIR = $(DOCS)/$(REPORT)
 REPORT_FIG = $(REPORT_DIR)/figures
 
-doc: $(if $(COMPUTE),$(EXE) $(QEXE) $(SEXE) $(CEXE))
+doc: $(if $(COMPUTE),$(EXE) $(QEXE) $(SEXE) $(CEXE) $(SCEXE))
 	@test -n "$(REPORT)" && test -d "$(REPORT_DIR)" || { echo "usage: make doc <dir> [compute], <dir> a directory in $(DOCS)/"; exit 1; }
 ifneq ($(COMPUTE),)
 	for f in $(wildcard $(REPORT_FIG)/configs/*.nml); do ./$(EXE) $$f || exit 1; done
 	for f in $(wildcard $(REPORT_FIG)/configs_quantum/*.nml); do ./$(QEXE) $$f || exit 1; done
 	for f in $(wildcard $(REPORT_FIG)/configs_spin_chain/*.nml); do ./$(SEXE) $$f || exit 1; done
 	for f in $(wildcard $(REPORT_FIG)/configs_combined/*.nml); do ./$(CEXE) $$f || exit 1; done
+	for f in $(wildcard $(REPORT_FIG)/configs_scan/*.nml); do ./$(SCEXE) $$f || exit 1; done
 	for f in $(wildcard $(REPORT_FIG)/plot_*.py); do python3 $$f || exit 1; done
 endif
 	cd $(REPORT_DIR) && latexmk -pdf -interaction=nonstopmode -halt-on-error $(notdir $(wildcard $(REPORT_DIR)/*.tex))

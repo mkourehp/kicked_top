@@ -46,10 +46,12 @@ The physics and the code are explained in the lecture notes `docs/lecture_note/k
 ## Usage
 
 ```bash
-make                                    # builds all programs: kicked_top, kicked_top_quantum, kicked_top_spin_chain, kicked_top_combined
+make                                    # builds all programs: kicked_top, kicked_top_quantum, kicked_top_spin_chain, kicked_top_combined, kicked_top_scan
 make classical                          # builds and runs ./build/kicked_top config_classical.nml
 make spin_chain                         # qubit chain alone: ./build/kicked_top_spin_chain config_spin_chain.nml
 make combined                           # classical sections + qubit chain: ./build/kicked_top_combined config_combined.nml
+make scan                               # initial-condition scan (Lyapunov, F, Husimi participation ratio) + butterfly echo of the selected island and sea states: ./build/kicked_top_scan config_scan.nml
+make doc first_draft compute            # reruns the scan/echo of docs/first_draft and rebuilds the paper draft
 python scripts/post_processor.py        # output/phase_space.png
 python scripts/post_processor.py --sphere --show   # also 3D trajectory, open windows
 python scripts/post_processor.py --lyapunov        # also output/lyapunov.png (needs &lyapunov enabled)

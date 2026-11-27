@@ -225,6 +225,7 @@ build/
 output/
 output_combined/
 output_spin_chain/
+output_scan/
 
 # Reports
 docs/*/figures/data/
@@ -235,3 +236,6 @@ docs/*/figures/data/
 *.out
 *.toc
 *.synctex.gz
+*.bbl
+*.blg
+*Notes.bib

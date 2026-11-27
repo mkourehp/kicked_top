@@ -1,0 +1,38 @@
+! initial-condition scan and butterfly echo, run by kicked_top_scan.
+! h = 1.2, k = 2.4, n_q = 12 (j = 6, eps = k/n_q = 0.2).
+&system
+  h = 1.2
+  k = 2.4
+  n_q = 12
+/
+&scan
+  n_theta = 60
+  n_phi = 120
+  n_lyap = 2000
+  n_renorm = 10
+  t_scan = 300
+  lam_regular = 0.01
+  lam_chaotic = 0.1
+  sat_tol = 0.05
+/
+&classical
+  n_kicks = 1000
+  n_theta = 14
+  n_phi = 14
+/
+&chain
+  t_r = 30
+  i_flip = 1
+  flip_axis = 'y'
+  flip_angle = 3.141592653589793
+  n_angle = 0
+  tr_step = 0
+  tr_max = 40
+/
+&husimi
+  n_theta = 100
+  n_phi = 200
+/
+&output
+  out_dir = 'output_scan'
+/

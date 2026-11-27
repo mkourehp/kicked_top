@@ -1,0 +1,446 @@
+\documentclass[aps,pra,twocolumn,superscriptaddress,nofootinbib]{revtex4-2}
+
+\usepackage{amsmath,amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{cleveref}
+
+% ---------------------------------------------------------------------
+% Placeholders. \PH{...} marks text or a number still to be written or
+% checked; search for "\PH" before submission.
+% ---------------------------------------------------------------------
+\newcommand{\PH}[1]{\textcolor{red}{[\textsf{#1}]}}
+% A figure file that does not exist yet is replaced by a framed placeholder.
+\newcommand{\figorph}[2][\columnwidth]{%
+  \IfFileExists{#2}{\includegraphics[width=#1]{#2}}%
+  {\fbox{\parbox[c][0.5#1][c]{0.95#1}{\centering\PH{figure #2}}}}}
+
+% ---------------------------------------------------------------------
+% Numbers. figures/numbers.tex is written by figures/plot_first_draft.py
+% from the simulation data (make doc first_draft compute). Every number
+% without data stays a red placeholder.
+% ---------------------------------------------------------------------
+\InputIfFileExists{figures/numbers.tex}{}{}
+\newcommand{\num}[1]{\ifcsname Num#1\endcsname\csname Num#1\endcsname\else\PH{#1}\fi}
+
+% ---------------------------------------------------------------------
+% Notation (repository notation; one macro per symbol so that it can be
+% renamed in one place at the notation-alignment stage).
+% ---------------------------------------------------------------------
+\newcommand{\nq}{n_q}                      % number of qubits
+\newcommand{\tr}{t_r}                      % reversal time
+\newcommand{\tscan}{t_{\rm scan}}          % kicks of the scan
+\newcommand{\tE}{t_E}                      % Ehrenfest time
+\newcommand{\thz}{\theta_0}                % initial polar angle
+\newcommand{\phz}{\phi_0}                  % initial azimuth
+\newcommand{\fa}{\vartheta}                % flip angle
+\newcommand{\iflip}{i_{\rm flip}}          % flipped qubit
+\newcommand{\PR}{P}                        % Husimi participation ratio
+\newcommand{\Fl}{\overline{F}_{\rm late}}  % late-window mean fidelity
+\newcommand{\Pe}{\overline{P}_{\rm early}} % early-window mean participation ratio
+\newcommand{\Pl}{\overline{P}_{\rm late}}  % late-window mean participation ratio
+\newcommand{\wS}{w_S}                      % weight in the symmetric subspace
+\newcommand{\NQ}{\mathcal N_Q}             % husimi_norm
+\newcommand{\Ub}{U_r}                      % time-reversal (backward) step
+\newcommand{\Uc}{U}                        % forward step (spin j and chain)
+\newcommand{\Rf}{R}                        % butterfly rotation
+
+\begin{document}
+
+\title{Butterfly echoes in the quantum kicked top: island versus chaotic-sea initial states\\
+  \PH{working title}}
+
+\author{\PH{authors}}
+\affiliation{\PH{affiliations}}
+
+\date{\today}
+
+\begin{abstract}
+We study the Loschmidt echo of the quantum kicked top, realized as a chain of $\nq$ qubits with an all-to-all Ising
+coupling, when a single qubit is rotated between an exact forward and an exact backward evolution. The two initial
+spin coherent states are not chosen by hand but selected by a scan over the whole sphere that combines the classical
+Lyapunov exponent with the fidelity and the Husimi participation ratio of the quantum evolution: one lies in a stable
+island, the other in the chaotic sea, and the latter is checked not to be trapped in a sticky region. \PH{one or two
+sentences on the main result: contrast of the echo fidelity and of the Husimi snapshots between the two states; role
+of the Ehrenfest time; leakage out of the symmetric subspace.}
+\end{abstract}
+
+\maketitle
+
+%=====================================================================
+\section{Introduction}\label{sec:intro}
+%=====================================================================
+
+Classical chaos is defined by the exponential sensitivity of trajectories to their initial conditions. Quantum
+mechanics has no trajectories, and the overlap of two states evolved by the same unitary is conserved, so this
+definition does not carry over~\PH{cite Peres; Haake}. Peres proposed instead to compare the evolution of one initial
+state under two slightly different dynamics~\PH{cite Peres 1984}. Equivalently, one evolves the state forward, applies
+a perturbation, and evolves backward: the overlap of the returned state with the initial one, the Loschmidt
+echo or fidelity, measures how strongly the perturbation is amplified by the dynamics~\PH{cite Jalabert--Pastawski;
+Gorin et al.\ review; Goussev et al.\ Scholarpedia}.
+
+If the perturbation is a local operation applied at the turning point, the echo protocol is the ``butterfly'' version
+of the Loschmidt echo, closely related to out-of-time-order correlators and to operator spreading in many-body
+systems~\PH{cite Larkin--Ovchinnikov; Swingle; Hashimoto; Schmitt et al.}. It has been realized with nuclear spins,
+trapped ions and superconducting qubits~\PH{cite experiments, incl.\ the reference paper ``Time Reversal of Complex
+Evolution on a Quantum Computer''}. A controlled setting for such protocols is the quantum kicked top~\PH{cite Haake,
+Ku\'s, Scharf 1987; Chaudhury et al.\ 2009}: a single large spin whose classical limit has a mixed phase space with
+stable islands and a chaotic sea, and which can be written as a chain of qubits so that time reversal and local
+perturbations are natural operations.
+
+In a mixed phase space the outcome of the echo depends on where the initial state sits. This work contrasts two
+initial spin coherent states, one in a stable island and one in the chaotic sea. Rather than choosing them by hand, we
+select them by a scan over the whole sphere that combines classical and quantum criteria, and we verify that the
+chaotic state is not trapped in a sticky region near an island. \PH{summary of results and outline of the paper.}
+
+%=====================================================================
+\section{Model}\label{sec:model}
+%=====================================================================
+
+\subsection{Classical map}\label{sec:classical}
+
+The classical top is a unit vector
+\begin{equation}\label{eq:s}
+  \bm s = (X,Y,Z) = (\sin\theta\cos\phi,\ \sin\theta\sin\phi,\ \cos\theta)
+\end{equation}
+on the unit sphere, with polar angle $\theta\in[0,\pi]$ and azimuth $\phi\in(-\pi,\pi]$. The pair $(\phi,Z)$ is
+canonical, so phase space is the rectangle $-\pi<\phi\le\pi$, $-1\le Z\le1$ of area $4\pi$. One period of the map
+(\texttt{src/classical/map\_mod.f90}) is a kick, a rotation about the $x$ axis by the kick angle $h$,
+\begin{equation}\label{eq:rot}
+  X' = X,\ \ Y' = Y\cos h - Z\sin h,\ \ Z' = Y\sin h + Z\cos h,
+\end{equation}
+followed by a torsion, a rotation about $z$ by an angle proportional to the new height $Z'$,
+\begin{equation}\label{eq:tor}
+  \bm s_{\rm new} = R_z(kZ')\,\bm s',
+\end{equation}
+where $k$ is the torsion strength per period and $R_z(\alpha)$ the rotation about $z$ by $\alpha$. Time $t=0,1,2,\dots$
+counts kicks. The map preserves area on the sphere.
+
+The finite-time Lyapunov exponent $\Lambda$ of an initial point $\bm s_0$ is the mean exponential growth rate of a
+tangent vector $\delta\bm s_t$ over $N_\Lambda$ kicks,
+\begin{equation}\label{eq:lyap}
+  \Lambda = \frac{1}{N_\Lambda}\ln\frac{|\delta\bm s_{N_\Lambda}|}{|\delta\bm s_0|},
+\end{equation}
+computed with the tangent map of \cref{eq:rot,eq:tor} and periodic renormalization (Benettin's method,
+\texttt{src/classical/lyapunov\_mod.f90}). Points in a stable island have $\Lambda\to0$, points in the chaotic sea
+$\Lambda>0$.
+
+\subsection{Quantum kicked top}\label{sec:quantum}
+
+The quantum top is a spin $\bm S=(S_x,S_y,S_z)$ with $\bm S^2=j(j+1)$, $\hbar=1$, where $j$ is the spin quantum
+number. One period is the Floquet operator (\texttt{src/quantum/floquet\_mod.f90})
+\begin{equation}\label{eq:U}
+  \begin{gathered}
+  U = U_H(\varepsilon)\,U_K(h),\qquad \psi(t) = U^t\psi(0),\\
+  U_H(\varepsilon)=e^{-i\varepsilon S_z^2},\qquad U_K(h)=e^{-ihS_x},
+  \end{gathered}
+\end{equation}
+where $U_K(h)$ is the kick and $U_H(\varepsilon)$ the free evolution between kicks, with the coupling phase
+$\varepsilon$ related to the classical torsion by
+\begin{equation}\label{eq:eps}
+  k = 2j\varepsilon .
+\end{equation}
+With $\bm s=\bm S/j$, the effective Planck constant is $\hbar_{\rm eff}=1/j$ and \cref{eq:U} reduces to the map
+\cref{eq:rot,eq:tor} for $j\to\infty$. The kick acts first and the torsion second in both, so the $x$-kick convention
+is the same classically and quantum mechanically.
+
+A phase-space point $(\theta,\phi)$ corresponds to the spin coherent state
+$|\theta,\phi\rangle = e^{-i\phi S_z}e^{-i\theta S_y}|j,j\rangle$, a spot of angular width $\sim1/\sqrt j$. The
+Husimi distribution of a state $\psi$ is
+\begin{equation}\label{eq:Q}
+  Q(\theta,\phi) = |\langle\theta,\phi|\psi\rangle|^2,\qquad
+  \frac{2j+1}{4\pi}\int Q\,d\Omega = \langle\psi|\psi\rangle ,
+\end{equation}
+with $d\Omega = d\phi\,dZ$ the area element of the sphere; it is normalized to one for a normalized spin-$j$ state.
+
+\subsection{Qubit chain}\label{sec:chain}
+
+The spin $j$ is realized by $\nq=2j$ qubits with Pauli matrices $\sigma^a_i$, $a\in\{x,y,z\}$, $i=1,\dots,\nq$, as
+the collective spin
+\begin{equation}\label{eq:Jq}
+  S_a = \frac12\sum_{i=1}^{\nq}\sigma^a_i ,\qquad j=\frac{\nq}{2}.
+\end{equation}
+The kick factorizes into single-qubit pulses, $U_K(h)=e^{-ihS_x}=\prod_i e^{-ih\sigma^x_i/2}$, so $h$ is the
+rotation angle of every qubit about $x$ \PH{the TIRKI model of the reference paper writes
+$U_K(h)=\exp(-ih\sum_i\sigma^x_i)$, i.e.\ with half this angle; decide which convention to state}. The torsion is the
+time-reversible kicked Ising (TIRKI) form of the reference paper with all-to-all couplings $J_{il}$,
+\begin{equation}\label{eq:Hzz}
+  H_0 = \sum_{i,l=1}^{\nq}J_{il}\,\sigma^z_i\sigma^z_l ,\qquad J_{il}=\frac14
+  \quad\Rightarrow\quad H_0=S_z^2 ,
+\end{equation}
+where the sum includes $i=l$ (a constant $\nq/4$). One period of the chain (\texttt{src/chain/chain\_floquet\_mod.f90};
+$J_{il}$ is \texttt{V\_il} in the code) is
+\begin{equation}\label{eq:Uc}
+  \begin{gathered}
+  U = U_H(\varepsilon)\,U_K(h) = e^{-i\varepsilon H_0}\prod_{i=1}^{\nq}e^{-i\frac h2\sigma^x_i},\\
+  \varepsilon=\frac{k}{2j}=\frac{k}{\nq},
+  \end{gathered}
+\end{equation}
+which equals $U$ of \cref{eq:U} on the symmetric (Dicke) subspace of dimension $2j+1=\nq+1$, i.e.\ the
+subspace of states invariant under permutations of the qubits. The coherent state $|\theta,\phi\rangle$ is the
+product state with every qubit polarized along $\bm s(\theta,\phi)$.
+
+\paragraph{Time reversal.}
+The eigenvalues of $H_0$ are $m^2$ with $m=-j,\dots,j$, which differ by integers when $J_{il}=1/4$. Hence
+$U_H(2\pi-\varepsilon) = \gamma_0\,U_H(\varepsilon)^{\dagger}$ with a global phase $\gamma_0$, and the time-reversal
+operator
+\begin{equation}\label{eq:Ub}
+  U_r = U_K(-h)\,U_H(2\pi-\varepsilon) = \gamma\,U^{\dagger}
+\end{equation}
+inverts one forward step up to a global phase $\gamma$, using only a coupling of the same sign ($\varepsilon\to
+2\pi-\varepsilon$) and pulses of the opposite sign ($h\to-h$).
+
+%=====================================================================
+\section{Methods}\label{sec:methods}
+%=====================================================================
+
+\subsection{Scan-based selection of the initial conditions}\label{sec:scan}
+
+\paragraph{Grid.}
+The initial states $|\thz,\phz\rangle$ are taken on an equal-area grid of $N_\theta\times N_\phi$ cell centers in
+$(Z_0=\cos\thz,\ \phz)$, uniform in $Z_0\in[-1,1]$ and $\phz\in(-\pi,\pi]$, which covers the sphere with equal
+weights. Here $\thz$ and $\phz$ are the polar angle and azimuth of the initial polarization. We use
+$N_\theta\times N_\phi=\num{NthetaScan}\times\num{NphiScan}$ ($\num{Ngrid}$ states).
+
+\paragraph{Classical pre-filter.}
+For every grid point the finite-time Lyapunov exponent \cref{eq:lyap} is computed over $N_\Lambda=\num{Nlyap}$
+kicks. Points with $\Lambda<\Lambda_{\rm reg}=\num{LamRegular}$ are island candidates, points with
+$\Lambda>\Lambda_{\rm ch}=\num{LamChaotic}$ are chaotic-sea candidates.
+
+\paragraph{Quantum scan.}
+Every grid state is evolved by \cref{eq:U} for $\tscan$ kicks, recording the fidelity
+\begin{equation}\label{eq:F}
+  F(t) = |\langle\psi_0|\psi(t)\rangle|^2,\qquad \psi_0 = |\thz,\phz\rangle,
+\end{equation}
+the probability of finding the initial state again, and the Husimi participation ratio
+\begin{equation}\label{eq:PR}
+  \PR(t) = \frac{(2j+1)\left(\int Q\,d\Omega\right)^2}{4\pi\int Q^2\,d\Omega},
+\end{equation}
+the number of Planck cells of area $4\pi/(2j+1)$ covered by $Q$. A coherent state has $\PR=(4j+1)/(2j+1)\approx2$,
+a random state of the spin $j$ has $\PR\approx j+1$ on average, and a uniform $Q$ would have $\PR=2j+1$.
+\PR\ is computed without a phase-space grid: $|\theta,\phi\rangle\otimes|\theta,\phi\rangle$ is the spin-$2j$
+coherent state, so $\int Q^2\,d\Omega = 4\pi|\chi|^2/(4j+1)$ with $\chi$ the projection of $\psi\otimes\psi$ onto
+spin $2j$ \PH{short derivation in an appendix?}. For a chaotic state the quantum--classical correspondence holds up
+to the Ehrenfest time
+\begin{equation}\label{eq:tE}
+  \tE \simeq \frac{|\ln\hbar_{\rm eff}|}{2\Lambda} = \frac{\ln j}{2\Lambda},
+\end{equation}
+the time for the exponential stretching $e^{\Lambda t}$ to blow the initial width $1/\sqrt j$ up to the size of the
+sphere. We take $\tscan=\num{Tscan}\gg\tE$ (for the selected chaotic state $\tscan/\tE=\num{SeaTscanOverTe}$), and
+average over two late windows, $\tscan/2<t\le3\tscan/4$ (early) and $3\tscan/4<t\le\tscan$ (late), giving $\Fl$,
+$\Pe$ and $\Pl$.
+
+\paragraph{Selection.}
+The island state is the island candidate with the smallest $\Pl$. The chaotic state is the chaotic-sea candidate with
+the largest $\Pl$ among those whose spread has saturated,
+\begin{equation}\label{eq:sat}
+  \left|\Pl/\Pe-1\right| < \delta_{\rm sat},\qquad \delta_{\rm sat}=\num{SatTol}.
+\end{equation}
+A state trapped in a sticky region near an island boundary, or localized by quantum interference, spreads slowly and
+fails \cref{eq:sat}. We then check that the island state has $F$ close to one and that the chaotic state has $F$ close
+to the random-state value $1/(2j+1)$.
+
+\subsection{Butterfly echo on the chain}\label{sec:echo}
+
+Each selected state is prepared as the product coherent state $\psi_0$ of $\nq$ qubits and evolved on the chain
+(\texttt{src/combined/chain\_run\_mod.f90}): $\tr$ forward steps $\Uc$, the reversal time $\tr$ counting kicks,
+then the single-qubit rotation
+\begin{equation}\label{eq:R}
+  \Rf = e^{-i\fa\sigma^a_{\iflip}/2} = \cos\frac{\fa}{2} - i\sin\frac{\fa}{2}\,\sigma^a_{\iflip},
+\end{equation}
+of qubit $\iflip\in\{1,\dots,\nq\}$ about the axis $a\in\{x,y,z\}$ by the flip angle $\fa$, and finally $\tr$ backward
+steps $\Ub$:
+\begin{equation}\label{eq:protocol}
+  \psi(t) = \begin{cases} \Uc^{\,t}\psi_0, & 0\le t\le\tr,\\
+  \Ub^{\,t-\tr}\,\Rf\,\Uc^{\,\tr}\psi_0, & \tr<t\le2\tr. \end{cases}
+\end{equation}
+Without the rotation ($\fa=0$) $\psi(2\tr)=\gamma^{\tr}\psi_0$, so $F(2\tr)=1$. With it, \cref{eq:Ub,eq:R} give
+\begin{equation}\label{eq:Fecho}
+  F(2\tr) = |\langle\psi(\tr)|\Rf|\psi(\tr)\rangle|^2
+  = \cos^2\frac{\fa}{2} + \sin^2\frac{\fa}{2}\,\langle\sigma^a_{\iflip}\rangle_{\tr}^2 ,
+\end{equation}
+where $\langle\cdot\rangle_{\tr}$ is the expectation value in $\psi(\tr)$. The echo therefore measures the length of
+the Bloch vector of the rotated qubit along $a$ at the turning point, which shrinks as the qubit becomes entangled with
+the rest of the chain.
+
+We record $F(t)$ for $0\le t\le2\tr$ and the Husimi distribution \cref{eq:Q} of the projection of $\psi(t)$ onto the
+symmetric subspace at $t=0,\ \tr/2,\ \tr,\ 3\tr/2,\ 2\tr$. The rotation of one qubit breaks the permutation symmetry,
+so after it part of the state leaves the symmetric subspace. Its weight there,
+\begin{equation}\label{eq:wS}
+  \wS(t) = \sum_{m=-j}^{j}|\langle j,m|\psi(t)\rangle|^2 ,
+\end{equation}
+with $|j,m\rangle$ the Dicke states, equals the Husimi norm $\NQ=\frac{2j+1}{4\pi}\int Q\,d\Omega$ of the projected
+state (\texttt{husimi\_norm} in the code), so $\NQ<1$ after the flip. Since $\Ub$ and $\Uc$ commute with qubit
+permutations, $\wS$ is constant on the backward leg. For a symmetric $\psi(\tr)$ the projector $P_S$ onto the symmetric subspace gives
+$P_S\sigma^a_{\iflip}\psi(\tr)=\nq^{-1}\sum_iP_S\sigma^a_i\psi(\tr)=(S_a/j)\,\psi(\tr)$, so
+$P_S\Rf\psi(\tr)=[\cos(\fa/2)-i\sin(\fa/2)S_a/j]\,\psi(\tr)$ and
+\begin{equation}\label{eq:wSpred}
+  \wS(t>\tr) = \cos^2\frac{\fa}{2} + \sin^2\frac{\fa}{2}\,\frac{\langle S_a^2\rangle_{\tr}}{j^2}.
+\end{equation}
+Optionally, the flip angle is scanned over $\fa=0,\pi/8,\dots,\pi$ for $a=x,y,z$ at fixed $\tr$, and $\tr$ is scanned
+at fixed $(\fa,a)$.
+
+\paragraph{Parameters.}
+Throughout, $h=\num{Hval}$, $k=\num{Kval}$, $\nq=\num{NqVal}$ ($j=\num{Jval}$, $\varepsilon=k/\nq=\num{EpsVal}$),
+$\tr=\num{Tr}$, $\iflip=\num{Iflip}$, $a=\num{FlipAxis}$ and $\fa=\pi$ unless stated otherwise.
+\PH{justify the parameter choice: at $h=\pi/2$, $k=2.4$ no grid state stays localized at this $j$; at $h=1.2$ the
+islands hold a coherent state and the chaotic sea covers a fraction \num{ChaoticFraction} of the sphere.}
+
+%=====================================================================
+\section{Results}\label{sec:results}
+%=====================================================================
+
+\subsection{Selected initial conditions}\label{sec:res-scan}
+
+\begin{figure*}
+  \centering
+  \figorph[0.9\textwidth]{figures/scan.pdf}
+  \caption{Initial-condition scan of the kicked top with kick angle $h=\num{Hval}$ rad about $x$, torsion strength
+  $k=\num{Kval}$, spin $j=\num{Jval}$ (coupling $\varepsilon=k/(2j)=\num{EpsVal}$), on an equal-area grid of
+  $\num{Ngrid}$ initial coherent states $|\theta_0,\phi_0\rangle$, plotted at their initial azimuth $\phi_0$ (rad,
+  horizontal) and height $Z_0=\cos\theta_0$ (vertical). (a)~Classical finite-time Lyapunov exponent $\Lambda$ (per
+  kick) over $N_\Lambda=\num{Nlyap}$ kicks. (b)~Quantum fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$ averaged
+  over the late window $3t_{\rm scan}/4<t\le t_{\rm scan}$, $t_{\rm scan}=\num{Tscan}$ kicks. (c)~Husimi participation
+  ratio $P=(2j+1)(\int Q)^2/(4\pi\int Q^2)$ averaged over the same window, divided by its maximum $2j+1$; a coherent
+  state has $P/(2j+1)\approx\num{PRcoherent}/(2j+1)$, a random state $\approx(j+1)/(2j+1)$. (d)~Ratio of the late-window to
+  the early-window ($t_{\rm scan}/2<t\le3t_{\rm scan}/4$) mean of $P$; values near one mean that the spread has
+  saturated. Stars: selected island state (blue) and chaotic-sea state (red).}
+  \label{fig:scan}
+\end{figure*}
+
+\Cref{fig:scan} shows the four scan quantities over the sphere. \PH{describe: regular regions with $\Lambda\approx0$
+coincide with high $\Fl$ and small $\Pl$; the chaotic sea with $\Lambda>0$, $\Fl\approx1/(2j+1)$ and large $\Pl$;
+boundary regions with $\Pl/\Pe$ away from one.} The island state is $(\thz,\phz)=(\num{IslandThetaZero},
+\num{IslandPhiZero})$ ($Z_0=\num{IslandZzero}$), with $\Lambda=\num{IslandLambda}$, $\Fl=\num{IslandFlate}$ and
+$\Pl=\num{IslandPRlate}$. The chaotic state is $(\thz,\phz)=(\num{SeaThetaZero},\num{SeaPhiZero})$
+($Z_0=\num{SeaZzero}$), with $\Lambda=\num{SeaLambda}$, $\Fl=\num{SeaFlate}$ (random-state value
+$1/(2j+1)=\num{Frandom}$) and $\Pl=\num{SeaPRlate}$ (random-state value $j+1=\num{PRrandom}$). Its spread has
+saturated, $\Pl/\Pe=\num{SeaPRratio}$, and its Ehrenfest time \cref{eq:tE} is $\tE=\num{SeaTehrenfest}$ kicks.
+
+\begin{figure}
+  \centering
+  \figorph{figures/section.pdf}
+  \caption{Classical Poincar\'e phase portrait of the kicked top with $h=\num{Hval}$ rad and $k=\num{Kval}$, in the
+  canonical coordinates azimuth $\phi$ (rad) and height $Z=\cos\theta$. Black dots: orbits of
+  $\num{NthetaSection}\times\num{NphiSection}$ equal-area initial points, $\num{NkicksSection}$ kicks each. Stars: the selected initial points, island
+  $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$ (blue) and chaotic sea
+  $(\num{SeaThetaZero},\num{SeaPhiZero})$ (red), with their own orbits in the same colors.}
+  \label{fig:section}
+\end{figure}
+
+\begin{figure*}
+  \centering
+  \figorph[0.9\textwidth]{figures/scan_series.pdf}
+  \caption{Spin-$j$ evolution $\psi(t)=U^t|\theta_0,\phi_0\rangle$, $U=e^{-i\varepsilon S_z^2}e^{-ihS_x}$, of the two
+  selected initial states for $h=\num{Hval}$ rad, $k=\num{Kval}$, $j=\num{Jval}$ ($\varepsilon=\num{EpsVal}$). Blue: island
+  state $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$; red: chaotic-sea state
+  $(\num{SeaThetaZero},\num{SeaPhiZero})$. (a)~Fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$; dotted: random-state
+  value $1/(2j+1)$. (b)~Husimi participation ratio $P(t)$ (number of Planck cells); dotted: random-state value $j+1$.
+  Light and dark gray bands: early and late averaging windows. Dashed red line: Ehrenfest time
+  $t_E=\ln j/(2\Lambda)=\num{SeaTehrenfest}$ kicks of the chaotic state. Time $t$ in kicks.}
+  \label{fig:scan-series}
+\end{figure*}
+
+\Cref{fig:section} places both states on the classical phase portrait. \PH{describe: the island state sits inside an
+elliptic island \PH{near the period-1 fixed point?}, the chaotic state well inside the chaotic sea, away from island
+boundaries.} \Cref{fig:scan-series} shows their full time series. \PH{describe: island $F$ oscillates close to one and
+$P$ stays near the coherent value; chaotic $F$ drops to $\sim1/(2j+1)$ after $\sim\tE$ and $P$ rises to a plateau near
+$j+1$ within a few $\tE$, with no slow drift.}
+
+\subsection{Butterfly echo}\label{sec:res-echo}
+
+\begin{figure*}
+  \centering
+  \figorph[0.9\textwidth]{figures/echo_fidelity.pdf}
+  \caption{Butterfly echo on the chain of $n_q=\num{NqVal}$ qubits ($j=n_q/2$), $h=\num{Hval}$ rad,
+  $\varepsilon=k/n_q=\num{EpsVal}$ ($k=\num{Kval}$), $J_{il}=1/4$: fidelity $F(t)=|\langle\psi_0|\psi(t)\rangle|^2$ versus
+  time $t$ (kicks). Forward evolution for $t_r=\num{Tr}$ kicks (dotted vertical line), rotation
+  $e^{-i\vartheta\sigma^a_{i_{\rm flip}}/2}$ of qubit $i_{\rm flip}=\num{Iflip}$ about $a=\num{FlipAxis}$ by
+  $\vartheta=\pi$, then $t_r$ backward kicks. Circles: with the rotation; dashed: without it ($\vartheta=0$). Blue:
+  island state $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$; red: chaotic-sea state
+  $(\num{SeaThetaZero},\num{SeaPhiZero})$. Horizontal dotted line: $1/(2j+1)$. (a)~Linear, (b)~logarithmic scale.}
+  \label{fig:echo}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+  \figorph[\textwidth]{figures/echo_husimi.pdf}
+  \caption{Husimi distribution $Q(\theta,\phi)=|\langle\theta,\phi|\psi_S(t)\rangle|^2$ of the projection $\psi_S$ of
+  the chain state onto the symmetric subspace, at $t=0,\ t_r/2,\ t_r,\ 3t_r/2,\ 2t_r$ with $t_r=\num{Tr}$ kicks, for the
+  echo of \cref{fig:echo} ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\varepsilon=\num{EpsVal}$, rotation of qubit
+  $i_{\rm flip}=\num{Iflip}$ about $a=\num{FlipAxis}$ by $\vartheta=\pi$ at $t_r$). Top row: island state
+  $(\theta_0,\phi_0)=(\num{IslandThetaZero},\num{IslandPhiZero})$; bottom row: chaotic-sea state
+  $(\num{SeaThetaZero},\num{SeaPhiZero})$; white crosses mark $(\phi_0,Z_0)$. Horizontal axis: azimuth $\phi$ (rad);
+  vertical axis: $Z=\cos\theta$; color: $Q$ (dimensionless), common scale within each row. After the rotation
+  $(2j+1)\int Q\,d\Omega/(4\pi)=w_S<1$.}
+  \label{fig:husimi}
+\end{figure*}
+
+\Cref{fig:echo} contrasts the two echoes. Without the rotation both return exactly, $|1-F(2\tr)|=\num{IslandFechoNoFlipDev}$ (island) and
+$\num{SeaFechoNoFlipDev}$ (sea). With it, the island state has
+$F(\tr)=\num{IslandFtr}$ and $F(2\tr)=\num{IslandFecho}$, and the chaotic state $F(\tr)=\num{SeaFtr}$ and
+$F(2\tr)=\num{SeaFecho}$; both agree with \cref{eq:Fecho}, which gives \num{IslandFechoPred} and \num{SeaFechoPred}.
+\PH{interpretation: revival versus decay; for $\fa=\pi$ the echo is $\langle\sigma^a_{\iflip}\rangle^2_{\tr}$, large
+when the qubit stays polarized (island) and small when it is entangled (sea); the island echo depends on the
+orientation of the polarization at $\tr$ relative to $a$.}
+
+\Cref{fig:husimi} shows the Husimi snapshots. \PH{describe: island---$Q$ stays a compact spot that moves along the
+island and returns to $(\phz,Z_0)$ at $2\tr$; sea---$Q$ covers the sphere at $\tr$, and after the rotation the
+backward leg does not refocus it.} After the rotation the symmetric weight is $\wS=\num{IslandSymWeight}$ (island)
+and $\num{SeaSymWeight}$ (sea), compared with \cref{eq:wSpred}: \num{IslandSymWeightPred} and \num{SeaSymWeightPred}.
+
+\begin{figure*}
+  \centering
+  \figorph[0.9\textwidth]{figures/echo_scans.pdf}
+  \caption{Echo fidelity $F(2t_r)$ on the chain ($n_q=\num{NqVal}$, $h=\num{Hval}$ rad, $\varepsilon=\num{EpsVal}$,
+  rotated qubit $i_{\rm flip}=\num{Iflip}$). Blue: island state $(\theta_0,\phi_0)=(\num{IslandThetaZero},
+  \num{IslandPhiZero})$; red: chaotic-sea state $(\num{SeaThetaZero},\num{SeaPhiZero})$. (a)~Versus flip angle
+  $\vartheta$ (rad) for the axes $a=x$ (circles), $y$ (squares), $z$ (triangles) at $t_r=\num{Tr}$ kicks; lines:
+  prediction $\cos^2(\vartheta/2)+\sin^2(\vartheta/2)\langle\sigma^a_{i_{\rm flip}}\rangle^2_{t_r}$. (b)~Versus reversal
+  time $t_r$ (kicks) for $\vartheta=\pi$, $a=\num{FlipAxis}$: $F(2t_r)$ (circles, solid) and the weight $w_S(2t_r)$ of
+  the symmetric subspace (squares, dashed); logarithmic vertical axis.}
+  \label{fig:echo-scans}
+\end{figure*}
+
+\Cref{fig:echo-scans} \PH{describe the flip-angle/axis and $\tr$ dependence.}
+
+%=====================================================================
+\section{Discussion}\label{sec:discussion}
+%=====================================================================
+
+\paragraph{Lyapunov and Ehrenfest scaling.}
+For the chaotic state the forward fidelity decays and the participation ratio saturates on the scale of the Ehrenfest
+time \cref{eq:tE}, $\tE=\num{SeaTehrenfest}$ kicks for $\Lambda=\num{SeaLambda}$ and $j=\num{Jval}$. Since
+$\tE\propto\ln j$, the window of quantum--classical correspondence grows only logarithmically with the number of qubits.
+\PH{for $\tr$ below and above $\tE$: dependence of the echo on $\tr$ (\cref{fig:echo-scans}b); scaling with $\nq$ if
+computed; relation of the decay of $\langle\sigma^a_{\iflip}\rangle_{\tr}^2$ to the single-qubit entanglement.} For the
+island state $\Lambda\approx0$ and no such time scale exists: \PH{the echo is set by the regular motion of the
+polarization}.
+
+\paragraph{Symmetric-subspace leakage.}
+The forward leg stays in the $(2j+1)$-dimensional symmetric subspace, where the chain is the kicked top. The rotation of
+one qubit moves weight $1-\wS$ out of it, \cref{eq:wS,eq:wSpred}, and the Husimi norm of the projected state drops
+below one, $\NQ=\num{IslandHusimiNormEnd}$ (island) and $\NQ=\num{SeaHusimiNormEnd}$ (sea) at $2\tr$. The backward
+leg conserves this weight, so the leaked part never returns to the collective-spin description: \PH{interpretation;
+which state leaks more and why ($\langle S_a^2\rangle_{\tr}/j^2$ close to one for a polarized state, smaller for a
+spread state); implications for experiments that measure only collective observables.}
+
+\paragraph{Outlook.}
+\PH{larger $\nq$; static imperfections of amplitudes $\delta_x$ (kick) and $\delta_z$ (coupling) as in the reference paper; comparison
+with the reference experiment; notation alignment with the reference paper.}
+
+%=====================================================================
+\section{Conclusion}\label{sec:conclusion}
+%=====================================================================
+
+\PH{conclusion}
+
+\begin{acknowledgments}
+\PH{acknowledgments}
+\end{acknowledgments}
+
+\PH{bibliography: \texttt{\textbackslash bibliography\{first\_draft\}} with a .bib file}
+
+\end{document}
